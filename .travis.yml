@@ -1,3 +1,14 @@
 language: node_js
 node_js:
   - "node"
+deploy:
+  provider: s3
+  access_key_id: AKIAIRWAFHZDDWJ37X5A
+  secret_access_key:
+    secure: CmJhba1tvfE5BLK8w4R+rT783Hbi0Ou3MtUfJNqicyUrkCTMeg4+bF5vU6hGzOl+WHcvXIY4NY90G+eynvB31X+NLiOCEooQidColAETN7ErMh1RqFN63vLWU2V6HhilW277QEmAZ146aMt1MkmDh8GSpEcp8B2f6uP0mOj+ZjkCYVWc+IjQ80rNK3co9YeVdq+BjDoNX8nrgB0IoMkkDUxi7cY6wTvNdMUyDIxdp7QeYkJnETtAjzkS4qOnI8Kp4ouNaE0m+MphMlc4yqKq1Eg5BEsthb/nhkWTwZbJq3xqcTlOQvBmcFwCXD6B0hAKs1Bt2OeDogddV77NUEy2MTL9MeeordABoo6LrTMJni9NPbybqKjNVBJ1v96bohxRxFKJzE7pflhItqG9jehPjLJyDOthA2KAyiWjo2ww1MCR+ld7BFL6/VVhUQSsp8UaIJUVHl9IaGwAo/tFmvfpkuKJ3DnJIwdLoT/1PvQZEidDXVgPlN0Z124M1BymSxJOXX+ep9guk5LQnTru8VOKfoHHM4vvseQSyMaqNTkf4NIaFwNmE1FxwfjmsV6XdxeZdv8lkHE8FVVwQUdsdRmW3TeqV9JR2hjza59ev4SWE5MbCuASNA7e3xmBHGXXFpBOnrXFbL05G/4jA11gFV9b7i8l2bvKgWyosy+voQRh7gc=
+  bucket: speed-measurementlab-net
+  skip_cleanup: true
+  local_dir: app
+  on:
+    repo: opentechinstitute/mlab-speedtest
+    branch: master
