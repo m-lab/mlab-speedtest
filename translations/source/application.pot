@@ -1,0 +1,170 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+
+#: index.html:23
+#: measure.html:68
+msgid "About"
+msgstr ""
+
+#: measure.html:14
+msgid "Again"
+msgstr ""
+
+#: measure.html:13
+msgid "Begin"
+msgstr ""
+
+#: measure.js:79
+msgid "Complete"
+msgstr ""
+
+#: index.html:24
+#: measure.html:102
+msgid "Contact"
+msgstr ""
+
+#: measure.html:79
+msgid "Data collected is made available to the public, allowing researchers and anyone else to build on a common pool of network measurement information."
+msgstr ""
+
+#: measure.html:117
+msgid "Discussion and Notification Group"
+msgstr ""
+
+#: measure.html:84
+msgid "Distributed infrastructure and large user base provides an open, verifiable measurement platform for global network performance."
+msgstr ""
+
+#: measure.html:41
+#: measure.js:76
+msgid "Download"
+msgstr ""
+
+#: measure.html:113
+msgid "Email"
+msgstr ""
+
+#: measure.html:17
+msgid "For more on M-Lab's data collection and measurement, including the disclosure of IP addresses, see our <a href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
+msgstr ""
+
+#: measure.html:125
+msgid "GitHub"
+msgstr ""
+
+#: measure.html:83
+msgid "Global"
+msgstr ""
+
+#: measure.js:74
+#: measure.js:77
+msgid "Initializing"
+msgstr ""
+
+#: measure.html:118
+msgid "Join Group"
+msgstr ""
+
+#: measure.html:51
+msgid "Latency"
+msgstr ""
+
+#: measure.html:93
+msgid "Learn more"
+msgstr ""
+
+#: measure.html:10
+msgid "M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection through quick measurements."
+msgstr ""
+
+#: index.html:22
+msgid "Measure"
+msgstr ""
+
+#: measure.html:69
+msgid "Measurement Lab (M-Lab) provides the largest collection of open Internet performance data on the planet. As a consortium of research, industry, and public-interest partners, M-Lab is dedicated to providing an ecosystem for the open, verifiable measurement of global network performance."
+msgstr ""
+
+#: measure.html:74
+msgid "Measurement tools are openly licensed and operated, allowing third parties to develop their own client-side measurement software and audit the source."
+msgstr ""
+
+#: measure.html:106
+msgid "Need to report an issue or bug?"
+msgstr ""
+
+#: measure.html:73
+msgid "Open Source"
+msgstr ""
+
+#: measure.html:107
+msgid "Please contact us."
+msgstr ""
+
+#: index.html:39
+msgid "Privacy Policy"
+msgstr ""
+
+#: measure.html:78
+msgid "Public Data"
+msgstr ""
+
+#: measure.html:104
+msgid "Questions or comments about M-Lab and its tools?"
+msgstr ""
+
+#: measure.html:31
+msgid "Results"
+msgstr ""
+
+#: measure.html:56
+msgid "Retransmission"
+msgstr ""
+
+#: measure.html:122
+msgid "Social"
+msgstr ""
+
+#: measure.js:50
+msgid "Starting"
+msgstr ""
+
+#: measure.html:36
+msgid "Test Server"
+msgstr ""
+
+#: measure.html:8
+msgid "Test Your Speed"
+msgstr ""
+
+#: measure.html:15
+msgid "Testing"
+msgstr ""
+
+#: measure.html:88
+msgid "Trusted"
+msgstr ""
+
+#: measure.html:124
+msgid "Twitter"
+msgstr ""
+
+#: measure.html:46
+#: measure.js:73
+msgid "Upload"
+msgstr ""
+
+#: measure.html:89
+msgid "Used by public organization, academic researchers, regulators and companies around the world to understand the health of the Internet."
+msgstr ""
+
+#: measure.html:105
+msgid "Want to participate in M-Lab?"
+msgstr ""
+
+#: measure.html:4
+msgid "Your browser may not be compatible with the M-Lab speed test. Please update to a more current version and try again."
+msgstr ""

@@ -1,0 +1,132 @@
+<!-- Intro -->
+<section id="intro" class="wrapper style1 fullscreen">
+  <div class="featureWarning" ng-show="unsupportedSystem">
+    <p translate>Your browser may not be compatible with the M-Lab speed test. Please update to a more current version and try again.</p>
+  </div>
+  <div class="features">
+    <section>
+      <h1 translate>Test Your Speed</h1>
+      <p class="startIntroLabel">
+        <span translate>M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection through quick measurements.</span>
+      </p>
+      <p><a class="button special big startButton" ng-click="startTest()" ng-class="startButtonClass">
+        <span ng-show="!measurementComplete && startButtonClass != 'disabled'"><span translate>Begin</span> <i class="fa fa-play" aria-hidden="true"></i></span>
+        <span ng-show="measurementComplete && startButtonClass != 'disabled'"><span translate>Again</span> <i class="fa fa-repeat" aria-hidden="true"></i></span>
+        <span ng-show="startButtonClass == 'disabled'"><span translate>Testing</span> <i class="fa fa-circle-o-notch" aria-hidden="true"></i></span>
+      </a></p>
+      <small translate>For more on M-Lab's data collection and measurement, including the disclosure of IP addresses, see our <a href="http://www.measurementlab.net/privacy/">Privacy Policy</a>.</small>
+    </section>
+    <section>
+      <div ng-show="!measurementComplete">
+        <h1 style="height: 0.5em"></h1>
+        <div class="progress-bar">
+          <canvas id="activeProgress" class="progress-active"  height="275px" width="275px"></canvas>
+          <div class="progress-label">
+            <h2>{{ currentSpeed }}</h2>
+            <h4>{{ currentPhase }}</h4>
+          </div>
+        </div>
+      </div>
+      <div ng-show="measurementComplete">
+        <h1 translate>Results</h1>
+        <table class="alt">
+  				<tbody>
+            <tr>
+              <td><i class="fa fa-server" aria-hidden="true"></i></td>
+  						<td translate>Test Server</td>
+  						<td><strong>{{ location }}</strong></td>
+  					</tr>
+            <tr>
+              <td><i class="fa fa-download" aria-hidden="true"></i></td>
+  						<td translate>Download</td>
+  						<td><strong>{{ measurementResult.s2cRate }}</strong></td>
+  					</tr>
+            <tr>
+              <td><i class="fa fa-upload" aria-hidden="true"></i></td>
+  						<td translate>Upload</td>
+  						<td><strong>{{ measurementResult.c2sRate }}</strong></td>
+  					</tr>
+            <tr>
+              <td><i class="fa fa-hourglass-start" aria-hidden="true"></i></td>
+  						<td translate>Latency</td>
+  						<td><strong>{{ measurementResult.latency }}</strong></td>
+  					</tr>
+            <tr>
+              <td><i class="fa fa-signal" aria-hidden="true"></i></td>
+  						<td translate>Retransmission</td>
+  						<td><strong>{{ measurementResult.loss }}</strong></td>
+  					</tr>
+  				</table>
+        </div>
+    </section>
+  </div>
+</section>
+
+<!-- Two -->
+<section id="about" class="wrapper style3">
+  <div class="inner">
+    <h2 translate>About</h2>
+    <p translate>Measurement Lab (M-Lab) provides the largest collection of open Internet performance data on the planet. As a consortium of research, industry, and public-interest partners, M-Lab is dedicated to providing an ecosystem for the open, verifiable measurement of global network performance.</p>
+    <div class="features">
+      <section>
+        <span class="icon major fa-code"></span>
+        <h3 translate>Open Source</h3>
+        <p translate>Measurement tools are openly licensed and operated, allowing third parties to develop their own client-side measurement software and audit the source.</p>
+      </section>
+      <section>
+        <span class="icon major fa-users"></span>
+        <h3 translate>Public Data</h3>
+        <p translate>Data collected is made available to the public, allowing researchers and anyone else to build on a common pool of network measurement information.</p>
+      </section>
+      <section>
+        <span class="icon major fa-globe"></span>
+        <h3 translate>Global</h3>
+        <p translate>Distributed infrastructure and large user base provides an open, verifiable measurement platform for global network performance.</p>
+      </section>
+      <section>
+        <span class="icon major fa-institution"></span>
+        <h3 translate>Trusted</h3>
+        <p translate>Used by public organization, academic researchers, regulators and companies around the world to understand the health of the Internet.</p>
+      </section>
+    </div>
+    <ul class="actions">
+      <li><a href="http://measurementlab.net" class="button" translate>Learn more</a></li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- Three  fade-up -->
+<section id="contact" class="wrapper style1">
+  <div class="inner">
+    <h2 translate>Contact</h2>
+    <ul class="alt">
+      <li translate>Questions or comments about M-Lab and its tools?</li>
+      <li translate>Want to participate in M-Lab?</li>
+      <li translate>Need to report an issue or bug?</li>
+      <li translate>Please contact us.</li>
+    </ul>
+    <div class="">
+      <section>
+        <ul class="contact">
+          <li>
+            <h3 translate>Email</h3>
+            <a href="mailto: support@measurementlab.net">support@measurementlab.net</a>
+          </li>
+          <li>
+            <h3 translate>Discussion and Notification Group</h3>
+            <a href="https://groups.google.com/a/measurementlab.net/forum/#!forum/discuss" translate>Join Group</a>
+            <i class="fa fa-link" aria-hidden="true"></i>
+          </li>
+          <li>
+            <h3 translate>Social</h3>
+            <ul class="icons">
+              <li><a href="https://twitter.com/MeasurementLab" class="fa-twitter"><span class="label" translate>Twitter</span></a></li>
+              <li><a href="https://github.com/m-lab" class="fa-github"><span class="label" translate>GitHub</span></a></li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</section>
