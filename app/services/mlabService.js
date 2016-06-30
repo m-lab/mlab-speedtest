@@ -25,9 +25,9 @@ angular.module('Measure.MeasurementLab', [])
       findDeferred.resolve(temporaryResponse);
     } else {
       console.log('Missed cache for ' + metroSelection );
-      var mlabNsUrl = 'http://mlab-ns.appspot.com/ndt?format=json';
+      var mlabNsUrl = 'https://mlab-ns.appspot.com/ndt_ssl?format=json';
       if (metroSelection && metroSelection !== "automatic") {
-        mlabNsUrl = 'http://mlab-ns.appspot.com/ndt?format=json&policy=metro&metro=' + metroSelection;
+        mlabNsUrl = 'https://mlab-ns.appspot.com/ndt_ssl?format=json&policy=metro&metro=' + metroSelection;
       }
       CACHE.type = metroSelection;
       $http.get(mlabNsUrl)

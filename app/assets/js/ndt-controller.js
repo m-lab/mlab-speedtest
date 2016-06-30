@@ -25,10 +25,13 @@ var gaugeMaxValue = 1000;
 function startTest(fqdn) {
   // evt.stopPropagation();
   // evt.preventDefault();
-  createBackend(fqdn);
+  websocket_client = new NDTWrapper(fqdn);
+
+  websocket_client._port = 3010 ;
+  websocket_client._protocol = 'wss';
 
   currentPhase = PHASE_WELCOME;
-  testNDT().run_test(fqdn);
+  testNDT().run_test();
   monitorTest();
 }
 
@@ -229,13 +232,6 @@ function getJustfiedSpeed(speedInKB) {
 function readNDTvar(variable) {
   var ret = testNDT().getNDTvar(variable);
   return !ret ? '-' : ret;
-}
-
-// BACKEND METHODS
-
-
-function createBackend(fqdn) {
-  websocket_client = new NDTWrapper(fqdn);
 }
 
 // UTILITIES
