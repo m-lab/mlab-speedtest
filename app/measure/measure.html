@@ -7,13 +7,26 @@
     <section>
       <h1 translate>Test Your Speed</h1>
       <p class="startIntroLabel">
-        <span translate>M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection through quick measurements.</span>
+        <span translate>M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection through quick measurements.</span><br />
       </p>
-      <p><a class="button special big startButton" ng-click="startTest()" ng-class="startButtonClass">
-        <span ng-show="!measurementComplete && startButtonClass != 'disabled'"><span translate>Begin</span> <i class="fa fa-play" aria-hidden="true"></i></span>
-        <span ng-show="measurementComplete && startButtonClass != 'disabled'"><span translate>Again</span> <i class="fa fa-repeat" aria-hidden="true"></i></span>
-        <span ng-show="startButtonClass == 'disabled'"><span translate>Testing</span> <i class="fa fa-circle-o-notch" aria-hidden="true"></i></span>
-      </a></p>
+      <p>
+        <input type="checkbox" id="demo-human" name="demo-human" ng-model="privacyConsent">
+        <label for="demo-human" translate style="font-size: smaller;">I agree to the <a href="http://www.measurementlab.net/privacy/">data policy</a>, which includes retention and publication of IP addresses.</label>
+      </p>
+      <p>
+        <div class="row">
+        	<div class="6u">
+            <a class="button special startButton big" ng-click="startTest()" ng-class="{disabled: (privacyConsent !== true || startButtonClass === 'disabled')}">
+              <span ng-show="!measurementComplete && startButtonClass != 'disabled'"><span translate>Begin</span> <i class="fa fa-play" aria-hidden="true"></i></span>
+              <span ng-show="measurementComplete && startButtonClass != 'disabled'"><span translate>Again</span> <i class="fa fa-repeat" aria-hidden="true"></i></span>
+              <span ng-show="startButtonClass == 'disabled'"><span translate>Testing</span> <i class="fa fa-circle-o-notch" aria-hidden="true"></i></span>
+            </a>
+        	</div>
+        	<div class="6u">
+            <span translate ng-show="privacyConsent !== true" class="privacyConsentMessage">Please agree to the data policy prior to the test.</span>
+        	</div>
+        </div>
+      </p>
       <small translate>For more on M-Lab's data collection and measurement, including the disclosure of IP addresses, see our <a href="http://www.measurementlab.net/privacy/">Privacy Policy</a>.</small>
     </section>
     <section>

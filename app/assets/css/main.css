@@ -168,6 +168,12 @@ input[type=range]:focus::-ms-fill-upper {
 		background-position: center left;
 	}
 }
+
+span.privacyConsentMessage {
+	font-size: small;
+	font-weight: bold;
+	color: rgba(255, 255, 255, 1.0);
+}
 /*
 	Hyperspace by HTML5 UP
 	html5up.net | @ajlkn

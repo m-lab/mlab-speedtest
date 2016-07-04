@@ -32,6 +32,10 @@ angular.module('Measure.Measure', ['ngRoute'])
         intervalPromise,
         TIME_EXPECTED = 10 * 1000;
 
+    if ($scope.privacyConsent !== true) {
+      return;
+    }
+
     ProgressGauge.reset();
     $scope.startButtonClass = 'disabled';
     $scope.measurementComplete = false;
