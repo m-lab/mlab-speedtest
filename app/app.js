@@ -18,7 +18,7 @@ angular.module('Measure', [
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/measure', {
-    templateUrl: 'measure/measure.html',
+    templateUrl: '/measure/measure.html',
     controller: 'MeasureCtrl'
   });
 }])
@@ -27,7 +27,10 @@ angular.module('Measure', [
   var availableLanguages = ['en'];
 
   availableLanguages = availableLanguages.concat(Object.keys(gettextCatalog.strings));
-  // gettextCatalog.setCurrentLanguage('nl');
+  console.log(INTERFACE_LANGUAGE in availableLanguages, INTERFACE_LANGUAGE, availableLanguages);
+  if (availableLanguages.indexOf(INTERFACE_LANGUAGE) != -1) {
+    gettextCatalog.setCurrentLanguage(INTERFACE_LANGUAGE);
+  }
   // gettextCatalog.debug = true;
 })
 
