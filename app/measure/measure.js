@@ -51,6 +51,10 @@ angular.module('Measure.Measure', ['ngRoute'])
     }
     ndtSemaphore = true;
 
+    $('html, body').animate({
+        scrollTop: $("#measurementSpace").offset().top
+    }, 1000);
+
     $scope.currentSpeed = gettextCatalog.getString('Starting');
     $scope.currentPhase = '';
     startTest(ndtServer.fqdn);
