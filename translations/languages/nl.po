@@ -1,5 +1,6 @@
 # Translators:
 # kwadronaut <kwadronaut@autistici.org>, 2016
+# Collin Anderson <collina@gmail.com>, 2016
 # Jorrit Ottevanger <jorrit_1980@hotmail.com>, 2016
 msgid ""
 msgstr ""
@@ -38,7 +39,7 @@ msgid ""
 msgstr ""
 "Verzamelde gegevens worden publiekelijk openbaar gemaakt, zodat onderzoekers"
 " en ieder ander aan een gemeenschappelijke bron van netwerkmetingsinformatie"
-" kan werken."
+" kunnen werken."
 
 #: measure.html:130
 msgid "Discussion and Notification Group"
@@ -49,8 +50,8 @@ msgid ""
 "Distributed infrastructure and large user base provides an open, verifiable "
 "measurement platform for global network performance."
 msgstr ""
-"Verdeelde infrastructuur en een groot aantal gebruikers zorgt voor een open,"
-" controleerbaar metingsplatform voor wereldwijde netwerkprestaties."
+"Gedeelde infrastructuur en een groot aantal gebruikers zorgt voor een open, "
+"controleerbaar metingsplatform voor wereldwijde netwerkprestaties."
 
 #: measure.html:54 measure.js:81
 msgid "Download"
@@ -67,7 +68,7 @@ msgid ""
 "href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
 msgstr ""
 "Voor meer informatie over M-Lab's gegevensverzameling en data-analyse, "
-"inclusief het publiceren van IP-adressen, zie onze  <a "
+"inclusief het publiceren van IP-adressen, zie ons  <a "
 "href=\"http://www.measurementlab.net/privacy/\">Privacybeleid</a>."
 
 #: measure.html:138
@@ -85,7 +86,7 @@ msgid ""
 msgstr ""
 "Ik ga akkoord met het <a "
 "href=\"http://www.measurementlab.net/privacy/\">gegevensbeleid</a>, "
-"inclusief het behoud en de publicatie van IP-adressen."
+"inclusief het opslaan en de publicatie van IP-adressen."
 
 #: measure.js:79 measure.js:82
 msgid "Initializing"
