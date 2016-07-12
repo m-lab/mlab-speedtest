@@ -12,12 +12,11 @@ angular.module('Measure', [
 .value('ndtServer', {})
 
 .config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
-  $locationProvider.hashPrefix('!');
-  $routeProvider.otherwise({redirectTo: '/measure'});
-}])
-
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/measure', {
+  $locationProvider.html5Mode({
+    enabled: true,
+    requireBase: false
+  });
+  $routeProvider.when('/', {
     templateUrl: '/measure/measure.html',
     controller: 'MeasureCtrl'
   });
@@ -26,12 +25,14 @@ angular.module('Measure', [
 .run(function (gettextCatalog) {
   var availableLanguages = ['en'];
 
-  availableLanguages = availableLanguages.concat(Object.keys(gettextCatalog.strings));
-  console.log(INTERFACE_LANGUAGE in availableLanguages, INTERFACE_LANGUAGE, availableLanguages);
-  if (availableLanguages.indexOf(INTERFACE_LANGUAGE) != -1) {
-    gettextCatalog.setCurrentLanguage(INTERFACE_LANGUAGE);
+  if (typeof INTERFACE_LANGUAGE !== 'undefined') {
+    availableLanguages = availableLanguages.concat(Object.keys(gettextCatalog.strings));
+
+    if (availableLanguages.indexOf(INTERFACE_LANGUAGE) != -1) {
+      gettextCatalog.setCurrentLanguage(INTERFACE_LANGUAGE);
+    }
+    // gettextCatalog.debug = true;
   }
-  // gettextCatalog.debug = true;
 })
 
 .run(function (MLabService, ndtServer, $rootScope) {
