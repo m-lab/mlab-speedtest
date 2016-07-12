@@ -16,7 +16,7 @@
       <p>
         <div class="row">
         	<div class="6u">
-            <a class="button special startButton big" ng-click="startTest()" ng-class="{disabled: (privacyConsent !== true || startButtonClass === 'disabled')}">
+            <a class="button special startButton big scrolly" href="#measurementSpace" ng-click="startTest()" ng-class="{disabled: (privacyConsent !== true || startButtonClass === 'disabled')}">
               <span ng-show="!measurementComplete && startButtonClass != 'disabled'"><span translate>Begin</span> <i class="fa fa-play" aria-hidden="true"></i></span>
               <span ng-show="measurementComplete && startButtonClass != 'disabled'"><span translate>Again</span> <i class="fa fa-repeat" aria-hidden="true"></i></span>
               <span ng-show="startButtonClass == 'disabled'"><span translate>Testing</span> <i class="fa fa-circle-o-notch" aria-hidden="true"></i></span>
@@ -29,7 +29,7 @@
       </p>
       <small translate>For more on M-Lab's data collection and measurement, including the disclosure of IP addresses, see our <a href="http://www.measurementlab.net/privacy/">Privacy Policy</a>.</small>
     </section>
-    <section>
+    <section id="measurementSpace">
       <div ng-show="!measurementComplete">
         <h1 style="height: 0.5em"></h1>
         <div class="progress-bar">

@@ -33,6 +33,16 @@ table.transparent tbody tr, table.transparent tbody tr:nth-child(2n + 1) {
 	position: relative;
 }
 
+@media screen and (max-width: 980px) {
+	#intro .features section {
+    padding: 3em 2em 1em 2em;
+		width: auto;
+	}
+	span.privacyConsentMessage {
+		display: none
+	}
+}
+
 canvas.progressGauge {
 	margin: 0;
 	padding: 0;
@@ -171,7 +181,6 @@ input[type=range]:focus::-ms-fill-upper {
 
 span.privacyConsentMessage {
 	font-size: small;
-	font-weight: bold;
 	color: rgba(255, 255, 255, 1.0);
 }
 /*
