@@ -82,17 +82,17 @@ angular.module('Measure.Measure', ['ngRoute'])
 
       if (currentPhase == PHASE_UPLOAD) {
         $scope.currentPhase = gettextCatalog.getString('Upload');
-        $scope.currentSpeed = uploadSpeedVal ? getJustfiedSpeed(uploadSpeedVal) + ' ' + getSpeedUnit(uploadSpeedVal) : gettextCatalog.getString('Initializing');
+        $scope.currentSpeed = uploadSpeedVal ? uploadSpeedVal.toFixed(2) + ' Mb/s' : gettextCatalog.getString('Initializing');
       } else if (currentPhase == PHASE_DOWNLOAD) {
         $scope.currentPhase = gettextCatalog.getString('Download');
-        $scope.currentSpeed = downloadSpeedVal ? getJustfiedSpeed(downloadSpeedVal) + ' ' + getSpeedUnit(downloadSpeedVal) : gettextCatalog.getString('Initializing');
+        $scope.currentSpeed = downloadSpeedVal ? downloadSpeedVal.toFixed(2) + ' Mb/s' : gettextCatalog.getString('Initializing');
       } else if (currentPhase == PHASE_RESULTS) {
         $scope.currentPhase = gettextCatalog.getString('Complete');
         $scope.currentSpeed = '';
         $scope.measurementComplete = true;
         $scope.measurementResult = {
-          's2cRate': downloadSpeed().toFixed(2) + ' ' + getSpeedUnit(downloadSpeed()),
-          'c2sRate': uploadSpeed().toFixed(2) + ' ' + getSpeedUnit(uploadSpeed()),
+          's2cRate': downloadSpeed().toFixed(2) + ' Mb/s',
+          'c2sRate': uploadSpeed().toFixed(2) + ' Mb/s',
           'latency': readNDTvar('MinRTT') + ' ms',
           'loss': String((readNDTvar('loss') * 100).toFixed(2)) + "%"
         };
