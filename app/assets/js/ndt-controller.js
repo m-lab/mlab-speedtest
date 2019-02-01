@@ -218,17 +218,6 @@ function speedLimit() {
   return parseFloat(testNDT().get_PcBuffSpdLimit());
 }
 
-function getSpeedUnit(speedInKB) {
-  var unit = ['kb/s', 'Mb/s', 'Gb/s', 'Tb/s', 'Pb/s', 'Eb/s'];
-  var e = Math.floor(Math.log(speedInKB*1000) / Math.log(1000));
-  return unit[e];
-}
-
-function getJustfiedSpeed(speedInKB) {
-  var e = Math.floor(Math.log(speedInKB) / Math.log(1000));
-  return (speedInKB / Math.pow(1000, e)).toFixed(2);
-}
-
 function readNDTvar(variable) {
   var ret = testNDT().getNDTvar(variable);
   return !ret ? '-' : ret;
