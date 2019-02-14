@@ -2,8 +2,6 @@ var gulp = require('gulp');
 var inject = require('gulp-inject');
 var gettext = require('gulp-angular-gettext');
 
-gulp.task('default', ['app']);
-
 gulp.task('inject', ['translations'], function() {
   gulp.src('www/index.html')
   .pipe(inject(gulp.src('www/translations/scripts/*.js', {read: false}), {relative: true, name: 'translations'}))

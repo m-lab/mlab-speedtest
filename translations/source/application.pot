@@ -17,7 +17,7 @@ msgstr ""
 msgid "Begin"
 msgstr ""
 
-#: measure.js:84
+#: measure.js:90
 msgid "Complete"
 msgstr ""
 
@@ -39,7 +39,7 @@ msgid "Distributed infrastructure and large user base provides an open, verifiab
 msgstr ""
 
 #: measure.html:54
-#: measure.js:81
+#: measure.js:87
 msgid "Download"
 msgstr ""
 
@@ -63,8 +63,8 @@ msgstr ""
 msgid "I agree to the <a href=\"http://www.measurementlab.net/privacy/\">data policy</a>, which includes retention and publication of IP addresses."
 msgstr ""
 
-#: measure.js:79
-#: measure.js:82
+#: measure.js:85
+#: measure.js:88
 msgid "Initializing"
 msgstr ""
 
@@ -136,7 +136,7 @@ msgstr ""
 msgid "Social"
 msgstr ""
 
-#: measure.js:54
+#: measure.js:60
 msgid "Starting"
 msgstr ""
 
@@ -161,7 +161,7 @@ msgid "Twitter"
 msgstr ""
 
 #: measure.html:59
-#: measure.js:78
+#: measure.js:84
 msgid "Upload"
 msgstr ""
 
