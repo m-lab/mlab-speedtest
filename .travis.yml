@@ -7,15 +7,6 @@ script:
   - gulp inject
 
 deploy:
-# testing
-- provider: script
-  skip_cleanup: true
-  script: "firebase use mlab-oti && firebase deploy --only hosting:mlab-speedtest --token $FIREBASE_TOKEN"
-  on:
-    repo: m-lab/mlab-speedtest
-    all_branches: true
-    condition: "$TRAVIS_BRANCH == migrate-firebase"
-
 # production
 - provider: script
   skip_cleanup: true
