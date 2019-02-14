@@ -4,7 +4,6 @@ node_js:
 
 script:
   - npm install -g firebase-tools
-  - yarn install
   - gulp inject
 
 deploy:
