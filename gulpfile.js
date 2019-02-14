@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var inject = require('gulp-inject');
 var gettext = require('gulp-angular-gettext');
+var npmDist = require('gulp-npm-dist');
 
 gulp.task('inject', ['translations'], function() {
   gulp.src('www/index.html')
@@ -24,4 +25,10 @@ gulp.task('pot', function () {
     // options to pass to angular-gettext-tools...
   }))
   .pipe(gulp.dest('translations/source'));
+});
+
+// Copy dependencies to ./public/libs/
+gulp.task('copy_libs', function() {
+  gulp.src(npmDist(), {base:'./node_modules/@bower_components'})
+    .pipe(gulp.dest('./app/libraries'));
 });

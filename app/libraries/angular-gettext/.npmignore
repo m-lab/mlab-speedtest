@@ -1,9 +1,0 @@
-/Gruntfile.js
-/.travis.yml
-/genplurals.py
-/test
-/src
-/node_modules
-/bower_components
-/libpeerconnection.log
-/*-results.xml
