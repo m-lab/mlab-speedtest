@@ -2,6 +2,14 @@ language: node_js
 node_js:
   - "node"
 deploy:
+# testing
+- provider: script
+  skip_cleanup: true
+  script: "firebase use mlab-oti && firebase deploy --only hosting:mlab-speedtest --token $FIREBASE_TOKEN"
+  on:
+    repo: m-lab/website
+    all_branches: true
+    condition: "$TRAVIS_BRANCH == migrate-firebase"
 
 # production
 - provider: script

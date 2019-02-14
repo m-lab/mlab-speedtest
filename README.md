@@ -1,27 +1,35 @@
 # speed.measurementlab.net source code
 
-`mlab-speedtest` is an Angular.js application providing the website https://speed.measurementlab.net
+`mlab-speedtest` is an Angular.js application providing the website https://speed.measurementlab.net. The app code currently uses `gulp` to integrate language localizations prior to deployment.
 
 ## Setting up Local Development Environment
 
 ### Install Build Dependencies
 
 * Install website build dependencies for your operating system and environment
-  * Node
-  * - 
-  * -
+  * Node >= v10.15.1 - Using NVM: `nvm install v10.15.1`
+  * Bower - `npm install -g bower`
+  * Gulp - 
+  * Firebase tools - `npm install -g firebase-tools`
 
 ## Adding new languages
 
-* Managed in Transifex
-* Download new .po file, save in `/translations/source/`
+Translations for this site are managed in the [Open Technology Fund's Localization Lab Transifex site](https://www.transifex.com/otf/m-lab-ndt-portal/dashboard/). Contributing translators may choose to translate and/or review translations there. Completed translations are then imported for use within this application and published by M-Lab staff.
+
+### How to add a new localization
+
+* Download a completed language translation file
+  * Visit the Transifex site and locate a completed language
+  * Click **Interface Language Strings** and then **Download for use** to download the completed language `.po` file
+  * Save it in the folder: `/translations/source/` using the file name pattern: **<two letter langugage code>.po**
 * Create new language template & update language string references
-  * copy existing translation template. example: `cp -r app/nl app/it`
-  * edit `app/it/index.html`: 
-    * change: `const INTERFACE_LANGUAGE = 'nl';` to `const INTERFACE_LANGUAGE = 'it';`
-    * change: `<script src="/assets/translations/it.js"></script>`
-    * to: `<script src="/assets/translations/it.js"></script>`
-  * regenerate language strings: 
+  * Create a copy of an existing translation folder and index.html file, and make some edits to support the new language
+    * Copy the folder and index file: `cp -r app/nl app/es`
+    * Edit the index file to change the language it references. In `app/es/index.html`: 
+      * change: `const INTERFACE_LANGUAGE = 'nl';` to `const INTERFACE_LANGUAGE = 'es';`
+      * change: `<script src="/assets/translations/it.js"></script>`
+    * to: `<script src="/assets/translations/es.js"></script>`
+  * Regenerate the supported language strings: 
     * `gulp inject`
 
 ## Previewing site locally
@@ -30,3 +38,5 @@ To preview the site locally, we recommend using the Python Simple HTTP Server. N
 
 * `python -m http.server 8000` (Python 3.x)
 * `python -m SimpleHTTPServer` (older versions)
+
+If you are a user on the M-Lab Firebase project, you can also preview the site locally using the firebase-cli: `firebase serve --only hosting:mlab-speedtest`
