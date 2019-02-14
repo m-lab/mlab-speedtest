@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "mlab-oti"
+  },
+  "targets": {
+    "mlab-oti": {
+      "hosting": {
+        "mlab-speedtest": [
+          "mlab-speedtest"
+        ]
+      }
+    }
+  }
+}
