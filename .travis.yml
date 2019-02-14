@@ -12,7 +12,7 @@ deploy:
   skip_cleanup: true
   script: "firebase use mlab-oti && firebase deploy --only hosting:mlab-speedtest --token $FIREBASE_TOKEN"
   on:
-    repo: m-lab/website
+    repo: m-lab/mlab-speedtest
     all_branches: true
     condition: "$TRAVIS_BRANCH == migrate-firebase"
 
@@ -21,7 +21,7 @@ deploy:
   skip_cleanup: true
   script: "firebase use mlab-oti && firebase deploy --only hosting:mlab-speedtest --token $FIREBASE_TOKEN"
   on:
-    repo: m-lab/website
+    repo: m-lab/mlab-speedtest
     all_branches: true
     condition: "$TRAVIS_BRANCH == master"
     tags: true
