@@ -14,5 +14,4 @@ deploy:
   script: "firebase use mlab-oti && firebase deploy --only hosting:mlab-speedtest --token $FIREBASE_TOKEN"
   on:
     repo: m-lab/mlab-speedtest
-    condition: "$TRAVIS_BRANCH == migrate-firebase"
-#    tags: true
+    tags: true
