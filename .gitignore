@@ -2,7 +2,6 @@ logs/*
 !.gitkeep
 node_modules/
 bower_components/
-libraries/
 tmp
 .DS_Store
-.idea
+.firebase

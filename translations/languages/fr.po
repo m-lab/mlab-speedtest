@@ -1,0 +1,232 @@
+# Translators:
+# AO <ao@localizationlab.org>, 2017
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Last-Translator: AO <ao@localizationlab.org>, 2017\n"
+"Language-Team: French (https://www.transifex.com/otf/teams/46824/fr/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: index.html:23 measure.html:81
+msgid "About"
+msgstr "À propos"
+
+#: measure.html:21
+msgid "Again"
+msgstr "Retester"
+
+#: measure.html:20
+msgid "Begin"
+msgstr "Commencer"
+
+#: measure.js:84
+msgid "Complete"
+msgstr "Terminer"
+
+#: index.html:24 measure.html:115
+msgid "Contact"
+msgstr "Contact"
+
+#: measure.html:92
+msgid ""
+"Data collected is made available to the public, allowing researchers and "
+"anyone else to build on a common pool of network measurement information."
+msgstr ""
+"Les données recueillies sont mises à disposition du public, permettant aux "
+"chercheurs et à quiconque de s'appuyer sur une réserve commune "
+"d'informations de mesure du réseau."
+
+#: measure.html:130
+msgid "Discussion and Notification Group"
+msgstr "Groupe de discussion et de notification"
+
+#: measure.html:97
+msgid ""
+"Distributed infrastructure and large user base provides an open, verifiable "
+"measurement platform for global network performance."
+msgstr ""
+"Une infrastructure distribuée et un vaste parc d'utilisateurs fournissent "
+"une plateforme ouverte de mesure vérifiable des performances du réseau "
+"mondial."
+
+#: measure.html:54 measure.js:81
+msgid "Download"
+msgstr "Téléchargement"
+
+#: measure.html:126
+msgid "Email"
+msgstr "Courriel"
+
+#: measure.html:30
+msgid ""
+"For more on M-Lab's data collection and measurement, including the "
+"disclosure of IP addresses, see our <a "
+"href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
+msgstr ""
+"Pour en apprendre davantage sur la collecte de données et les mesures de "
+"M-Lab, incluant la divulgation des adresses IP, consulter notre <a "
+"href=\"http://www.measurementlab.net/privacy/\">politique de "
+"confidentialité</a>."
+
+#: measure.html:138
+msgid "GitHub"
+msgstr "GitHub"
+
+#: measure.html:96
+msgid "Global"
+msgstr "Mondial"
+
+#: measure.html:14
+msgid ""
+"I agree to the <a href=\"http://www.measurementlab.net/privacy/\">data "
+"policy</a>, which includes retention and publication of IP addresses."
+msgstr ""
+"J'accepte la <a href=\"http://www.measurementlab.net/privacy/\">politique "
+"des données</a> qui inclut la conservation et la publication des adresses "
+"IP."
+
+#: measure.js:79 measure.js:82
+msgid "Initializing"
+msgstr "Initialisation"
+
+#: measure.html:131
+msgid "Join Group"
+msgstr "Rejoindre le groupe"
+
+#: measure.html:64
+msgid "Latency"
+msgstr "Latence"
+
+#: measure.html:106
+msgid "Learn more"
+msgstr "En apprendre davantage"
+
+#: measure.html:10
+msgid ""
+"M-Lab's Speed Test provides advanced diagnostics of the performance of your "
+"broadband connection through quick measurements."
+msgstr ""
+"Le test de vitesse de M-Lab fournit des diagnostics sophistiqués sur les "
+"performances de votre connexion à haut débit grâce à des mesures rapides."
+
+#: index.html:22
+msgid "Measure"
+msgstr "Mesurer"
+
+#: measure.html:82
+msgid ""
+"Measurement Lab (M-Lab) provides the largest collection of open Internet "
+"performance data on the planet. As a consortium of research, industry, and "
+"public-interest partners, M-Lab is dedicated to providing an ecosystem for "
+"the open, verifiable measurement of global network performance."
+msgstr ""
+"Le laboratoire de mesure « Measurement Lab » (M-Lab) fournit la plus grande "
+"collection ouverte de données de performances d'Internet sur la planète. En "
+"tant que consortium de partenaires de recherche, industriels et d'intérêt "
+"public, M-Lab a pour mission de fournir un écosystème de mesure vérifiable "
+"et ouverte des performances du réseau mondial."
+
+#: measure.html:87
+msgid ""
+"Measurement tools are openly licensed and operated, allowing third parties "
+"to develop their own client-side measurement software and audit the source."
+msgstr ""
+"Les outils de mesure sont sous licence ouverte et exploités ainsi, "
+"permettant à des tiers de développer leur propre logiciel de mesure côté "
+"client et d'en examiner la source."
+
+#: measure.html:119
+msgid "Need to report an issue or bug?"
+msgstr "Avez-vous besoin de signaler un problème ou un bogue ?"
+
+#: measure.html:86
+msgid "Open Source"
+msgstr "À code source ouvert"
+
+#: measure.html:26
+msgid "Please agree to the data policy prior to the test."
+msgstr ""
+"Veuillez accepter à la politique des données avant d'effectuer le test."
+
+#: measure.html:120
+msgid "Please contact us."
+msgstr "Veuillez nous contacter."
+
+#: index.html:39
+msgid "Privacy Policy"
+msgstr "Politique de confidentialité"
+
+#: measure.html:91
+msgid "Public Data"
+msgstr "Des données publiques"
+
+#: measure.html:117
+msgid "Questions or comments about M-Lab and its tools?"
+msgstr ""
+"Avez-vous des questions ou des commentaires à propos de M-Lab et de ses "
+"outils ?"
+
+#: measure.html:44
+msgid "Results"
+msgstr "Résultats"
+
+#: measure.html:69
+msgid "Retransmission"
+msgstr "Retransmission"
+
+#: measure.html:135
+msgid "Social"
+msgstr "Réseaux sociaux"
+
+#: measure.js:54
+msgid "Starting"
+msgstr "Démarrage"
+
+#: measure.html:49
+msgid "Test Server"
+msgstr "Serveur de test"
+
+#: measure.html:8
+msgid "Test Your Speed"
+msgstr "Testez votre vitesse"
+
+#: measure.html:22
+msgid "Testing"
+msgstr "Test en cours"
+
+#: measure.html:101
+msgid "Trusted"
+msgstr "Fiable"
+
+#: measure.html:137
+msgid "Twitter"
+msgstr "Twitter"
+
+#: measure.html:59 measure.js:78
+msgid "Upload"
+msgstr "Téléversement"
+
+#: measure.html:102
+msgid ""
+"Used by public organization, academic researchers, regulators and companies "
+"around the world to understand the health of the Internet."
+msgstr ""
+"Utilisé par des organismes publics, des chercheurs universitaires, des "
+"organismes de régulation et des entreprises du monde entier pour comprendre "
+"la santé d'Internet."
+
+#: measure.html:118
+msgid "Want to participate in M-Lab?"
+msgstr "Souhaitez-vous collaborer avec M-Lab ?"
+
+#: measure.html:4
+msgid ""
+"Your browser may not be compatible with the M-Lab speed test. Please update "
+"to a more current version and try again."
+msgstr ""
+"Votre navigateur pourrait ne pas être compatible avec le test de vitesse de "
+"M-Lab. Veuillez le mettre à jour vers une version plus récente et ressayer."
