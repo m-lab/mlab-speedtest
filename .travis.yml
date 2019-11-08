@@ -4,8 +4,7 @@ node_js:
 
 script:
   - npm install -g firebase-tools
-  - gulp inject
-  - gulp copy_libs
+  - bower install
 
 deploy:
 # production
