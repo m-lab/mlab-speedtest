@@ -21,9 +21,9 @@ function NDTWrapper(server) {
     var isFirefox = typeof InstallTrigger !== 'undefined';
     var supportsWebWorkers = !!window.Worker;
 
-    // if (supportsWebWorkers) {
-    //   this.use_web_worker = true;
-    // }
+    if (supportsWebWorkers) {
+      this.use_web_worker = true;
+    }
 
     if (isFirefox) {
       this.use_web_worker = false;
