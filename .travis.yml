@@ -20,7 +20,6 @@ deploy:
     secure: "r1cRKzr4oBC7mUuXamslr9dCWCjyPj4Kyn84wg5jSQhPj3Qg43zGzd98IIxr3rM3chPtpRg4yX579HCXDh4cqUI98qdzrKZqctxiphmOpAIppgJxKWomUIY9/W0V0Ysn3ft9uJA1X5OcJDqH9C4bU+ZHSrohwzW6h8xDTf52HXinuybZD/GzwzEstj41fNWnwyVq1TT47zC/FutkFqY07ZvIp4ocp8OcBMBTGtxepNs6/ekL4W+8tR/LSTByRKEu2/MSuMMUIFtSV2tjZ0G7JkbaV9ig/vBG27gimcrqo/RS3aZ0ylRrKvYT5HlRNAsq1xYpKBk5nj0iji9xcfx3HBtVXM6S4mMB2RnO8I8httok+bfu3a08wAARPrqY+CW7C+2UvYcJM6adYT7/QhIxKTrGl5vzc9bCpRkGnXX45+xEtvXd2L3YctpG80r8FiGtewDmpu/U+Lc5YnGvzRaTQThcUNtmRBVnHKtgiVCOH8cz3hPBkvzmQBNzUhJCKzpcBtogfr+QHshJne3Q4qd74C0J4Gh4VkSTcQjVVpOHpCV/iJt4RnVTs58viyKeEfFChRJs6G3BQDo4cPBrESuBCQLWDZyoWuetkMQFC4LYK2IL1RxGpZ+Hw2J2L3j3RT04zu65b5P/gWr+YLymgsTr4FhQEj8Rd+boMnAxHo9u9D8="
   project: mlab-sandbox
   edge: true
-  only: "hosting:mlab-speedtest"
   on:
     repo: m-lab/mlab-speedtest
     branch: sandbox-*
