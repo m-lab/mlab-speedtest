@@ -9,6 +9,13 @@
           "mlab-speedtest"
         ]
       }
+    },
+    "mlab-sandbox": {
+      "hosting": {
+        "mlab-speedtest": [
+          "mlab-speedtest"
+        ]
+      }
     }
   }
 }
