@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "target": "mlab-speedtest",
     "public": "app",
     "ignore": [
       "firebase.json",

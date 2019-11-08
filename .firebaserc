@@ -1,8 +1,16 @@
 {
   "projects": {
-    "default": "mlab-oti"
+    "default": "mlab-oti",
+    "sandbox": "mlab-sandbox"
   },
   "targets": {
+    "mlab-sandbox": {
+      "hosting": {
+        "mlab-sandbox": [
+          "mlab-speedtest"
+        ]
+      }
+    },
     "mlab-oti": {
       "hosting": {
         "mlab-speedtest": [
