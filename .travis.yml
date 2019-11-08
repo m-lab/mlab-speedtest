@@ -20,7 +20,7 @@ deploy:
 # sandbox
 - provider: script
   skip_cleanup: true
-  script: "firebase use mlab-sandbox && firebase deploy --only hosting:mlab-speedtest --token '$FIREBASE_TOKEN'"
+  script: "firebase use mlab-sandbox && firebase deploy --token '$FIREBASE_TOKEN'"
   on:
     branch: sandbox-*
     condition: "$TRAVIS_EVENT_TYPE == push"
