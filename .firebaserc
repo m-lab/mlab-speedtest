@@ -4,17 +4,17 @@
     "sandbox": "mlab-sandbox"
   },
   "targets": {
-    "mlab-sandbox": {
+    "mlab-oti": {
       "hosting": {
-        "mlab-sandbox": [
+        "speedtest": [
           "mlab-speedtest"
         ]
       }
     },
-    "mlab-oti": {
+    "mlab-sandbox": {
       "hosting": {
-        "mlab-speedtest": [
-          "mlab-speedtest"
+        "speedtest": [
+          "mlab-sandbox"
         ]
       }
     }
