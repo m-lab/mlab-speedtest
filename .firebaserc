@@ -13,7 +13,7 @@
     },
     "mlab-oti": {
       "hosting": {
-        "mlab-speedtest": [
+        "mlab-oti": [
           "mlab-speedtest"
         ]
       }
