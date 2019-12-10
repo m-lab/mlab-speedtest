@@ -94,7 +94,7 @@ angular.module('Measure.Measure', ['ngRoute'])
           's2cRate': downloadSpeed().toFixed(2) + ' Mb/s',
           'c2sRate': uploadSpeed().toFixed(2) + ' Mb/s',
           'latency': readNDTvar('MinRTT') + ' ms',
-          'loss': String((readNDTvar('loss') * 100).toFixed(2)) + "%"
+          'loss': String((readNDTvar('TCPInfo.BytesRetrans') / readNDTvar("TCPInfo.BytesSent") * 100).toFixed(2)) + "%"
         };
         ndtSemaphore = false;
         $scope.startButtonClass = '';
