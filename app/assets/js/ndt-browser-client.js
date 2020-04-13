@@ -255,7 +255,7 @@ NDTjs.prototype.ndtC2sTest = function () {
         testConnection.send(dataToSend);
         totalSent += dataToSend.length;
       }
-      if (that.updateInterval && currentTime > (testStart + nextCallback)) {
+      if (that.updateInterval && (currentTime - 0.1) > (testStart + nextCallback)) {
         that.results.c2sRate = 8 * (totalSent - testConnection.bufferedAmount)
           / 1000 / (currentTime - testStart);
         that.callbacks.onprogress('interval_c2s', that.results);
