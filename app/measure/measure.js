@@ -9,28 +9,13 @@ angular.module('Measure.Measure', ['ngRoute'])
 
   $scope.measurementComplete = false;
 
-  if (!Modernizr.websockets) {
-    $scope.unsupportedSystem = true;
-    return;
-  }
-
-
-  $rootScope.$on('updatedServer', function() {
-    $scope.location = ndtServer.city + ", " + ndtServer.country;
-    $scope.address = ndtServer.fqdn;
-  });
-
   ProgressGauge.create();
   $scope.currentPhase = '';
   $scope.currentSpeed = '';
 
   $scope.startTest = function () {
-    var timeStarted,
-        timeRunning,
-        timeProgress,
-        timeState,
-        intervalPromise,
-        TIME_EXPECTED = 10 * 1000;
+    var timeProgress,
+        TIME_EXPECTED = 10;
 
     if ($scope.privacyConsent !== true) {
       return;
@@ -39,12 +24,6 @@ angular.module('Measure.Measure', ['ngRoute'])
     ProgressGauge.reset();
     $scope.startButtonClass = 'disabled';
     $scope.measurementComplete = false;
-
-    if ($scope.address === undefined) {
-      console.log('M-Lab server currently not selected, waiting for NS answer.');
-      $timeout($scope.startTest, 1000);
-      return;
-    }
 
     if (ndtSemaphore == true) {
       return;
@@ -59,49 +38,81 @@ angular.module('Measure.Measure', ['ngRoute'])
 
     $scope.currentSpeed = gettextCatalog.getString('Starting');
     $scope.currentPhase = '';
-    startTest(ndtServer.fqdn);
 
-    intervalPromise = $interval(function() {
-      var downloadSpeedVal = downloadSpeed();
-      var uploadSpeedVal = uploadSpeed(false);
+    $scope.measurementResult = {};
 
-      if (timeState !== currentPhase && currentPhase != undefined) {
-        timeState = currentPhase;
-        timeStarted = new Date().getTime();
-      }
-      if (currentPhase === PHASE_UPLOAD || currentPhase === PHASE_DOWNLOAD) {
-        timeRunning = new Date().getTime() - timeStarted;
-
-        if (currentPhase === PHASE_UPLOAD) {
-          timeProgress = ( timeRunning > TIME_EXPECTED) ? 0.5 : timeRunning / (TIME_EXPECTED * 2);
-        } else {
-          timeProgress = ( timeRunning > TIME_EXPECTED) ? 1.0 : (timeRunning / (TIME_EXPECTED * 2) + 0.5);
-        }
-        ProgressGauge.progress(timeProgress, false);
-      }
-
-      if (currentPhase == PHASE_UPLOAD) {
-        $scope.currentPhase = gettextCatalog.getString('Upload');
-        $scope.currentSpeed = uploadSpeedVal ? uploadSpeedVal.toFixed(2) + ' Mb/s' : gettextCatalog.getString('Initializing');
-      } else if (currentPhase == PHASE_DOWNLOAD) {
-        $scope.currentPhase = gettextCatalog.getString('Download');
-        $scope.currentSpeed = downloadSpeedVal ? downloadSpeedVal.toFixed(2) + ' Mb/s' : gettextCatalog.getString('Initializing');
-      } else if (currentPhase == PHASE_RESULTS) {
+    ndt7.test(
+      {
+        userAcceptedDataPolicy: true,
+        uploadworkerfile: "assets/js/ndt7-upload-worker.min.js",
+        downloadworkerfile: "assets/js/ndt7-download-worker.min.js"
+      },
+      {
+        serverChosen: function (server) {
+          $scope.location = server.location.city + ", " +
+             server.location.country;
+          $scope.address = server.machine;
+          console.log('Testing to:', {
+            machine: server.machine,
+            locations: server.location,
+          });
+        },
+        downloadStart: (data) => {
+          $scope.$apply(function() {
+            $scope.currentPhase = gettextCatalog.getString('Download');
+            $scope.currentSpeed = gettextCatalog.getString('Initializing');
+          });
+        },
+        downloadMeasurement: (data) => {
+          if (data.Source === 'client') {
+            $scope.$apply(function () {
+              $scope.currentSpeed = data.Data.MeanClientMbps.toFixed(2) + ' Mb/s';
+            });
+            timeProgress = (data.Data.ElapsedTime > TIME_EXPECTED) ? 0.5 :
+              data.Data.ElapsedTime / (TIME_EXPECTED * 2);
+            ProgressGauge.progress(timeProgress, false);
+          }
+        },
+        downloadComplete: (data) => {
+          $scope.measurementResult.s2cRate =
+            data.LastClientMeasurement.MeanClientMbps.toFixed(2) + ' Mb/s';
+          $scope.measurementResult.latency =
+            (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0) + ' ms';
+          $scope.measurementResult.loss = 
+            (data.LastServerMeasurement.TCPInfo.BytesRetrans /
+            data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2) + '%';
+          console.log(data);
+        },
+        uploadStart: (data) => {
+          $scope.$apply(function() {
+            $scope.currentPhase = gettextCatalog.getString('Upload');
+            $scope.currentSpeed = gettextCatalog.getString('Initializing');
+          })
+        },
+        uploadMeasurement: function(data) {
+          if (data.Source === 'client') {
+            $scope.$apply(function () {
+              $scope.currentSpeed = data.Data.MeanClientMbps.toFixed(2) + ' Mb/s';
+              timeProgress = (data.Data.ElapsedTime > TIME_EXPECTED) ? 1.0 :
+                data.Data.ElapsedTime / (TIME_EXPECTED * 2) + 0.5;
+              ProgressGauge.progress(timeProgress, false);
+            });
+          }
+        },
+        uploadComplete: function (data) {
+          $scope.measurementResult.c2sRate =
+            data.LastClientMeasurement.MeanClientMbps.toFixed(2) + ' Mb/s';
+          console.log(data);
+        },
+      },
+    ).then(() => {
+      $scope.$apply(function() {
         $scope.currentPhase = gettextCatalog.getString('Complete');
         $scope.currentSpeed = '';
         $scope.measurementComplete = true;
-        $scope.measurementResult = {
-          's2cRate': downloadSpeed().toFixed(2) + ' Mb/s',
-          'c2sRate': uploadSpeed().toFixed(2) + ' Mb/s',
-          'latency': readNDTvar('MinRTT') + ' ms',
-          'loss': String((readNDTvar('TCPInfo.BytesRetrans') / readNDTvar("TCPInfo.BytesSent") * 100).toFixed(2)) + "%"
-        };
-        ndtSemaphore = false;
         $scope.startButtonClass = '';
-
-        $interval.cancel(intervalPromise);
-      }
-
-    }, 100);
+      });
+      ndtSemaphore = false;
+    })
   }
 });
