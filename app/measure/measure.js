@@ -93,10 +93,10 @@ angular.module('Measure.Measure', ['ngRoute'])
           if (data.Source === 'client') {
             $scope.$apply(function () {
               $scope.currentSpeed = data.Data.MeanClientMbps.toFixed(2) + ' Mb/s';
-              timeProgress = (data.Data.ElapsedTime > TIME_EXPECTED) ? 1.0 :
-                data.Data.ElapsedTime / (TIME_EXPECTED * 2) + 0.5;
-              ProgressGauge.progress(timeProgress, false);
             });
+            timeProgress = (data.Data.ElapsedTime > TIME_EXPECTED) ? 1.0 :
+                data.Data.ElapsedTime / (TIME_EXPECTED * 2) + 0.5;
+            ProgressGauge.progress(timeProgress, false);
           }
         },
         uploadComplete: function (data) {
