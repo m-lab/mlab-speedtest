@@ -14,7 +14,7 @@ angular.module('Measure.Measure', ['ngRoute'])
   $scope.currentSpeed = '';
 
   $scope.startTest = function () {
-    var timeProgress,
+    var gaugeProgress,
         TIME_EXPECTED = 10;
 
     if ($scope.privacyConsent !== true) {
@@ -68,9 +68,9 @@ angular.module('Measure.Measure', ['ngRoute'])
             $scope.$apply(function () {
               $scope.currentSpeed = data.Data.MeanClientMbps.toFixed(2) + ' Mb/s';
             });
-            timeProgress = (data.Data.ElapsedTime > TIME_EXPECTED) ? 0.5 :
+            gaugeProgress = (data.Data.ElapsedTime > TIME_EXPECTED) ? 0.5 :
               data.Data.ElapsedTime / (TIME_EXPECTED * 2);
-            ProgressGauge.progress(timeProgress, false);
+            ProgressGauge.progress(gaugeProgress, false);
           }
         },
         downloadComplete: (data) => {
@@ -94,9 +94,9 @@ angular.module('Measure.Measure', ['ngRoute'])
             $scope.$apply(function () {
               $scope.currentSpeed = data.Data.MeanClientMbps.toFixed(2) + ' Mb/s';
             });
-            timeProgress = (data.Data.ElapsedTime > TIME_EXPECTED) ? 1.0 :
+            gaugeProgress = (data.Data.ElapsedTime > TIME_EXPECTED) ? 1.0 :
                 data.Data.ElapsedTime / (TIME_EXPECTED * 2) + 0.5;
-            ProgressGauge.progress(timeProgress, false);
+            ProgressGauge.progress(gaugeProgress, false);
           }
         },
         uploadComplete: function (data) {
