@@ -8,7 +8,7 @@
 
 * Install website build dependencies for your operating system and environment
   * Node >= v10.15.1 - Using NVM: `nvm install v10.15.1`
-  * Bower - `npm install -g bower`
+  * Gulp - Installed with `yarn`
   * Firebase tools - `npm install -g firebase-tools`
 
 ## Adding new languages

@@ -5,13 +5,12 @@ angular.module('Measure', [
   'ngRoute',
   'gettext',
   'Measure.Measure',
-  'Measure.MeasurementLab',
   'Measure.GaugeService'
 ])
 
 .value('ndtServer', {})
 
-.config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/', {
     templateUrl: '/measure/measure.html',
     controller: 'MeasureCtrl'
@@ -30,18 +29,3 @@ angular.module('Measure', [
     // gettextCatalog.debug = true;
   }
 })
-
-.run(function (MLabService, ndtServer, $rootScope) {
-
-  MLabService.findServer().then(
-    function(foundServer) {
-      ndtServer.fqdn = foundServer.fqdn;
-      ndtServer.city = foundServer.city;
-      ndtServer.country = foundServer.country;
-      $rootScope.$emit('updatedServer');
-    },
-    function(failureNotification) {console.log(failureNotification)}
-  );
-
-
-});
