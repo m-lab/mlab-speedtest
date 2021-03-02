@@ -2,8 +2,8 @@ language: node_js
 node_js:
 - node
 script:
-- npm install -g firebase-tools
-- bower install
+- npm install -g firebase-tools gulp
+- gulp copy_libs
 deploy:
 
 # production

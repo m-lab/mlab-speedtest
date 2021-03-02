@@ -29,6 +29,15 @@ gulp.task('pot', function () {
 
 // Copy dependencies to ./public/libs/
 gulp.task('copy_libs', function() {
-  gulp.src(npmDist(), {base:'./node_modules/@bower_components'})
+  // Copy all the libraries under @bower_components to libraries/.
+  gulp.src([
+    "./node_modules/@bower_components/**/*.**",
+  ], {base: "./node_modules/@bower_components"})
+    .pipe(gulp.dest('./app/libraries'));
+
+  // Copy the minified @m-lab/ndt7 js files to libraries/.
+  gulp.src([
+    "./node_modules/@m-lab/ndt7/src/*.min.js",
+  ])
     .pipe(gulp.dest('./app/libraries'));
 });
