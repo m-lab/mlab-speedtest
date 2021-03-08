@@ -10,7 +10,6 @@ angular.module('Measure.Measure', ['ngRoute'])
   $scope.measurementComplete = false;
 
   $scope.isSafari = deviceDetector.browser === "safari";
-  $scope.isFirefox = deviceDetector.browser === "firefox";
   
   console.log(deviceDetector);
 

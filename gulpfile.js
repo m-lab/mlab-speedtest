@@ -39,7 +39,8 @@ gulp.task('copy_libs', function() {
   gulp.src([
     "./node_modules/@m-lab/ndt7/src/*.min.js",
   ])
-    .pipe(gulp.dest('./app/libraries'));
+
+  .pipe(gulp.dest('./app/libraries'));
 
   gulp.src([
     "./node_modules/ua-device-detector/ua-device-detector.min.js",
