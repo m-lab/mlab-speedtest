@@ -9,6 +9,7 @@
 * Install website build dependencies for your operating system and environment
   * Node >= v10.15.1 - Using NVM: `nvm install v10.15.1`
   * Gulp - Installed with `yarn`
+  * Install libraries - `gulp copy_libs`
   * Firebase tools - `npm install -g firebase-tools`
 
 ## Adding new languages
@@ -35,7 +36,6 @@ Translations for this site are managed in the [Open Technology Fund's Localizati
 
 To preview the site locally, we recommend using the Python Simple HTTP Server. 
 
-* From the root directory run `bower install`
 * Navigate to the `/app` directory and run: `python3 -m http.server 8000`
 
 If you are a user on the M-Lab Firebase project, you can also preview the site locally using the firebase-cli: `firebase serve --only hosting:mlab-speedtest`

@@ -34,7 +34,10 @@
     "@bower_components/html5-boilerplate": "h5bp/html5-boilerplate#^5.3.0",
     "@bower_components/jquery": "jquery/jquery-dist#3.0.0",
     "@bower_components/skel": "n33/skel#~3.0.1",
-    "@m-lab/ndt7": "0.0.2"
+    "@m-lab/ndt7": "0.0.2",
+    "ng-device-detector": "^5.1.4",
+    "re-tree": "^0.1.7",
+    "ua-device-detector": "^1.1.8"
   },
   "engines": {
     "yarn": ">= 1.0.0"

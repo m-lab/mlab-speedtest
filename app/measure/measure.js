@@ -3,11 +3,16 @@
 angular.module('Measure.Measure', ['ngRoute'])
 
 .controller('MeasureCtrl', function($scope, $rootScope, $interval, $timeout,
-    gettextCatalog, ndtServer, ProgressGauge) {
+    gettextCatalog, ndtServer, ProgressGauge, deviceDetector) {
 
   var ndtSemaphore = false;
 
   $scope.measurementComplete = false;
+
+  $scope.isSafari = deviceDetector.browser === "safari";
+  $scope.isFirefox = deviceDetector.browser === "firefox";
+  
+  console.log(deviceDetector);
 
   ProgressGauge.create();
   $scope.currentPhase = '';
@@ -17,7 +22,7 @@ angular.module('Measure.Measure', ['ngRoute'])
     var gaugeProgress,
         TIME_EXPECTED = 10;
 
-    if ($scope.privacyConsent !== true) {
+    if ($scope.privacyConsent !== true || $scope.isSafari ) {
       return;
     }
 

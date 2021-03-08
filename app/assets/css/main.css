@@ -1,6 +1,18 @@
 @import url(font-awesome.min.css);
 
 /* Custom */
+.featureWarning {
+	margin: auto;
+	width: 50%;
+}
+
+.featureWarning p {
+	margin: 1em;
+	padding: 2em;
+	font-size: 4em;
+	text-align: center;
+	color:white;
+}
 
 table.transparent {
 	background: none;

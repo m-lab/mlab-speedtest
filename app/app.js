@@ -5,7 +5,8 @@ angular.module('Measure', [
   'ngRoute',
   'gettext',
   'Measure.Measure',
-  'Measure.GaugeService'
+  'Measure.GaugeService',
+  'ng.deviceDetector'
 ])
 
 .value('ndtServer', {})
