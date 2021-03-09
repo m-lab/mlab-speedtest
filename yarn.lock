@@ -34,10 +34,10 @@
   version "3.0.1"
   resolved "https://codeload.github.com/n33/skel/tar.gz/3375acd7ce35f865844b41172ddf91055d87e1c2"
 
-"@m-lab/ndt7@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@m-lab/ndt7/-/ndt7-0.0.2.tgz#fd6bf29da965bc9af3dec3149570966a99ad487e"
-  integrity sha512-qy+2kH/YOEB5baSdud+R5eJIWIQhss5TEwaibpfLBq7EEy76MmSXGZ0qlLSPyy06WoaFeP2NqDtlMyiyNWhzlQ==
+"@m-lab/ndt7@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@m-lab/ndt7/-/ndt7-0.0.4.tgz#48ecd3250bd4d64b508704eddc2b67dd3e0322e5"
+  integrity sha512-+t0DvWhYi0yFsm6awAaSQTKzpHkaaVU1TGcOmxqt1zlGy/meD3nTEQaISpmZP2/xcSGJEoXdRVVA1zMB02MqeQ==
   dependencies:
     fetch "^1.1.0"
     isomorphic-ws "^4.0.1"
