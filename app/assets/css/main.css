@@ -3,7 +3,10 @@
 /* Custom */
 .featureWarning {
 	margin: auto;
+	margin-top: 2em;
 	width: 50%;
+	background-color: rgba(255,255,0,0.8);
+	border-radius: 10px;	
 }
 
 .featureWarning p {
@@ -11,7 +14,7 @@
 	padding: 2em;
 	font-size: 4em;
 	text-align: center;
-	color:white;
+	color:black;
 }
 
 table.transparent {
