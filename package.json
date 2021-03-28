@@ -6,7 +6,6 @@
   "homepage": "https://github.com/mlab-speedtest",
   "license": "MIT",
   "devDependencies": {
-    "bower": "^1.8.8",
     "gulp": "^3.9.1",
     "gulp-angular-gettext": "^2.1.0",
     "gulp-inject": "^4.1.0",
