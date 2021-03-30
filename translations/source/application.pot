@@ -174,7 +174,5 @@ msgid "Want to participate in M-Lab?"
 msgstr ""
 
 #: measure.html:4
-msgid ""
-"We're sorry, the Safari browser is not compatible with the NDT\n"
-"    test. Please use a different browser such as Chrome or Firefox instead."
+msgid "We're sorry, the Safari browser is not compatible with the NDT test. Please use a different browser such as Chrome or Firefox instead."
 msgstr ""
