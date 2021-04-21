@@ -1,8 +1,11 @@
 <!-- Intro -->
 <section id="intro" class="wrapper style1 fullscreen">
   <div class="featureWarning" ng-show="isSafari">
-    <p translate>We're sorry, the Safari browser is not compatible with the NDT
-    test. Please use a different browser such as Chrome or Firefox instead.</p>
+    <p translate>We're sorry, but M-Lab has identified bugs with <a
+    href="https://webkit.org/">Safari's websockets</a> implementation that
+    results in innacurate results when using the browser to run the NDT test
+    (both ndt7 and ndt5 versions). Please use a different browser such as Chrome
+    or Firefox instead. For more information, please see this <a href="https://github.com/m-lab/ndt7-js/issues/19">issue</a>.</p>
   </div>
   <div class="features">
     <section>
