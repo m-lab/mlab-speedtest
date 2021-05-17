@@ -3,11 +3,11 @@
 angular.module('Measure.Measure', ['ngRoute'])
 
 .controller('MeasureCtrl', function($scope, $rootScope, $interval, $timeout,
-    gettextCatalog, ndtServer, ProgressGauge, deviceDetector) {
+    gettextCatalog, ndtServer, ProgressGauge) {
 
   var ndtSemaphore = false;
 
-  $scope.measurementComplete = false;  
+  $scope.measurementComplete = false;
 
   ProgressGauge.create();
   $scope.currentPhase = '';
