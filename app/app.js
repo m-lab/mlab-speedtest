@@ -6,7 +6,6 @@ angular.module('Measure', [
   'gettext',
   'Measure.Measure',
   'Measure.GaugeService',
-  'ng.deviceDetector'
 ])
 
 .value('ndtServer', {})
