@@ -7,11 +7,7 @@ angular.module('Measure.Measure', ['ngRoute'])
 
   var ndtSemaphore = false;
 
-  $scope.measurementComplete = false;
-
-  $scope.isSafari = deviceDetector.browser === "safari";
-  
-  console.log(deviceDetector);
+  $scope.measurementComplete = false;  
 
   ProgressGauge.create();
   $scope.currentPhase = '';
@@ -21,7 +17,7 @@ angular.module('Measure.Measure', ['ngRoute'])
     var gaugeProgress,
         TIME_EXPECTED = 10;
 
-    if ($scope.privacyConsent !== true || $scope.isSafari ) {
+    if ($scope.privacyConsent !== true) {
       return;
     }
 
