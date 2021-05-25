@@ -1,11 +1,11 @@
 var gulp = require('gulp');
-var inject = require('gulp-inject');
+var gulp_inject = require('gulp-inject');
 var gettext = require('gulp-angular-gettext');
 
 function inject(cb) {
-  gulp.src('www/index.html')
-  .pipe(inject(gulp.src('www/translations/scripts/*.js', {read: false}), {relative: true, name: 'translations'}))
-  .pipe(gulp.dest('www'));
+  gulp.src('./app/index.html')
+  .pipe(gulp_inject(gulp.src('./app/assets/translations/*.js', {read: false}), {relative: true}))
+  .pipe(gulp.dest('app'));
 
   cb();
 };
