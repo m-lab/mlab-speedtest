@@ -1,21 +1,23 @@
 var gulp = require('gulp');
 var inject = require('gulp-inject');
 var gettext = require('gulp-angular-gettext');
-var npmDist = require('gulp-npm-dist');
 
-gulp.task('inject', ['translations'], function() {
+function inject(cb) {
   gulp.src('www/index.html')
   .pipe(inject(gulp.src('www/translations/scripts/*.js', {read: false}), {relative: true, name: 'translations'}))
   .pipe(gulp.dest('www'));
-});
 
-gulp.task('translations', ['pot'], function () {
+  cb();
+};
+
+function translations(cb) {
   return gulp.src('translations/languages/*.po')
   .pipe(gettext.compile())
   .pipe(gulp.dest('app/assets/translations/'));
-});
+  cb();
+};
 
-gulp.task('pot', function () {
+function pot(cb) {
   return gulp.src([
     'app/measure/*.js',
     'app/measure/*.html',
@@ -25,10 +27,12 @@ gulp.task('pot', function () {
     // options to pass to angular-gettext-tools...
   }))
   .pipe(gulp.dest('translations/source'));
-});
+  
+  cb();
+};
 
 // Copy dependencies to ./public/libs/
-gulp.task('copy_libs', function() {
+function copy_libs(cb) {
   // Copy all the libraries under @bower_components to libraries/.
   gulp.src([
     "./node_modules/@bower_components/**/*.**",
@@ -48,4 +52,13 @@ gulp.task('copy_libs', function() {
     "./node_modules/re-tree/re-tree.min.js",   
   ])
     .pipe(gulp.dest('./app/libraries'));
-  });
+  
+  cb();
+};
+
+exports.translations = gulp.series(pot, translations);
+exports.inject = gulp.series(translations, inject);
+exports.copy_libs = copy_libs;
+exports.pot = pot;
+
+exports.default = copy_libs;

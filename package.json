@@ -7,10 +7,9 @@
   "license": "MIT",
   "devDependencies": {
     "bower": "^1.8.8",
-    "gulp": "^3.9.1",
-    "gulp-angular-gettext": "^2.1.0",
-    "gulp-inject": "^4.1.0",
-    "gulp-npm-dist": "^1.0.2",
+    "gulp": "^4.0.2",
+    "gulp-angular-gettext": "^2.3.0",
+    "gulp-inject": "^5.0.5",
     "gulp-serve": "^1.4.0",
     "jasmine-core": "^2.4.1",
     "karma": "^0.13.22",
@@ -34,7 +33,7 @@
     "@bower_components/html5-boilerplate": "h5bp/html5-boilerplate#^5.3.0",
     "@bower_components/jquery": "jquery/jquery-dist#3.0.0",
     "@bower_components/skel": "n33/skel#~3.0.1",
-    "@m-lab/ndt7": "0.0.5-beta.0",
+    "@m-lab/ndt7": "0.0.5",
     "ng-device-detector": "^5.1.4",
     "re-tree": "^0.1.7",
     "ua-device-detector": "^1.1.8"
