@@ -90,10 +90,14 @@ angular.module('Measure.Measure', ['ngRoute'])
           })
         },
         uploadMeasurement: function(data) {
-          if (data.Source === 'client') {
+          if (data.Source === 'server') {
             $scope.$apply(function () {
-              $scope.currentSpeed = data.Data.MeanClientMbps.toFixed(2) + ' Mb/s';
+              // bytes * 1/microseconds * bits/byte
+              $scope.currentSpeed = (data.Data.TCPInfo.BytesReceived / 
+                        data.Data.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
             });
+          }
+          if (data.Source === 'client') {
             gaugeProgress = (data.Data.ElapsedTime > TIME_EXPECTED) ? 1.0 :
                 data.Data.ElapsedTime / (TIME_EXPECTED * 2) + 0.5;
             ProgressGauge.progress(gaugeProgress, false);
@@ -101,8 +105,8 @@ angular.module('Measure.Measure', ['ngRoute'])
         },
         uploadComplete: function (data) {
           $scope.measurementResult.c2sRate =
-            data.LastClientMeasurement.MeanClientMbps.toFixed(2) + ' Mb/s';
-          console.log(data);
+            (data.LastServerMeasurement.TCPInfo.BytesReceived / 
+            data.LastServerMeasurement.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
         },
       },
     ).then(() => {
