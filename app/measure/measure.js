@@ -47,7 +47,7 @@ angular.module('Measure.Measure', ['ngRoute'])
         uploadworkerfile: "/libraries/ndt7-upload-worker.min.js",
         downloadworkerfile: "/libraries/ndt7-download-worker.min.js",
         metadata: {
-            client_name: "mlab-speedtest"
+            client_name: "speed-measurementlab-net"
         }
       },
       {
