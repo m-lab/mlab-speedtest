@@ -1,7 +1,7 @@
 {
   "projects": {
-    "default": "mlab-oti",
-    "sandbox": "mlab-sandbox"
+    "default": "mlab-sandbox",
+    "mlab-sandbox": "mlab-sandbox"
   },
   "targets": {
     "mlab-oti": {
@@ -18,5 +18,6 @@
         ]
       }
     }
-  }
+  },
+  "etags": {}
 }
