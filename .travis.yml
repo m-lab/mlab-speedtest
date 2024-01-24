@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- 12
+- 20
 script:
 - npm install -g firebase-tools gulp
 - gulp copy_libs
@@ -14,7 +14,7 @@ deploy:
   edge: true
   only: hosting:speedtest
   on:
-    repo: m-lab/mlab-speedtest  
+    repo: m-lab/mlab-speedtest
     tags: true
 
 # sandbox
