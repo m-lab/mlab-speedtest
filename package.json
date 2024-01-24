@@ -21,7 +21,7 @@
     "shelljs": "^0.6.0"
   },
   "scripts": {
-    "build": "npm install -g firebase-tools gulp && gulp copy_libs",
+    "build": "npm install -g firebase-tools gulp && yarn install && yarn && gulp copy_libs",
     "postinstall": "node -e \"try { require('fs').symlinkSync(require('path').resolve('node_modules/@bower_components'), 'app/libraries', 'junction') } catch (e) { }\"",
     "pretest": "npm install"
   },
