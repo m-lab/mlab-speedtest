@@ -27,7 +27,7 @@ function pot(cb) {
     // options to pass to angular-gettext-tools...
   }))
   .pipe(gulp.dest('translations/source'));
-  
+
   cb();
 };
 
@@ -42,6 +42,7 @@ function copy_libs(cb) {
   // Copy the minified @m-lab/ndt7 js files to libraries/.
   gulp.src([
     "./node_modules/@m-lab/ndt7/src/*.min.js",
+    "./node_modules/@m-lab/msak/dist/*.min.js",
   ])
 
   .pipe(gulp.dest('./app/libraries'));
@@ -49,10 +50,10 @@ function copy_libs(cb) {
   gulp.src([
     "./node_modules/ua-device-detector/ua-device-detector.min.js",
     "./node_modules/ng-device-detector/ng-device-detector.min.js",
-    "./node_modules/re-tree/re-tree.min.js",   
+    "./node_modules/re-tree/re-tree.min.js",
   ])
     .pipe(gulp.dest('./app/libraries'));
-  
+
   cb();
 };
 
