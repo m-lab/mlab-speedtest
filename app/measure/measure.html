@@ -4,35 +4,46 @@
     <section>
       <h1 translate>Test Your Speed</h1>
       <p class="startIntroLabel">
-        <span translate>M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection through quick measurements.</span><br />
+        <span translate>M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection
+          through quick measurements.</span><br />
       </p>
       <p>
         <input type="checkbox" id="demo-human" name="demo-human" ng-model="privacyConsent">
-        <label for="demo-human" translate style="font-size: smaller;">I agree to the <a href="http://www.measurementlab.net/privacy/">data policy</a>, which includes retention and publication of IP addresses.</label>
+        <label for="demo-human" translate style="font-size: smaller;">I agree to the <a
+            href="http://www.measurementlab.net/privacy/">data policy</a>, which includes retention and publication of
+          IP addresses.</label>
       </p>
       <p>
-        <div class="row">
-        	<div class="6u">
-            <a class="button special startButton big" ng-click="startTest()"
-            ng-class="{disabled: (privacyConsent !== true || startButtonClass
+      <div class="row">
+        <div class="6u">
+          <a class="button special startButton big" ng-click="startTest()" ng-class="{disabled: (privacyConsent !== true || startButtonClass
             === 'disabled')}">
-              <span ng-show="!measurementComplete && startButtonClass != 'disabled'"><span translate>Begin</span> <i class="fa fa-play" aria-hidden="true"></i></span>
-              <span ng-show="measurementComplete && startButtonClass != 'disabled'"><span translate>Again</span> <i class="fa fa-repeat" aria-hidden="true"></i></span>
-              <span ng-show="startButtonClass == 'disabled'"><span translate>Testing</span> <i class="fa fa-circle-o-notch" aria-hidden="true"></i></span>
-            </a>
-        	</div>
-        	<div class="6u">
-            <span translate ng-show="privacyConsent !== true" class="privacyConsentMessage">Please agree to the data policy prior to the test.</span>
-        	</div>
+            <span ng-show="!measurementComplete && startButtonClass != 'disabled'"><span translate>Begin</span> <i
+                class="fa fa-play" aria-hidden="true"></i></span>
+            <span ng-show="measurementComplete && startButtonClass != 'disabled'"><span translate>Again</span> <i
+                class="fa fa-repeat" aria-hidden="true"></i></span>
+            <span ng-show="startButtonClass == 'disabled'"><span translate>Testing</span> <i
+                class="fa fa-circle-o-notch" aria-hidden="true"></i></span>
+          </a>
         </div>
+        <div class="6u">
+          <span translate ng-show="privacyConsent !== true" class="privacyConsentMessage">Please agree to the data
+            policy prior to the test.</span>
+        </div>
+      </div>
       </p>
-      <small translate>For more on M-Lab's data collection and measurement, including the disclosure of IP addresses, see our <a href="http://www.measurementlab.net/privacy/">Privacy Policy</a>.</small>
+      <small style="font-style: italic;">We are temporarily running two tests back to back to calibrate a new
+        measurement protocol. This means
+        results may take a little longer to appear than usual. Thank you for your help.
+      </small><br /><br />
+      <small translate>For more on M-Lab's data collection and measurement, including the disclosure of IP addresses,
+        see our <a href="http://www.measurementlab.net/privacy/">Privacy Policy</a>.</small>
     </section>
     <section id="measurementSpace">
       <div ng-show="!measurementComplete">
         <h1 style="height: 0.5em"></h1>
         <div class="progress-bar">
-          <canvas id="activeProgress" class="progress-active"  height="275px" width="275px"></canvas>
+          <canvas id="activeProgress" class="progress-active" height="275px" width="275px"></canvas>
           <div class="progress-label">
             <h2>{{ currentSpeed }}</h2>
             <h4>{{ currentPhase }}</h4>
@@ -42,34 +53,46 @@
       <div ng-show="measurementComplete">
         <h1 translate>Results</h1>
         <table class="alt">
-  				<tbody>
+          <tbody>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>NDT <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/ndt/"></a>
+              </td>
+              <td>MSAK <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/msak/"></a></td>
+            </tr>
             <tr>
               <td><i class="fa fa-server" aria-hidden="true"></i></td>
-  						<td translate>Test Server</td>
-  						<td><strong>{{ location }}</strong></td>
-  					</tr>
+              <td translate>Test Server</td>
+              <td><strong>{{ location }}</strong></td>
+              <td><strong>{{ msakLocation }}</strong></td>
+            </tr>
             <tr>
               <td><i class="fa fa-download" aria-hidden="true"></i></td>
-  						<td translate>Download</td>
-  						<td><strong>{{ measurementResult.s2cRate }}</strong></td>
-  					</tr>
+              <td translate>Download</td>
+              <td><strong>{{ measurementResult.s2cRate }}</strong></td>
+              <td><strong>{{ msakResult.download }}</strong></td>
+            </tr>
             <tr>
               <td><i class="fa fa-upload" aria-hidden="true"></i></td>
-  						<td translate>Upload</td>
-  						<td><strong>{{ measurementResult.c2sRate }}</strong></td>
-  					</tr>
+              <td translate>Upload</td>
+              <td><strong>{{ measurementResult.c2sRate }}</strong></td>
+              <td><strong>{{ msakResult.upload }}</strong></td>
+            </tr>
             <tr>
               <td><i class="fa fa-hourglass-start" aria-hidden="true"></i></td>
-  						<td translate>Latency</td>
-  						<td><strong>{{ measurementResult.latency }}</strong></td>
-  					</tr>
+              <td translate>Latency</td>
+              <td><strong>{{ measurementResult.latency }}</strong></td>
+              <td><strong>{{ msakResult.latency }}</strong></td>
+            </tr>
             <tr>
               <td><i class="fa fa-signal" aria-hidden="true"></i></td>
-  						<td translate>Retransmission</td>
-  						<td><strong>{{ measurementResult.loss }}</strong></td>
-  					</tr>
-  				</table>
-        </div>
+              <td translate>Retransmission</td>
+              <td><strong>{{ measurementResult.loss }}</strong></td>
+              <td><strong>{{ msakResult.loss }}</strong></td>
+            </tr>
+        </table>
+      </div>
     </section>
   </div>
 </section>
@@ -78,27 +101,33 @@
 <section id="about" class="wrapper style3">
   <div class="inner">
     <h2 translate>About</h2>
-    <p translate>Measurement Lab (M-Lab) provides the largest collection of open Internet performance data on the planet. As a consortium of research, industry, and public-interest partners, M-Lab is dedicated to providing an ecosystem for the open, verifiable measurement of global network performance.</p>
+    <p translate>Measurement Lab (M-Lab) provides the largest collection of open Internet performance data on the
+      planet. As a consortium of research, industry, and public-interest partners, M-Lab is dedicated to providing an
+      ecosystem for the open, verifiable measurement of global network performance.</p>
     <div class="features">
       <section>
         <span class="icon major fa-code"></span>
         <h3 translate>Open Source</h3>
-        <p translate>Measurement tools are openly licensed and operated, allowing third parties to develop their own client-side measurement software and audit the source.</p>
+        <p translate>Measurement tools are openly licensed and operated, allowing third parties to develop their own
+          client-side measurement software and audit the source.</p>
       </section>
       <section>
         <span class="icon major fa-users"></span>
         <h3 translate>Public Data</h3>
-        <p translate>Data collected is made available to the public, allowing researchers and anyone else to build on a common pool of network measurement information.</p>
+        <p translate>Data collected is made available to the public, allowing researchers and anyone else to build on a
+          common pool of network measurement information.</p>
       </section>
       <section>
         <span class="icon major fa-globe"></span>
         <h3 translate>Global</h3>
-        <p translate>Distributed infrastructure and large user base provides an open, verifiable measurement platform for global network performance.</p>
+        <p translate>Distributed infrastructure and large user base provides an open, verifiable measurement platform
+          for global network performance.</p>
       </section>
       <section>
         <span class="icon major fa-institution"></span>
         <h3 translate>Trusted</h3>
-        <p translate>Used by public organization, academic researchers, regulators and companies around the world to understand the health of the Internet.</p>
+        <p translate>Used by public organization, academic researchers, regulators and companies around the world to
+          understand the health of the Internet.</p>
       </section>
     </div>
     <ul class="actions">
@@ -133,8 +162,10 @@
           <li>
             <h3 translate>Social</h3>
             <ul class="icons">
-              <li><a href="https://twitter.com/MeasurementLab" class="fa-twitter"><span class="label" translate>Twitter</span></a></li>
-              <li><a href="https://github.com/m-lab" class="fa-github"><span class="label" translate>GitHub</span></a></li>
+              <li><a href="https://twitter.com/MeasurementLab" class="fa-twitter"><span class="label"
+                    translate>Twitter</span></a></li>
+              <li><a href="https://github.com/m-lab" class="fa-github"><span class="label" translate>GitHub</span></a>
+              </li>
             </ul>
           </li>
         </ul>
