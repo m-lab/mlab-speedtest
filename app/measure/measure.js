@@ -177,7 +177,7 @@ angular.module('Measure.Measure', ['ngRoute'])
       }
       client.cc = "bbr";
       client.duration = TIME_EXPECTED * 1000;
-      client.streams = 1;
+      client.streams = 2;
       client.debug = true;
 
       await client.start();
