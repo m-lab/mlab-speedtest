@@ -39,10 +39,10 @@
   version "3.0.1"
   resolved "https://codeload.github.com/n33/skel/tar.gz/3375acd7ce35f865844b41172ddf91055d87e1c2"
 
-"@m-lab/msak@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@m-lab/msak/-/msak-0.3.0.tgz#3aef7b3192e92885dedb113db002238420f3b672"
-  integrity sha512-PQQE91hbdJdI58RNebeGHqhhhrwmY6ansiwm4ZAYgudebVB2qdPvxo0DMUhoFCXh9eGSVv32ZwysingAjnDNeA==
+"@m-lab/msak@0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@m-lab/msak/-/msak-0.3.1.tgz#d2fceccd1158b5bef4ccf5ae120a96e5595ebae1"
+  integrity sha512-0Mgx6Ln6qjvWupGu6VEFjwLbmuqKkqTywmT98lehrXIhrF3gmWTD6onihG7my0cObX0hKXzJ1iGnVhr7S8Jj9g==
   dependencies:
     ua-parser-js "^1.0.37"
 
