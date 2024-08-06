@@ -56,6 +56,8 @@ angular.module('Measure.Measure', ['ngRoute'])
         await runNdt7(sessionID);
       }
 
+      await runBBRTerminatedNdt7(sessionID)
+
       $scope.$apply(function () {
         $scope.currentPhase = gettextCatalog.getString('Complete');
         $scope.currentSpeed = '';
@@ -182,6 +184,36 @@ angular.module('Measure.Measure', ['ngRoute'])
 
       await client.start();
     }
+
+    async function runBBRTerminatedNdt7(sid) {
+      return packet-test.test(
+        {
+          userAcceptedDataPolicy: true,
+          uploadworkerfile: "/libraries/ndt7-upload-worker.min.js",
+          downloadworkerfile: "/libraries/ndt7-download-worker.min.js",
+          metadata: {
+            client_name: "speed-measurementlab-net",
+            client_session_id: sid,
+            max_cwnd_gain: "512",
+          }
+        },
+        {
+          serverChosen: function (server) {
+            $scope.location = server.location.city + ", " +
+              server.location.country;
+            $scope.address = server.machine;
+            console.log('Testing to:', {
+              machine: server.machine,
+              locations: server.location,
+            });
+          },
+          downloadComplete: (data) => {
+            console.log(data);
+          },
+        },
+      )
+    }
+
   });
 
 /**
