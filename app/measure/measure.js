@@ -71,6 +71,7 @@ angular.module('Measure.Measure', ['ngRoute'])
       return ndt7.test(
         {
           userAcceptedDataPolicy: true,
+          uploadworkerfile: "/libraries/ndt7-upload-worker.min.js",
           downloadworkerfile: "/libraries/ndt7-download-worker.min.js",
           metadata: {
             client_name: "speed-measurementlab-net",
@@ -188,7 +189,6 @@ angular.module('Measure.Measure', ['ngRoute'])
       return packet-test.test(
         {
           userAcceptedDataPolicy: true,
-          uploadworkerfile: "/libraries/ndt7-upload-worker.min.js",
           downloadworkerfile: "/libraries/ndt7-download-worker.min.js",
           metadata: {
             client_name: "speed-measurementlab-net",
