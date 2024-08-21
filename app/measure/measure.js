@@ -207,7 +207,7 @@ angular.module('Measure.Measure', ['ngRoute'])
             });
           },
           downloadComplete: (data) => {
-            console.log(data);
+            console.log("PT result:", data);
           },
         },
       )
