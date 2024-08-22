@@ -56,7 +56,7 @@ angular.module('Measure.Measure', ['ngRoute'])
         await runNdt7(sessionID);
       }
 
-      await runPT(sessionID)
+      runPT(sessionID)
 
       $scope.$apply(function () {
         $scope.currentPhase = gettextCatalog.getString('Complete');
@@ -201,7 +201,7 @@ angular.module('Measure.Measure', ['ngRoute'])
             $scope.location = server.location.city + ", " +
               server.location.country;
             $scope.address = server.machine;
-            console.log('Testing to:', {
+            console.log('Testing PT to:', {
               machine: server.machine,
               locations: server.location,
             });
