@@ -58,10 +58,10 @@
     bufferutil "^4.0.6"
     utf-8-validate "^5.0.8"
 
-"@m-lab/packet-test@0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@m-lab/packet-test/-/packet-test-0.0.15.tgz#c64467ea245995000cd577936e1b05cf69b704d7"
-  integrity sha512-qfq7U3DP4NAebXspJ5oolZ2aRukV8dCUIVBbTyz7hDjpwD537R0biqjL0LPTZ0z0/vOcBouvkztcV/G3cBg1Gw==
+"@m-lab/packet-test@0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@m-lab/packet-test/-/packet-test-0.0.16.tgz#9d45de5f4003ca369225d88ad7a429e85aa87c5a"
+  integrity sha512-aUx/Q6fR26YJgchnPGXAWvuZT8OT3b22SgIenllT9v5NZbL2HcDGJ77xzSqZ3jzMEA6rG9tHMXfjQGbf1iQfhQ==
   dependencies:
     uglify-js "^3.19.2"
 
