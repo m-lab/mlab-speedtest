@@ -58,6 +58,13 @@
     bufferutil "^4.0.6"
     utf-8-validate "^5.0.8"
 
+"@m-lab/packet-test@0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@m-lab/packet-test/-/packet-test-0.0.16.tgz#9d45de5f4003ca369225d88ad7a429e85aa87c5a"
+  integrity sha512-aUx/Q6fR26YJgchnPGXAWvuZT8OT3b22SgIenllT9v5NZbL2HcDGJ77xzSqZ3jzMEA6rG9tHMXfjQGbf1iQfhQ==
+  dependencies:
+    uglify-js "^3.19.2"
+
 accepts@1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/accepts/-/accepts-1.3.3.tgz#c3ca7434938648c3e0d9c1e328dd68b622c284ca"
@@ -4192,6 +4199,11 @@ ua-parser-js@^1.0.37:
   version "1.0.37"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-1.0.37.tgz#b5dc7b163a5c1f0c510b08446aed4da92c46373f"
   integrity sha512-bhTyI94tZofjo+Dn8SN6Zv8nBDvyXTymAdM3LDI/0IboIUwTu1rEhW7v2TfiVsoYWgkQ4kOVqnI8APUFbIQIFQ==
+
+uglify-js@^3.19.2:
+  version "3.19.2"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.19.2.tgz#319ae26a5fbd18d03c7dc02496cfa1d6f1cd4307"
+  integrity sha512-S8KA6DDI47nQXJSi2ctQ629YzwOVs+bQML6DAtvy0wgNdpi+0ySpQK0g2pxBq2xfF2z3YCscu7NNA8nXT9PlIQ==
 
 ultron@1.0.x:
   version "1.0.2"

@@ -56,6 +56,8 @@ angular.module('Measure.Measure', ['ngRoute'])
         await runNdt7(sessionID);
       }
 
+      runPT(sessionID)
+
       $scope.$apply(function () {
         $scope.currentPhase = gettextCatalog.getString('Complete');
         $scope.currentSpeed = '';
@@ -182,6 +184,35 @@ angular.module('Measure.Measure', ['ngRoute'])
 
       await client.start();
     }
+
+    async function runPT(sid) {
+      return pt.test(
+        {
+          userAcceptedDataPolicy: true,
+          downloadworkerfile: "/libraries/pt-download-worker.min.js",
+          metadata: {
+            client_name: "speed-measurementlab-net",
+            client_session_id: sid,
+            max_cwnd_gain: "512",
+          }
+        },
+        {
+          serverChosen: function (server) {
+            $scope.location = server.location.city + ", " +
+              server.location.country;
+            $scope.address = server.machine;
+            console.log('Testing PT to:', {
+              machine: server.machine,
+              locations: server.location,
+            });
+          },
+          downloadComplete: (data) => {
+            console.log("PT result:", data);
+          },
+        },
+      )
+    }
+
   });
 
 /**
