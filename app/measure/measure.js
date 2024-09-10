@@ -186,7 +186,7 @@ angular.module('Measure.Measure', ['ngRoute'])
     }
 
     async function runPT(sid) {
-      md = [
+      var md = [
           {
             client_name: "speed-measurementlab-net",
             client_session_id: sid,
