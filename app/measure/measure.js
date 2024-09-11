@@ -186,15 +186,42 @@ angular.module('Measure.Measure', ['ngRoute'])
     }
 
     async function runPT(sid) {
+      const md = [
+          {
+            client_name: "speed-measurementlab-net",
+            client_session_id: sid,
+            max_cwnd_gain: "512",
+          },
+          {
+            client_name: "speed-measurementlab-net",
+            client_session_id: sid,
+            max_elapsed_time: "5",
+          },
+          {
+            client_name: "speed-measurementlab-net",
+            client_session_id: sid,
+            max_cwnd_gain: "512",
+            max_elapsed_time: "5",
+          },
+          {
+            client_name: "speed-measurementlab-net",
+            client_session_id: sid,
+            early_exit: "50",
+          },
+          {
+            client_name: "speed-measurementlab-net",
+            client_session_id: sid,
+            max_cwnd_gain: "512",
+            early_exit: "50",
+          },
+      ]
+
       return pt.test(
         {
           userAcceptedDataPolicy: true,
           downloadworkerfile: "/libraries/pt-download-worker.min.js",
-          metadata: {
-            client_name: "speed-measurementlab-net",
-            client_session_id: sid,
-            max_cwnd_gain: "512",
-          }
+          // Randomly choose to run one of the configurations above.
+          metadata: md[Math.floor(Math.random()*md.length)]
         },
         {
           serverChosen: function (server) {
