@@ -220,6 +220,7 @@ angular.module('Measure.Measure', ['ngRoute'])
         {
           userAcceptedDataPolicy: true,
           downloadworkerfile: "/libraries/pt-download-worker.min.js",
+          // Randomly choose to run one of the configurations above.
           metadata: md[Math.floor(Math.random()*md.length)]
         },
         {
