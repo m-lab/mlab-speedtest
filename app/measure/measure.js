@@ -190,27 +190,36 @@ angular.module('Measure.Measure', ['ngRoute'])
           {
             client_name: "speed-measurementlab-net",
             client_session_id: sid,
+          },
+          {
+            client_name: "speed-measurementlab-net",
+            client_session_id: sid,
+            client_immediate_exit: true,
             max_cwnd_gain: "512",
           },
           {
             client_name: "speed-measurementlab-net",
             client_session_id: sid,
+            client_immediate_exit: true,
             max_elapsed_time: "5",
           },
           {
             client_name: "speed-measurementlab-net",
             client_session_id: sid,
+            client_immediate_exit: true,
             max_cwnd_gain: "512",
             max_elapsed_time: "5",
           },
           {
             client_name: "speed-measurementlab-net",
             client_session_id: sid,
+            client_immediate_exit: true,
             early_exit: "50",
           },
           {
             client_name: "speed-measurementlab-net",
             client_session_id: sid,
+            client_immediate_exit: true,
             max_cwnd_gain: "512",
             early_exit: "50",
           },
