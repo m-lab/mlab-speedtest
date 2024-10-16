@@ -178,8 +178,8 @@ angular.module('Measure.Measure', ['ngRoute'])
         client_session_id: sid
       }
       client.cc = "bbr";
-      client.duration = 5000; // 5s
-      client.streams = 1;
+      client.duration = 10000; // 10s
+      client.streams = 3;
       client.debug = true;
 
       await client.start();
