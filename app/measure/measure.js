@@ -177,9 +177,9 @@ angular.module('Measure.Measure', ['ngRoute'])
       client.metadata = {
         client_session_id: sid
       }
-      client.cc = "bbr";
+      client.cc = "cubic";
       client.duration = 10000; // 10s
-      client.streams = 3;
+      client.streams = 1;
       client.debug = true;
 
       await client.start();
