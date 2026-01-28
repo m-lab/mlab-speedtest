@@ -35,7 +35,7 @@
     "@bower_components/jquery": "jquery/jquery-dist#3.0.0",
     "@bower_components/skel": "n33/skel#~3.0.1",
     "@m-lab/msak": "0.3.1",
-    "@m-lab/ndt7": "0.0.6",
+    "@m-lab/ndt7": "0.1.3",
     "@m-lab/packet-test": "0.0.16",
     "ng-device-detector": "^5.1.4",
     "re-tree": "^0.1.7",

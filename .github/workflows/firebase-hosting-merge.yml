@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: npm install -g yarn && yarn install --frozen-lockfile && yarn build
+      - name: Substitute M-Lab project placeholder
+        run: sed -i 's/MLAB_PROJECT_PLACEHOLDER/mlab-oti/g' app/measure/measure.js
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

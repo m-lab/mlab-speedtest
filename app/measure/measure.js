@@ -67,9 +67,44 @@ angular.module('Measure.Measure', ['ngRoute'])
       testRunning = false;
     }
 
+    // Determine the M-Lab project based on a placeholder that is substituted
+    // during deployment. If the placeholder is not substituted (e.g., local
+    // development), default to sandbox for safe testing.
+    function mlabProject() {
+      const placeholder = 'MLAB_PROJECT_PLACEHOLDER';
+      return placeholder.includes('PLACEHOLDER') ? 'mlab-sandbox' : placeholder;
+    }
+
+    // Build the locate service priority URL for the given project. Production uses
+    // locate.measurementlab.net while sandbox uses locate.mlab-sandbox.measurementlab.net.
+    function locatePriorityURLForProject(project) {
+      const host = project === 'mlab-oti'
+        ? 'locate.measurementlab.net'
+        : `locate.${project}.measurementlab.net`;
+      return `https://${host}/v2/priority/nearest/ndt/ndt7`;
+    }
+
     async function runNdt7(sid) {
+      // Fetch a short-lived token from the speed-backend service to enable
+      // priority access to the Locate API for registered integrations.
+      // If token fetch fails, gracefully degrade to running without a token.
+      const project = mlabProject();
+      const tokenURL = `https://speed-backend.${project}.measurementlab.net/v0/token`;
+      const locatePriorityURL = locatePriorityURLForProject(project);
+
+      let token = null;
+      try {
+        const tokenResp = await fetch(tokenURL);
+        const tokenData = await tokenResp.json();
+        token = tokenData.token;
+      } catch (err) {
+        console.warn('Failed to fetch token, running without priority access:', err);
+      }
+
       return ndt7.test(
         {
+          clientRegistrationToken: token,
+          loadbalancer: token ? locatePriorityURL : null,
           userAcceptedDataPolicy: true,
           uploadworkerfile: "/libraries/ndt7-upload-worker.min.js",
           downloadworkerfile: "/libraries/ndt7-download-worker.min.js",
