@@ -60,23 +60,9 @@ function build() {
   console.log('Copying source files...');
   copyDir(SRC, DIST);
 
-  // Copy assets (images, fonts)
-  console.log('Copying assets...');
-  const appAssets = path.join(ROOT, 'app', 'assets');
-
-  // Copy images
-  copyDir(path.join(appAssets, 'images'), path.join(DIST, 'assets', 'images'));
-
-  // Copy fonts (to both paths for compatibility)
-  copyDir(path.join(appAssets, 'fonts'), path.join(DIST, 'assets', 'fonts'));
-  // Font-awesome CSS uses ../fonts/ from css/ directory
-  copyDir(path.join(appAssets, 'fonts'), path.join(DIST, 'fonts'));
-
-  // Copy font-awesome CSS
-  copyFile(
-    path.join(appAssets, 'css', 'font-awesome.min.css'),
-    path.join(DIST, 'css', 'font-awesome.min.css')
-  );
+  // Font-awesome CSS uses ../fonts/ from css/ directory, so copy fonts there too
+  console.log('Copying fonts for font-awesome compatibility...');
+  copyDir(path.join(SRC, 'assets', 'fonts'), path.join(DIST, 'fonts'));
 
   // Copy M-Lab libraries from node_modules
   console.log('Copying M-Lab libraries...');
