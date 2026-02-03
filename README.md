@@ -39,3 +39,14 @@ To preview the site locally, we recommend using the Python Simple HTTP Server.
 * Navigate to the `/app` directory and run: `python3 -m http.server 8000`
 
 If you are a user on the M-Lab Firebase project, you can also preview the site locally using the firebase-cli: `firebase serve --only hosting:mlab-speedtest`
+
+## Deployment
+
+The site is deployed via GitHub Actions to Firebase Hosting:
+
+| Environment | Trigger                       | URL                              |
+|-------------|-------------------------------|----------------------------------|
+| Sandbox     | Pull request (from same repo) | https://mlab-sandbox.web.app     |
+| Production  | Merge to `main`               | https://speed.measurementlab.net |
+
+**Note:** PR deployments only work for branches pushed directly to `m-lab/mlab-speedtest`, not from forks (due to Firebase secrets not being available to fork PRs).

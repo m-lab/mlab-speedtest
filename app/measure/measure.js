@@ -67,9 +67,56 @@ angular.module('Measure.Measure', ['ngRoute'])
       testRunning = false;
     }
 
+    // Determine the M-Lab project based on a placeholder that is substituted
+    // during deployment. If the placeholder is not substituted (e.g., local
+    // development), default to `staging` for safe testing.
+    //
+    // The reason for using `staging` as opposed to `sandbox` by default is that
+    // using `staging` allows us to know which commit of `m-lab/speed-proxy` we
+    // are testing against (i.e., the latest commit of the `main` branch) as opposed
+    // to being unsure (which commit of a possibly now deleted `sandbox-*` branch
+    // are we actually testing against?).
+    //
+    // TODO(bassosimone): when we modernize the website build system, we should
+    // replace this placeholder-and-sed approach with proper build-time environment
+    // variable injection. The current approach is acceptable for a single config
+    // value, but if we find ourselves adding two or three more substitutions, we
+    // should refactor to use a proper configuration mechanism instead.
+    function mlabProject() {
+      const placeholder = 'MLAB_PROJECT_PLACEHOLDER';
+      return placeholder === 'MLAB_PROJECT_PLACEHOLDER' ? 'mlab-staging' : placeholder;
+    }
+
+    // Build the locate service priority URL for the given project. Production uses
+    // locate.measurementlab.net while `staging` uses locate.mlab-`staging`.measurementlab.net.
+    function locatePriorityURLForProject(project) {
+      const host = project === 'mlab-oti'
+        ? 'locate.measurementlab.net'
+        : `locate.${project}.measurementlab.net`;
+      return `https://${host}/v2/priority/nearest/ndt/ndt7`;
+    }
+
     async function runNdt7(sid) {
+      // Fetch a short-lived token from the speed-backend service to enable
+      // priority access to the Locate API for registered integrations.
+      // If token fetch fails, gracefully degrade to running without a token.
+      const project = mlabProject();
+      const tokenURL = `https://speed-backend.${project}.measurementlab.net/v0/token`;
+      const locatePriorityURL = locatePriorityURLForProject(project);
+
+      let token = null;
+      try {
+        const tokenResp = await fetch(tokenURL);
+        const tokenData = await tokenResp.json();
+        token = tokenData.token;
+      } catch (err) {
+        console.warn('Failed to fetch token, running without priority access:', err);
+      }
+
       return ndt7.test(
         {
+          clientRegistrationToken: token,
+          loadbalancer: token ? locatePriorityURL : null,
           userAcceptedDataPolicy: true,
           uploadworkerfile: "/libraries/ndt7-upload-worker.js",
           downloadworkerfile: "/libraries/ndt7-download-worker.js",
