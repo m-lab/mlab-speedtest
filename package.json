@@ -1,47 +1,23 @@
 {
   "name": "mlab-speedtest",
   "private": true,
-  "version": "0.0.1",
-  "description": "M-Lab interface to NDTjs",
-  "homepage": "https://github.com/mlab-speedtest",
-  "license": "MIT",
-  "devDependencies": {
-    "bower": "^1.8.8",
-    "gulp": "^4.0.2",
-    "gulp-angular-gettext": "^2.3.0",
-    "gulp-inject": "^5.0.5",
-    "gulp-serve": "^1.4.0",
-    "jasmine-core": "^2.4.1",
-    "karma": "^0.13.22",
-    "karma-chrome-launcher": "^0.2.3",
-    "karma-firefox-launcher": "^0.1.7",
-    "karma-jasmine": "^0.3.8",
-    "karma-junit-reporter": "^0.4.1",
-    "protractor": "^3.2.2",
-    "shelljs": "^0.6.0"
-  },
+  "version": "1.0.0",
+  "description": "M-Lab Speed Test - measure your internet connection speed",
+  "homepage": "https://speed.measurementlab.net",
+  "license": "Apache-2.0",
   "scripts": {
-    "build": "npm install -g firebase-tools gulp && yarn install && yarn && gulp copy_libs",
-    "postinstall": "node -e \"try { require('fs').symlinkSync(require('path').resolve('node_modules/@bower_components'), 'app/libraries', 'junction') } catch (e) { }\"",
-    "pretest": "npm install"
+    "build": "node scripts/build.js",
+    "convert-translations": "node scripts/po-to-json.js"
   },
   "dependencies": {
-    "@bower_components/angular": "angular/bower-angular#1.5.11",
-    "@bower_components/angular-gettext": "rubenv/angular-gettext#*",
-    "@bower_components/angular-loader": "angular/bower-angular-loader#~1.5.0",
-    "@bower_components/angular-mocks": "angular/bower-angular-mocks#~1.5.0",
-    "@bower_components/angular-route": "angular/bower-angular-route#~1.5.0",
-    "@bower_components/html5-boilerplate": "h5bp/html5-boilerplate#^5.3.0",
-    "@bower_components/jquery": "jquery/jquery-dist#3.0.0",
-    "@bower_components/skel": "n33/skel#~3.0.1",
     "@m-lab/msak": "0.3.1",
     "@m-lab/ndt7": "0.1.4",
-    "@m-lab/packet-test": "0.0.16",
-    "ng-device-detector": "^5.1.4",
-    "re-tree": "^0.1.7",
-    "ua-device-detector": "^1.1.8"
+    "@m-lab/packet-test": "0.0.16"
+  },
+  "devDependencies": {
+    "gettext-parser": "^8.0.0"
   },
   "engines": {
-    "yarn": ">= 1.0.0"
+    "node": ">=18.0.0"
   }
 }
