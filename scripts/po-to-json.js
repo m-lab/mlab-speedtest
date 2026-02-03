@@ -13,7 +13,8 @@ const OUTPUT_DIR = path.join(__dirname, '..', 'src', 'translations');
 
 // Language code mapping (e.g., de_DE.po -> de.json)
 const LANG_MAP = {
-  'de_DE': 'de'
+  'de_DE': 'de',
+  'pt_PT': 'pt'
 };
 
 function convertPoToJson(poFilePath) {

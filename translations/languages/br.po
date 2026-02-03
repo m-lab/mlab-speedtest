@@ -1,0 +1,229 @@
+# 
+# Translators:
+# Irriep Nala Novram <per.morvan.bzh29@gmail.com>, 2019
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Last-Translator: Irriep Nala Novram <per.morvan.bzh29@gmail.com>, 2019\n"
+"Language-Team: Breton (https://app.transifex.com/otf/teams/46824/br/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: br\n"
+"Plural-Forms: nplurals=5; plural=((n%10 == 1) && (n%100 != 11) && (n%100 !=71) && (n%100 !=91) ? 0 :(n%10 == 2) && (n%100 != 12) && (n%100 !=72) && (n%100 !=92) ? 1 :(n%10 ==3 || n%10==4 || n%10==9) && (n%100 < 10 || n% 100 > 19) && (n%100 < 70 || n%100 > 79) && (n%100 < 90 || n%100 > 99) ? 2 :(n != 0 && n % 1000000 == 0) ? 3 : 4);\n"
+
+#: index.html:23 measure.html:81
+msgid "About"
+msgstr "Diwar-benn"
+
+#: measure.html:21
+msgid "Again"
+msgstr "Adarre"
+
+#: measure.html:20
+msgid "Begin"
+msgstr "Stagañ e-barzh"
+
+#: measure.js:84
+msgid "Complete"
+msgstr "Klok"
+
+#: index.html:24 measure.html:115
+msgid "Contact"
+msgstr "Darempred"
+
+#: measure.html:92
+msgid ""
+"Data collected is made available to the public, allowing researchers and "
+"anyone else to build on a common pool of network measurement information."
+msgstr ""
+"Ar roadennoù dastumet a zo lakaet e-kerzh d'an dud, hag a ro an tu d'an "
+"enklaskerien ha forzh piv all da gemer harp war ur \"pool\"  titouroù "
+"muzuliañ ar genrouedad boutin."
+
+#: measure.html:130
+msgid "Discussion and Notification Group"
+msgstr "Kaozeadenn ha Kemennoù ar strollad"
+
+#: measure.html:97
+msgid ""
+"Distributed infrastructure and large user base provides an open, verifiable "
+"measurement platform for global network performance."
+msgstr ""
+"Ur framm dasparzhet hag un diazez implijerien astennet a bourvez ur pladfurm"
+" muzuliañ digor hag gwiriekaus war efedusted ar genrouedad a-bezh."
+
+#: measure.html:54 measure.js:81
+msgid "Download"
+msgstr "Pellgargañ"
+
+#: measure.html:126
+msgid "Email"
+msgstr "Postel"
+
+#: measure.html:30
+msgid ""
+"For more on M-Lab's data collection and measurement, including the "
+"disclosure of IP addresses, see our <a "
+"href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
+msgstr ""
+"Evit gouzout hiroc'h war dastumadeg ha muzulioù M-Lab's, diskuliadur ar "
+"chomlec'hioù IP hag all, gwelet hon <a "
+"href=\"http://www.measurementlab.net/privacy/\">Folitikerezh Buhez "
+"Prevez</a>."
+
+#: measure.html:138
+msgid "GitHub"
+msgstr "GitHub"
+
+#: measure.html:96
+msgid "Global"
+msgstr "Hollek"
+
+#: measure.html:14
+msgid ""
+"I agree to the <a href=\"http://www.measurementlab.net/privacy/\">data "
+"policy</a>, which includes retention and publication of IP addresses."
+msgstr ""
+"Asantiñ a ran d'ar <a "
+"href=\"http://www.measurementlab.net/privacy/\">politikerezh war ar "
+"roadennoù</a>, dalc'hadur hag embannadur ar chomlec'hioù IP hag all."
+
+#: measure.js:79 measure.js:82
+msgid "Initializing"
+msgstr "O teraouiñ"
+
+#: measure.html:131
+msgid "Join Group"
+msgstr "Emezelañ er strollad"
+
+#: measure.html:64
+msgid "Latency"
+msgstr "Gortozadenn"
+
+#: measure.html:106
+msgid "Learn more"
+msgstr "Gouzout hiroc'h"
+
+#: measure.html:10
+msgid ""
+"M-Lab's Speed Test provides advanced diagnostics of the performance of your "
+"broadband connection through quick measurements."
+msgstr ""
+"Test tizh M-Lab a bourvez priziadurioù araokaet war efedusted ho kevreadenn "
+"uhelgas dre vuzuliadennoù tizh ganto."
+
+#: index.html:22
+msgid "Measure"
+msgstr "Muzul"
+
+#: measure.html:82
+msgid ""
+"Measurement Lab (M-Lab) provides the largest collection of open Internet "
+"performance data on the planet. As a consortium of research, industry, and "
+"public-interest partners, M-Lab is dedicated to providing an ecosystem for "
+"the open, verifiable measurement of global network performance."
+msgstr ""
+"Measurement Lab (M-Lab) a bourvez dastumadeg vrasañ a roadennoù efedusted "
+"Internet digor war ar blanedenn a-bezh. Evitañ da vezañ koñsortiom "
+"enklaskoù, an industriezh, hag ar c'hevelioù a laz foran, M-Lab a zo dediet "
+"da grouidigezh un ekosistem digor, hag a ro an tu da vuzuliañ efedusted ar "
+"genrouedad a-bezh."
+
+#: measure.html:87
+msgid ""
+"Measurement tools are openly licensed and operated, allowing third parties "
+"to develop their own client-side measurement software and audit the source."
+msgstr ""
+"An ostilhoù muzuliañ a zo dindan lisañs hag oberataet e vezont en un doare "
+"digor, ar pezh a ro an tu d'an tredeoù da ziorren o meziantoù muzuliañ eus "
+"tu ar pratiked ha da aoditañ ar vammenn."
+
+#: measure.html:119
+msgid "Need to report an issue or bug?"
+msgstr "Ezhomm ho peus da zanevelliñ ur gudenn pe ur veugenn?"
+
+#: measure.html:86
+msgid "Open Source"
+msgstr "Open Source"
+
+#: measure.html:26
+msgid "Please agree to the data policy prior to the test."
+msgstr "Asantit d'ar politikerezh roadennoù a-raok an test mar plij."
+
+#: measure.html:120
+msgid "Please contact us."
+msgstr "Deuit e darempred ganeomp."
+
+#: index.html:39
+msgid "Privacy Policy"
+msgstr "Politikerezh Buhez Prevez"
+
+#: measure.html:91
+msgid "Public Data"
+msgstr "Roadennoù Foran"
+
+#: measure.html:117
+msgid "Questions or comments about M-Lab and its tools?"
+msgstr "Goulennoù pe evezhiadennoù diwar-benn M-Lab hag e ostilhoù?"
+
+#: measure.html:44
+msgid "Results"
+msgstr "Disoc'hoù"
+
+#: measure.html:69
+msgid "Retransmission"
+msgstr "Adkasadenn"
+
+#: measure.html:135
+msgid "Social"
+msgstr "Sokial"
+
+#: measure.js:54
+msgid "Starting"
+msgstr "O stagañ e-barzh"
+
+#: measure.html:49
+msgid "Test Server"
+msgstr "Servijer test"
+
+#: measure.html:8
+msgid "Test Your Speed"
+msgstr "Testiñ ho tizh"
+
+#: measure.html:22
+msgid "Testing"
+msgstr "O testiñ"
+
+#: measure.html:101
+msgid "Trusted"
+msgstr "Fiziet"
+
+#: measure.html:137
+msgid "Twitter"
+msgstr "Twitter"
+
+#: measure.html:59 measure.js:78
+msgid "Upload"
+msgstr "Uskargañ"
+
+#: measure.html:102
+msgid ""
+"Used by public organization, academic researchers, regulators and companies "
+"around the world to understand the health of the Internet."
+msgstr ""
+"Implijet gant an aozadurioù foran, an enklaskerien er skolioù-meur, ar "
+"reolierien hag embregerzehioù ar bed a-bezh evit kompren yec'hed ar "
+"genrouedad."
+
+#: measure.html:118
+msgid "Want to participate in M-Lab?"
+msgstr "Fellout a ra deoc'h kemer-perzh e-barzh M-Lab?"
+
+#: measure.html:4
+msgid ""
+"Your browser may not be compatible with the M-Lab speed test. Please update "
+"to a more current version and try again."
+msgstr ""
+"N'hall ket klotat ho merdeer gant test tizh M-Lab. Hizivait betek ur stumm "
+"nevesañ ha klaskit adarre."
