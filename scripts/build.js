@@ -1,0 +1,106 @@
+#!/usr/bin/env node
+/**
+ * Build script for M-Lab Speed Test
+ * Copies source files to dist/ and sets up dependencies
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+const ROOT = path.join(__dirname, '..');
+const SRC = path.join(ROOT, 'src');
+const DIST = path.join(ROOT, 'dist');
+const NODE_MODULES = path.join(ROOT, 'node_modules');
+
+/**
+ * Recursively copy a directory
+ */
+function copyDir(src, dest) {
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
+
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+
+    if (entry.isDirectory()) {
+      copyDir(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+/**
+ * Copy a single file
+ */
+function copyFile(src, dest) {
+  const destDir = path.dirname(dest);
+  if (!fs.existsSync(destDir)) {
+    fs.mkdirSync(destDir, { recursive: true });
+  }
+  fs.copyFileSync(src, dest);
+}
+
+/**
+ * Main build process
+ */
+function build() {
+  console.log('Building M-Lab Speed Test...\n');
+
+  // Clean dist directory
+  if (fs.existsSync(DIST)) {
+    fs.rmSync(DIST, { recursive: true });
+  }
+
+  // Copy src/ to dist/
+  console.log('Copying source files...');
+  copyDir(SRC, DIST);
+
+  // Copy assets (images, fonts)
+  console.log('Copying assets...');
+  const appAssets = path.join(ROOT, 'app', 'assets');
+
+  // Copy images
+  copyDir(path.join(appAssets, 'images'), path.join(DIST, 'assets', 'images'));
+
+  // Copy fonts (to both paths for compatibility)
+  copyDir(path.join(appAssets, 'fonts'), path.join(DIST, 'assets', 'fonts'));
+  // Font-awesome CSS uses ../fonts/ from css/ directory
+  copyDir(path.join(appAssets, 'fonts'), path.join(DIST, 'fonts'));
+
+  // Copy font-awesome CSS
+  copyFile(
+    path.join(appAssets, 'css', 'font-awesome.min.css'),
+    path.join(DIST, 'css', 'font-awesome.min.css')
+  );
+
+  // Copy M-Lab libraries from node_modules
+  console.log('Copying M-Lab libraries...');
+  const libDest = path.join(DIST, 'libraries');
+  if (!fs.existsSync(libDest)) {
+    fs.mkdirSync(libDest, { recursive: true });
+  }
+
+  // ndt7 (uses src/ folder)
+  const ndt7Pkg = path.join(NODE_MODULES, '@m-lab', 'ndt7', 'src');
+  copyFile(path.join(ndt7Pkg, 'ndt7.js'), path.join(libDest, 'ndt7.js'));
+  copyFile(path.join(ndt7Pkg, 'ndt7-upload-worker.js'), path.join(libDest, 'ndt7-upload-worker.js'));
+  copyFile(path.join(ndt7Pkg, 'ndt7-download-worker.js'), path.join(libDest, 'ndt7-download-worker.js'));
+
+  // msak (uses dist/ folder)
+  const msakPkg = path.join(NODE_MODULES, '@m-lab', 'msak', 'dist');
+  copyFile(path.join(msakPkg, 'msak.min.js'), path.join(libDest, 'msak.min.js'));
+
+  // packet-test (uses src/ folder)
+  const ptPkg = path.join(NODE_MODULES, '@m-lab', 'packet-test', 'src');
+  copyFile(path.join(ptPkg, 'pt.min.js'), path.join(libDest, 'pt.min.js'));
+  copyFile(path.join(ptPkg, 'pt-download-worker.min.js'), path.join(libDest, 'pt-download-worker.min.js'));
+
+  console.log('\nBuild complete! Output in dist/');
+}
+
+build();
