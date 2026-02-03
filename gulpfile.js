@@ -39,9 +39,9 @@ function copy_libs(cb) {
   ], {base: "./node_modules/@bower_components"})
     .pipe(gulp.dest('./app/libraries'));
 
-  // Copy the minified @m-lab/ndt7 js files to libraries/.
+  // Copy the @m-lab js files to libraries/.
   gulp.src([
-    "./node_modules/@m-lab/ndt7/src/*.min.js",
+    "./node_modules/@m-lab/ndt7/src/*.js",
     "./node_modules/@m-lab/msak/dist/*.min.js",
     "./node_modules/@m-lab/packet-test/src/*.min.js",
   ])
