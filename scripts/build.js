@@ -64,6 +64,10 @@ function build() {
   console.log('Copying fonts for font-awesome compatibility...');
   copyDir(path.join(SRC, 'assets', 'fonts'), path.join(DIST, 'fonts'));
 
+  // Convert .po translations to JSON
+  console.log('Converting translations...');
+  require('./po-to-json');
+
   // Copy M-Lab libraries from node_modules
   console.log('Copying M-Lab libraries...');
   const libDest = path.join(DIST, 'libraries');
