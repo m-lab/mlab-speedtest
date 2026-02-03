@@ -69,7 +69,7 @@ msgid ""
 msgstr ""
 "Evit gouzout hiroc'h war dastumadeg ha muzulioù M-Lab's, diskuliadur ar "
 "chomlec'hioù IP hag all, gwelet hon <a "
-"href=\"http://www.measurementlab.net/privacy/\">Folitikerezh Buhez "
+"href=\"http://www.measurementlab.net/privacy/\">Politikerezh Buhez "
 "Prevez</a>."
 
 #: measure.html:138

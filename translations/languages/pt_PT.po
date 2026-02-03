@@ -1,11 +1,12 @@
 # 
 # Translators:
 # Manuela Silva <mmsrs@sky.com>, 2020
+# Roberto D'Auria <roberto@measurementlab.net>, 2026
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Last-Translator: Manuela Silva <mmsrs@sky.com>, 2020\n"
+"Last-Translator: Roberto D'Auria <roberto@measurementlab.net>, 2026\n"
 "Language-Team: Portuguese (Portugal) (https://app.transifex.com/otf/teams/46824/pt_PT/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -39,7 +40,7 @@ msgid ""
 msgstr ""
 "Os dados recolhidos são disponibilizados para o público, permitindo que os "
 "pesquisadores e qualquer outra pessoa desenvolvam um conjunto comum de "
-"informação do cálculo de rede."
+"informação de medição de rede."
 
 #: measure.html:130
 msgid "Discussion and Notification Group"
@@ -51,7 +52,7 @@ msgid ""
 "measurement platform for global network performance."
 msgstr ""
 "A infraestrutura distribuída e a grande base de utilizadores fornecem uma "
-"plataforma de cálculo aberta e verificável para o desempenho da rede global."
+"plataforma de medição aberta e verificável para o desempenho da rede global."
 
 #: measure.html:54 measure.js:81
 msgid "Download"
@@ -67,7 +68,7 @@ msgid ""
 "disclosure of IP addresses, see our <a "
 "href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
 msgstr ""
-"Para mais sobre a recolha de dados e cáluclo de M-Lab, incluíndo a "
+"Para mais sobre a recolha de dados e medição de M-Lab, incluindo a "
 "divulgação dos endereços de IP, consulte a nossa <a "
 "href=\"http://www.measurementlab.net/privacy/\">Política de Privacidade</a>."
 
@@ -110,7 +111,7 @@ msgid ""
 "broadband connection through quick measurements."
 msgstr ""
 "O 'Teste de Velocidade' do M-Lab oferece diagnósticos avançados do "
-"desempenho da sua ligação de banda larga através de cálculos rápidos."
+"desempenho da sua ligação de banda larga através de medições rápidas."
 
 #: index.html:22
 msgid "Measure"
@@ -126,15 +127,15 @@ msgstr ""
 "\"Measurement Lab\" (M-Lab) fornece a maior coleção de dados de desempenho "
 "da Internet abertos no planeta. Como um consórcio de parceiros de pesquisa, "
 "indústria e interesse público, M-Lab dedica-se a fornecer um ecossistema "
-"para o cálculo aberto e verificável do desempenho da rede global."
+"para a medição aberta e verificável do desempenho da rede global."
 
 #: measure.html:87
 msgid ""
 "Measurement tools are openly licensed and operated, allowing third parties "
 "to develop their own client-side measurement software and audit the source."
 msgstr ""
-"As ferramentas de cálculo são licenciadas e operadas abertamente, permitindo"
-" que terceiros desenvolvam o seu próprio ''software'' de cálculo do lado do "
+"As ferramentas de medição são licenciadas e operadas abertamente, permitindo"
+" que terceiros desenvolvam o seu próprio ''software'' de medição do lado do "
 "cliente e auditem a fonte."
 
 #: measure.html:119
