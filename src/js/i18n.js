@@ -5,7 +5,7 @@
 const i18n = {
   translations: {},
   currentLang: 'en',
-  supported: ['en', 'es', 'de', 'fr', 'nl', 'ru', 'zh', 'hi', 'el', 'az', 'fa', 'id'],
+  supported: ['en', 'es', 'de', 'fr', 'nl', 'ru', 'zh', 'hi', 'el', 'az', 'fa', 'id', 'br', 'pt'],
 
   async init() {
     this.currentLang = this.detectLanguage();
