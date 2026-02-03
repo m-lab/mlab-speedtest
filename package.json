@@ -6,8 +6,7 @@
   "homepage": "https://speed.measurementlab.net",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "node scripts/build.js",
-    "convert-translations": "node scripts/po-to-json.js"
+    "build": "node scripts/build.js"
   },
   "dependencies": {
     "@m-lab/msak": "0.3.1",

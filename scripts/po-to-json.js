@@ -9,7 +9,7 @@ const path = require('path');
 const gettextParser = require('gettext-parser');
 
 const LANGUAGES_DIR = path.join(__dirname, '..', 'translations', 'languages');
-const OUTPUT_DIR = path.join(__dirname, '..', 'src', 'translations');
+const OUTPUT_DIR = process.argv[2] || path.join(__dirname, '..', 'dist', 'translations');
 
 // Language code mapping (e.g., de_DE.po -> de.json)
 const LANG_MAP = {
