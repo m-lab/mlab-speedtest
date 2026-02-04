@@ -2,7 +2,6 @@
 
 /**
  * M-Lab Speed Test - Main Application
- * Vanilla JS replacement for Angular-based measure.js
  */
 
 const SpeedTest = {
