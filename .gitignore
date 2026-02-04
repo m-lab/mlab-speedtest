@@ -7,3 +7,4 @@ tmp
 .firebase
 app/libraries
 npm-debug.log
+dist/
