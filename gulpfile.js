@@ -43,7 +43,6 @@ function copy_libs(cb) {
   gulp.src([
     "./node_modules/@m-lab/ndt7/src/*.js",
     "./node_modules/@m-lab/msak/dist/*.min.js",
-    "./node_modules/@m-lab/packet-test/src/*.min.js",
   ])
 
   .pipe(gulp.dest('./app/libraries'));

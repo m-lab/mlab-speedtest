@@ -56,8 +56,6 @@ angular.module('Measure.Measure', ['ngRoute'])
         await runNdt7(sessionID);
       }
 
-      runPT(sessionID)
-
       $scope.$apply(function () {
         $scope.currentPhase = gettextCatalog.getString('Complete');
         $scope.currentSpeed = '';
@@ -231,71 +229,6 @@ angular.module('Measure.Measure', ['ngRoute'])
 
       await client.start();
     }
-
-    async function runPT(sid) {
-      const md = [
-          {
-            client_name: "speed-measurementlab-net",
-            client_session_id: sid,
-          },
-          {
-            client_name: "speed-measurementlab-net",
-            client_session_id: sid,
-            client_immediate_exit: true,
-            max_cwnd_gain: "512",
-          },
-          {
-            client_name: "speed-measurementlab-net",
-            client_session_id: sid,
-            client_immediate_exit: true,
-            max_elapsed_time: "5",
-          },
-          {
-            client_name: "speed-measurementlab-net",
-            client_session_id: sid,
-            client_immediate_exit: true,
-            max_cwnd_gain: "512",
-            max_elapsed_time: "5",
-          },
-          {
-            client_name: "speed-measurementlab-net",
-            client_session_id: sid,
-            client_immediate_exit: true,
-            early_exit: "50",
-          },
-          {
-            client_name: "speed-measurementlab-net",
-            client_session_id: sid,
-            client_immediate_exit: true,
-            max_cwnd_gain: "512",
-            early_exit: "50",
-          },
-      ]
-
-      return pt.test(
-        {
-          userAcceptedDataPolicy: true,
-          downloadworkerfile: "/libraries/pt-download-worker.min.js",
-          // Randomly choose to run one of the configurations above.
-          metadata: md[Math.floor(Math.random()*md.length)]
-        },
-        {
-          serverChosen: function (server) {
-            $scope.location = server.location.city + ", " +
-              server.location.country;
-            $scope.address = server.machine;
-            console.log('Testing PT to:', {
-              machine: server.machine,
-              locations: server.location,
-            });
-          },
-          downloadComplete: (data) => {
-            console.log("PT result:", data);
-          },
-        },
-      )
-    }
-
   });
 
 /**
