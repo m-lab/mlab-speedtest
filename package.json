@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "M-Lab interface to NDTjs",
   "homepage": "https://github.com/mlab-speedtest",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "bower": "^1.8.8",
     "gulp": "^4.0.2",
