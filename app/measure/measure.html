@@ -31,6 +31,14 @@
             policy prior to the test.</span>
         </div>
       </div>
+      <div class="row" style="margin-top: 0.5em;">
+        <div class="6u">
+          <select ng-model="selectedCountry" ng-disabled="privacyConsent !== true" style="width: 100%;">
+            <option value="">Nearest Server (Auto)</option>
+            <option ng-repeat="c in countries" value="{{c.code}}">{{c.name}} ({{c.code}})</option>
+          </select>
+        </div>
+      </div>
       </p>
       <small style="font-style: italic;">We are temporarily running multiple tests back to back to calibrate new
         measurement protocols. This means
@@ -57,9 +65,11 @@
             <tr>
               <td></td>
               <td></td>
-              <td>NDT <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/ndt/" target="_blank"></a>
+              <td>NDT <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/ndt/"
+                  target="_blank"></a>
               </td>
-              <td>MSAK <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/msak/" target="_blank"></a></td>
+              <td>MSAK <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/msak/"
+                  target="_blank"></a></td>
             </tr>
             <tr>
               <td><i class="fa fa-server" aria-hidden="true"></i></td>
@@ -156,7 +166,8 @@
           </li>
           <li>
             <h3 translate>Discussion and Notification Group</h3>
-            <a href="https://groups.google.com/a/measurementlab.net/forum/#!forum/discuss" target="_blank" translate>Join Group</a>
+            <a href="https://groups.google.com/a/measurementlab.net/forum/#!forum/discuss" target="_blank"
+              translate>Join Group</a>
             <i class="fa fa-link" aria-hidden="true"></i>
           </li>
           <li>
@@ -164,7 +175,8 @@
             <ul class="icons">
               <li><a href="https://twitter.com/MeasurementLab" class="fa-twitter" target="_blank"><span class="label"
                     translate>Twitter</span></a></li>
-              <li><a href="https://github.com/m-lab" class="fa-github" target="_blank"><span class="label" translate>GitHub</span></a>
+              <li><a href="https://github.com/m-lab" class="fa-github" target="_blank"><span class="label"
+                    translate>GitHub</span></a>
               </li>
             </ul>
           </li>

@@ -2,7 +2,7 @@
 
 angular.module('Measure.Measure', ['ngRoute'])
   .controller('MeasureCtrl', function ($scope, $rootScope, $interval, $timeout,
-    gettextCatalog, ndtServer, ProgressGauge) {
+    gettextCatalog, ndtServer, ProgressGauge, MLAB_COUNTRIES) {
     const TIME_EXPECTED = 10 // Expected duration of a test in seconds.
     var testRunning = false;
 
@@ -12,6 +12,11 @@ angular.module('Measure.Measure', ['ngRoute'])
 
     $scope.currentPhase = '';
     $scope.currentSpeed = '';
+
+    // Country selector for Locate API.
+    $scope.countries = MLAB_COUNTRIES;
+    $scope.selectedCountry = '';
+
 
     var gaugeProgress;
 
@@ -111,17 +116,25 @@ angular.module('Measure.Measure', ['ngRoute'])
         console.warn('Failed to fetch token, running without priority access:', err);
       }
 
+      // Build metadata. If a country is selected, include it so the Locate API
+      // returns the nearest server within that country.
+      var metadata = {
+        client_name: "speed-measurementlab-net",
+        client_session_id: sid,
+      };
+      var country = $scope.selectedCountry;
+      if (country) {
+        metadata.country = country;
+      }
+
       return ndt7.test(
         {
           clientRegistrationToken: token,
-          loadbalancer: token ? locatePriorityURL : null,
+          loadbalancer: (token || country) ? locatePriorityURL : null,
           userAcceptedDataPolicy: true,
           uploadworkerfile: "/libraries/ndt7-upload-worker.js",
           downloadworkerfile: "/libraries/ndt7-download-worker.js",
-          metadata: {
-            client_name: "speed-measurementlab-net",
-            client_session_id: sid,
-          }
+          metadata: metadata
         },
         {
           serverChosen: function (server) {
@@ -191,8 +204,11 @@ angular.module('Measure.Measure', ['ngRoute'])
     async function runMSAK(sid) {
       const client = new msak.Client("speed-measurementlab-net", "0.0.1", {
         onDownloadStart: (server) => {
-          console.log("Server: " + server.machine);
-          $scope.msakLocation = server.location.city + ", " + server.location.country;
+          // When we pass a hostname directly to client.start(), the server
+          // object won't have location/machine info, so guard against that.
+          if (server && server.machine) {
+            $scope.msakLocation = server.location.city + ", " + server.location.country;
+          }
         },
         onDownloadResult: (result) => {
           $scope.msakResult.download = result.goodput.toFixed(2) + ' Mb/s';
@@ -227,7 +243,58 @@ angular.module('Measure.Measure', ['ngRoute'])
       client.streams = 1;
       client.debug = true;
 
-      await client.start();
+      var country = $scope.selectedCountry;
+      if (country) {
+        // The MSAK library doesn't pass metadata to the Locate API, only to
+        // the test server. So we do our own locate call with the country param
+        // and call client.download()/upload() directly with the full URLs.
+        try {
+          const locateURL = 'https://locate.measurementlab.net/v2/nearest/msak/throughput1?country=' + country;
+          const resp = await fetch(locateURL);
+          const data = await resp.json();
+          if (data.results && data.results.length > 0) {
+            const server = data.results[0];
+
+            // Build download/upload URLs from the Locate API response and add
+            // the metadata params that the MSAK library would normally add.
+            var downloadURL = new URL(server.urls['wss:///throughput/v1/download']);
+            var uploadURL = new URL(server.urls['wss:///throughput/v1/upload']);
+            var metaParams = {
+              client_name: 'speed-measurementlab-net',
+              client_version: '0.0.1',
+              client_library_name: 'msak-js',
+              client_library_version: '0.3.1',
+              streams: '1',
+              cc: 'cubic',
+              duration: '10000',
+              bytes: '0',
+              client_session_id: sid
+            };
+            for (var key in metaParams) {
+              downloadURL.searchParams.set(key, metaParams[key]);
+              uploadURL.searchParams.set(key, metaParams[key]);
+            }
+
+            var serverInfo = {
+              location: server.location,
+              machine: server.machine,
+              download: downloadURL,
+              upload: uploadURL
+            };
+
+            await client.download(serverInfo);
+            await client.upload(serverInfo);
+          } else {
+            console.warn('No MSAK servers found for country:', country);
+            await client.start();
+          }
+        } catch (err) {
+          console.warn('Failed to locate MSAK server for country, using default:', err);
+          await client.start();
+        }
+      } else {
+        await client.start();
+      }
     }
   });
 

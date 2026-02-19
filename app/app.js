@@ -8,24 +8,25 @@ angular.module('Measure', [
   'Measure.GaugeService',
 ])
 
-.value('ndtServer', {})
+  .value('ndtServer', {})
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/', {
-    templateUrl: '/measure/measure.html',
-    controller: 'MeasureCtrl'
-  });
-}])
 
-.run(function (gettextCatalog) {
-  var availableLanguages = ['en'];
+  .config(['$routeProvider', function ($routeProvider) {
+    $routeProvider.when('/', {
+      templateUrl: '/measure/measure.html',
+      controller: 'MeasureCtrl'
+    });
+  }])
 
-  if (typeof INTERFACE_LANGUAGE !== 'undefined') {
-    availableLanguages = availableLanguages.concat(Object.keys(gettextCatalog.strings));
+  .run(function (gettextCatalog) {
+    var availableLanguages = ['en'];
 
-    if (availableLanguages.indexOf(INTERFACE_LANGUAGE) != -1) {
-      gettextCatalog.setCurrentLanguage(INTERFACE_LANGUAGE);
+    if (typeof INTERFACE_LANGUAGE !== 'undefined') {
+      availableLanguages = availableLanguages.concat(Object.keys(gettextCatalog.strings));
+
+      if (availableLanguages.indexOf(INTERFACE_LANGUAGE) != -1) {
+        gettextCatalog.setCurrentLanguage(INTERFACE_LANGUAGE);
+      }
+      // gettextCatalog.debug = true;
     }
-    // gettextCatalog.debug = true;
-  }
-})
+  })
