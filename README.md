@@ -4,13 +4,54 @@
 
 ## Setting up Local Development Environment
 
-### Install Build Dependencies
+### Requirements
 
-* Install website build dependencies for your operating system and environment
-  * Node >= v10.15.1 - Using NVM: `nvm install v10.15.1`
-  * Gulp - Installed with `yarn`
-  * Install libraries - `gulp copy_libs`
-  * Firebase tools - `npm install -g firebase-tools`
+The project requires the following tools to be installed:
+
+- [Node.js](https://nodejs.org/) >= v10.15.1
+- [Yarn](https://yarnpkg.com/) (package manager)
+- [Python 3](https://www.python.org/) (for local preview server)
+
+Optional (for M-Lab team members):
+- [Firebase CLI](https://firebase.google.com/docs/cli) (`npm install -g firebase-tools`)
+
+### Installation
+
+We recommend using [nvm](https://github.com/nvm-sh/nvm) to manage your Node.js version.
+
+```bash
+nvm install v10.15.1
+nvm use v10.15.1
+```
+
+Install project dependencies using Yarn:
+
+```bash
+yarn install
+```
+
+Copy third-party libraries into the `app/libraries/` directory:
+
+```bash
+gulp copy_libs
+```
+
+### Running Locally
+
+To preview the site locally, navigate to the `/app` directory and start a Python HTTP server:
+
+```bash
+cd app
+python3 -m http.server 8000
+```
+
+Then open http://localhost:8000 in your browser.
+
+If you are a member of the M-Lab Firebase project, you can also preview using the Firebase CLI:
+
+```bash
+firebase serve --only hosting:mlab-speedtest
+```
 
 ## Adding new languages
 
@@ -31,14 +72,6 @@ Translations for this site are managed in the [Open Technology Fund's Localizati
     * to: `<script src="/assets/translations/es.js"></script>`
   * Regenerate the supported language strings: 
     * `gulp inject`
-
-## Previewing site locally
-
-To preview the site locally, we recommend using the Python Simple HTTP Server. 
-
-* Navigate to the `/app` directory and run: `python3 -m http.server 8000`
-
-If you are a user on the M-Lab Firebase project, you can also preview the site locally using the firebase-cli: `firebase serve --only hosting:mlab-speedtest`
 
 ## Deployment
 
