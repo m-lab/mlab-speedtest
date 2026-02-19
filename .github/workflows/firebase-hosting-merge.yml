@@ -6,6 +6,10 @@ name: Deploy to Firebase Hosting on merge
   push:
     branches:
       - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
   checks: write
