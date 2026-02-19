@@ -62,8 +62,24 @@ angular.module('Measure.Measure', ['ngRoute'])
         $scope.measurementComplete = true;
         $scope.startButtonClass = '';
       });
+
+      // Notify user via page title if they switched tabs during the test.
+      if (document.hidden) {
+        var currentTitle = document.title;
+        document.title = '✅ Speed Test Completed';
+        document.addEventListener('visibilitychange', function onReturn() {
+          if (!document.hidden) {
+            document.title = currentTitle;
+            document.removeEventListener('visibilitychange', onReturn);
+          }
+        });
+      }
+
       testRunning = false;
     }
+
+
+
 
     // Determine the M-Lab project based on a placeholder that is substituted
     // during deployment. If the placeholder is not substituted (e.g., local
