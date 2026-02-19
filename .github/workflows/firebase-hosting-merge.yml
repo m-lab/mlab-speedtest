@@ -11,13 +11,13 @@ permissions:
   checks: write
 jobs:
   build_and_deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - run: npm install -g yarn && yarn install --frozen-lockfile && yarn build
       - name: Substitute M-Lab project placeholder
         run: sed -i 's/MLAB_PROJECT_PLACEHOLDER/mlab-oti/g' app/measure/measure.js
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - uses: FirebaseExtended/action-hosting-deploy@e2eda2e106cfa35cdbcf4ac9ddaf6c4756df2c8c # v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_MLAB_OTI }}'
