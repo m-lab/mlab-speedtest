@@ -225,7 +225,7 @@ angular.module('Measure.Measure', ['ngRoute'])
       client.cc = "cubic";
       client.duration = 10000; // 10s
       client.streams = 1;
-      client.debug = true;
+      client.debug = false;
 
       await client.start();
     }
