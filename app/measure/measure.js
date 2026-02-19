@@ -48,21 +48,33 @@ angular.module('Measure.Measure', ['ngRoute'])
       const sessionID = uuidv4();
 
       // Randomly choose which test to start first.
-      if (Math.random() < 0.5) {
-        await runNdt7(sessionID)
-        await runMSAK(sessionID);
-      } else {
-        await runMSAK(sessionID);
-        await runNdt7(sessionID);
-      }
+      try {
+        if (Math.random() < 0.5) {
+          await runNdt7(sessionID);
+          await runMSAK(sessionID);
+        } else {
+          await runMSAK(sessionID);
+          await runNdt7(sessionID);
+        }
 
-      $scope.$apply(function () {
-        $scope.currentPhase = gettextCatalog.getString('Complete');
-        $scope.currentSpeed = '';
-        $scope.measurementComplete = true;
-        $scope.startButtonClass = '';
-      });
-      testRunning = false;
+        $scope.$apply(function () {
+          $scope.currentPhase = gettextCatalog.getString('Complete');
+          $scope.currentSpeed = '';
+          $scope.measurementComplete = true;
+          $scope.startButtonClass = '';
+        });
+      } catch (err) {
+        // If a test fails (e.g. network error), re-enable the button so the
+        // user can retry without having to refresh the page.
+        $scope.$apply(function () {
+          $scope.currentPhase = '';
+          $scope.currentSpeed = '';
+          $scope.startButtonClass = '';
+        });
+      } finally {
+        // Always reset the flag, whether the test succeeded or failed.
+        testRunning = false;
+      }
     }
 
     // Determine the M-Lab project based on a placeholder that is substituted
