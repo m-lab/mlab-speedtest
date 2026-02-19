@@ -128,10 +128,7 @@ angular.module('Measure.Measure', ['ngRoute'])
             $scope.location = server.location.city + ", " +
               server.location.country;
             $scope.address = server.machine;
-            console.log('Testing to:', {
-              machine: server.machine,
-              locations: server.location,
-            });
+
           },
           downloadStart: (data) => {
             $scope.$apply(function () {
@@ -157,7 +154,7 @@ angular.module('Measure.Measure', ['ngRoute'])
             $scope.measurementResult.loss =
               (data.LastServerMeasurement.TCPInfo.BytesRetrans /
                 data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2) + '%';
-            console.log(data);
+
           },
           uploadStart: (data) => {
             $scope.$apply(function () {
@@ -191,7 +188,7 @@ angular.module('Measure.Measure', ['ngRoute'])
     async function runMSAK(sid) {
       const client = new msak.Client("speed-measurementlab-net", "0.0.1", {
         onDownloadStart: (server) => {
-          console.log("Server: " + server.machine);
+
           $scope.msakLocation = server.location.city + ", " + server.location.country;
         },
         onDownloadResult: (result) => {
