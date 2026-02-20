@@ -9,7 +9,7 @@ const path = require('path');
 const gettextParser = require('gettext-parser');
 
 const LANGUAGES_DIR = path.join(__dirname, '..', 'translations', 'languages');
-const OUTPUT_DIR = process.argv[2] || path.join(__dirname, '..', 'dist', 'translations');
+const DEFAULT_OUTPUT_DIR = path.join(__dirname, '..', 'dist', 'translations');
 
 // Language code mapping (e.g., de_DE.po -> de.json)
 const LANG_MAP = {
@@ -33,10 +33,12 @@ function convertPoToJson(poFilePath) {
   return translations;
 }
 
-function main() {
+function convert(outputDir) {
+  const outDir = outputDir || DEFAULT_OUTPUT_DIR;
+
   // Ensure output directory exists
-  if (!fs.existsSync(OUTPUT_DIR)) {
-    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  if (!fs.existsSync(outDir)) {
+    fs.mkdirSync(outDir, { recursive: true });
   }
 
   const poFiles = fs.readdirSync(LANGUAGES_DIR).filter(f => f.endsWith('.po'));
@@ -53,7 +55,7 @@ function main() {
     }
 
     const translations = convertPoToJson(poPath);
-    const jsonPath = path.join(OUTPUT_DIR, `${langCode}.json`);
+    const jsonPath = path.join(outDir, `${langCode}.json`);
 
     fs.writeFileSync(jsonPath, JSON.stringify(translations, null, 2));
     console.log(`  ${poFile} -> ${langCode}.json (${Object.keys(translations).length} strings)`);
@@ -62,4 +64,9 @@ function main() {
   console.log('Done!');
 }
 
-main();
+module.exports = convert;
+
+// Allow standalone usage: node po-to-json.js [outputDir]
+if (require.main === module) {
+  convert(process.argv[2]);
+}
