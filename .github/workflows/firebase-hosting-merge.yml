@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: npm install -g yarn && yarn install --frozen-lockfile && yarn build
       - name: Substitute M-Lab project placeholder
         run: sed -i 's/MLAB_PROJECT_PLACEHOLDER/mlab-oti/g' app/measure/measure.js
