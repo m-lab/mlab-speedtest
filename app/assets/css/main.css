@@ -3724,7 +3724,7 @@ span.privacyConsentMessage {
 
 	#footer > .inner .menu {
 		font-size: 0.8em;
-		color: rgba(255, 255, 255, 0.15);
+		color: #ffffff;
 	}
 
 	#header + #wrapper + #footer > .inner {
