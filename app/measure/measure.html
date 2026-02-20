@@ -13,25 +13,25 @@
             href="http://www.measurementlab.net/privacy/">data policy</a>, which includes retention and publication of
           IP addresses.</label>
       </p>
-      <p>
-      <div class="row">
-        <div class="6u">
-          <a class="button special startButton big" ng-click="startTest()" ng-class="{disabled: (privacyConsent !== true || startButtonClass
+      <div>
+        <div class="row">
+          <div class="6u">
+            <a class="button special startButton big" ng-click="startTest()" ng-class="{disabled: (privacyConsent !== true || startButtonClass
             === 'disabled')}">
-            <span ng-show="!measurementComplete && startButtonClass != 'disabled'"><span translate>Begin</span> <i
-                class="fa fa-play" aria-hidden="true"></i></span>
-            <span ng-show="measurementComplete && startButtonClass != 'disabled'"><span translate>Again</span> <i
-                class="fa fa-repeat" aria-hidden="true"></i></span>
-            <span ng-show="startButtonClass == 'disabled'"><span translate>Testing</span> <i
-                class="fa fa-circle-o-notch" aria-hidden="true"></i></span>
-          </a>
-        </div>
-        <div class="6u">
-          <span translate ng-show="privacyConsent !== true" class="privacyConsentMessage">Please agree to the data
-            policy prior to the test.</span>
+              <span ng-show="!measurementComplete && startButtonClass != 'disabled'"><span translate>Begin</span> <i
+                  class="fa fa-play" aria-hidden="true"></i></span>
+              <span ng-show="measurementComplete && startButtonClass != 'disabled'"><span translate>Again</span> <i
+                  class="fa fa-repeat" aria-hidden="true"></i></span>
+              <span ng-show="startButtonClass == 'disabled'"><span translate>Testing</span> <i
+                  class="fa fa-circle-o-notch" aria-hidden="true"></i></span>
+            </a>
+          </div>
+          <div class="6u">
+            <span translate ng-show="privacyConsent !== true" class="privacyConsentMessage">Please agree to the data
+              policy prior to the test.</span>
+          </div>
         </div>
       </div>
-      </p>
       <small style="font-style: italic;">We are temporarily running multiple tests back to back to calibrate new
         measurement protocols. This means
         results may take a little longer to appear than usual. Thank you for your help.
@@ -57,9 +57,11 @@
             <tr>
               <td></td>
               <td></td>
-              <td>NDT <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/ndt/" target="_blank"></a>
+              <td>NDT <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/ndt/"
+                  target="_blank"></a>
               </td>
-              <td>MSAK <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/msak/" target="_blank"></a></td>
+              <td>MSAK <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/msak/"
+                  target="_blank"></a></td>
             </tr>
             <tr>
               <td><i class="fa fa-server" aria-hidden="true"></i></td>
@@ -156,7 +158,8 @@
           </li>
           <li>
             <h3 translate>Discussion and Notification Group</h3>
-            <a href="https://groups.google.com/a/measurementlab.net/forum/#!forum/discuss" target="_blank" translate>Join Group</a>
+            <a href="https://groups.google.com/a/measurementlab.net/forum/#!forum/discuss" target="_blank"
+              translate>Join Group</a>
             <i class="fa fa-link" aria-hidden="true"></i>
           </li>
           <li>
@@ -164,7 +167,8 @@
             <ul class="icons">
               <li><a href="https://twitter.com/MeasurementLab" class="fa-twitter" target="_blank"><span class="label"
                     translate>Twitter</span></a></li>
-              <li><a href="https://github.com/m-lab" class="fa-github" target="_blank"><span class="label" translate>GitHub</span></a>
+              <li><a href="https://github.com/m-lab" class="fa-github" target="_blank"><span class="label"
+                    translate>GitHub</span></a>
               </li>
             </ul>
           </li>
