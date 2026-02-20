@@ -2,7 +2,7 @@
 
 angular.module('Measure.Measure', ['ngRoute'])
   .controller('MeasureCtrl', function ($scope, $rootScope, $interval, $timeout,
-    gettextCatalog, ndtServer, ProgressGauge) {
+    gettextCatalog, ndtServer, ProgressGauge, MLAB_COUNTRIES) {
     const TIME_EXPECTED = 10 // Expected duration of a test in seconds.
     var testRunning = false;
 
@@ -12,6 +12,43 @@ angular.module('Measure.Measure', ['ngRoute'])
 
     $scope.currentPhase = '';
     $scope.currentSpeed = '';
+
+    $scope.countries = [];
+    $scope.selectedCountry = '';
+    $scope.loadingCountries = true;
+
+    function getFlag(countryCode) {
+      return countryCode
+        .toUpperCase()
+        .replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt()));
+    }
+
+    fetch('https://siteinfo.measurementlab.net/v2/sites/locations.json')
+      .then(res => res.json())
+      .then(data => {
+        const countriesSet = new Set();
+        Object.values(data).forEach(site => {
+          if (site.country) countriesSet.add(site.country);
+        });
+        $scope.$apply(() => {
+          $scope.countries = Array.from(countriesSet).sort().map(code => ({
+            code: code,
+            name: new Intl.DisplayNames(['en'], { type: 'region' }).of(code) || code,
+            flag: getFlag(code)
+          }));
+          $scope.loadingCountries = false;
+        });
+      })
+      .catch(err => {
+        console.warn('Failed to fetch live countries, using fallback:', err);
+        $scope.$apply(() => {
+          $scope.countries = MLAB_COUNTRIES.map(c => ({
+            ...c,
+            flag: getFlag(c.code)
+          }));
+          $scope.loadingCountries = false;
+        });
+      });
 
     var gaugeProgress;
 
@@ -44,17 +81,12 @@ angular.module('Measure.Measure', ['ngRoute'])
       $scope.measurementResult = {};
       $scope.msakResult = {};
 
-      // Generate a random UUID
       const sessionID = uuidv4();
 
-      // Randomly choose which test to start first.
-      if (Math.random() < 0.5) {
-        await runNdt7(sessionID)
-        await runMSAK(sessionID);
-      } else {
-        await runMSAK(sessionID);
-        await runNdt7(sessionID);
-      }
+      await Promise.all([
+        runNdt7(sessionID),
+        runMSAK(sessionID)
+      ]);
 
       $scope.$apply(function () {
         $scope.currentPhase = gettextCatalog.getString('Complete');
@@ -111,17 +143,22 @@ angular.module('Measure.Measure', ['ngRoute'])
         console.warn('Failed to fetch token, running without priority access:', err);
       }
 
+      var metadata = {
+        client_name: "speed-measurementlab-net",
+        client_session_id: sid,
+      };
+      if ($scope.selectedCountry) {
+        metadata.country = $scope.selectedCountry;
+      }
+
       return ndt7.test(
         {
           clientRegistrationToken: token,
-          loadbalancer: token ? locatePriorityURL : null,
+          loadbalancer: (token || $scope.selectedCountry) ? locatePriorityURL : null,
           userAcceptedDataPolicy: true,
           uploadworkerfile: "/libraries/ndt7-upload-worker.js",
           downloadworkerfile: "/libraries/ndt7-download-worker.js",
-          metadata: {
-            client_name: "speed-measurementlab-net",
-            client_session_id: sid,
-          }
+          metadata: metadata
         },
         {
           serverChosen: function (server) {
@@ -191,8 +228,9 @@ angular.module('Measure.Measure', ['ngRoute'])
     async function runMSAK(sid) {
       const client = new msak.Client("speed-measurementlab-net", "0.0.1", {
         onDownloadStart: (server) => {
-          console.log("Server: " + server.machine);
-          $scope.msakLocation = server.location.city + ", " + server.location.country;
+          if (server && server.machine) {
+            $scope.msakLocation = server.location.city + ", " + server.location.country;
+          }
         },
         onDownloadResult: (result) => {
           $scope.msakResult.download = result.goodput.toFixed(2) + ' Mb/s';
@@ -223,10 +261,56 @@ angular.module('Measure.Measure', ['ngRoute'])
         client_session_id: sid
       }
       client.cc = "cubic";
-      client.duration = 10000; // 10s
+      client.duration = 10000;
       client.streams = 1;
       client.debug = true;
 
+      if ($scope.selectedCountry) {
+        const locateURL = 'https://locate.measurementlab.net/v2/nearest/msak/throughput1?country=' + $scope.selectedCountry;
+        try {
+          const resp = await fetch(locateURL);
+          const data = await resp.json();
+          if (data.results && data.results.length > 0) {
+            const server = data.results[0];
+            const downloadURL = new URL(server.urls['wss:///throughput/v1/download']);
+            const uploadURL = new URL(server.urls['wss:///throughput/v1/upload']);
+            
+            const params = {
+              client_name: 'speed-measurementlab-net',
+              client_version: '0.0.1',
+              client_library_name: 'msak-js',
+              client_library_version: '0.3.1',
+              streams: '1',
+              cc: 'cubic',
+              duration: '10000',
+              bytes: '0',
+              client_session_id: sid
+            };
+            
+            for (const key in params) {
+              downloadURL.searchParams.set(key, params[key]);
+              uploadURL.searchParams.set(key, params[key]);
+            }
+            
+            await client.download({
+              location: server.location,
+              machine: server.machine,
+              download: downloadURL,
+              upload: uploadURL
+            });
+            await client.upload({
+              location: server.location,
+              machine: server.machine,
+              download: downloadURL,
+              upload: uploadURL
+            });
+            return;
+          }
+        } catch (err) {
+          console.warn('MSAK country lookup failed:', err);
+        }
+      }
+      
       await client.start();
     }
   });

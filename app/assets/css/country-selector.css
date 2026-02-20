@@ -1,0 +1,131 @@
+/* Country Selector Styling */
+.country-selector-wrapper {
+  position: relative;
+  margin-bottom: 1.5em;
+}
+
+.country-selector-wrapper label {
+  display: block;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  font-size: 1.1em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.country-select {
+  width: 100%;
+  padding: 0.85em 1em;
+  font-size: 1em;
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1em center;
+  padding-right: 2.5em;
+  max-height: 50vh;
+}
+
+.country-select:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.country-select:focus {
+  outline: none;
+  border-color: #5e42a6;
+  box-shadow: 0 0 0 3px rgba(94, 66, 166, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.country-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.country-select option {
+  background: #2e3842;
+  color: #fff;
+  padding: 0.75em 1em;
+  font-size: 1em;
+  line-height: 1.6;
+}
+
+.country-select option:hover {
+  background: #3e4852;
+}
+
+/* Custom scrollbar for dropdown */
+.country-select::-webkit-scrollbar {
+  width: 10px;
+}
+
+.country-select::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.country-select::-webkit-scrollbar-thumb {
+  background: rgba(94, 66, 166, 0.6);
+  border-radius: 5px;
+}
+
+.country-select::-webkit-scrollbar-thumb:hover {
+  background: rgba(94, 66, 166, 0.8);
+}
+
+/* Loading state */
+.country-select.loading {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 50 50'%3E%3Cpath fill='%23fff' d='M25,5A20.14,20.14,0,0,1,45,22.88a2.51,2.51,0,0,0,2.49,2.26h0A2.52,2.52,0,0,0,50,22.33a25.14,25.14,0,0,0-50,0,2.52,2.52,0,0,0,2.5,2.81h0A2.51,2.51,0,0,0,5,22.88,20.14,20.14,0,0,1,25,5Z'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 25 25' to='360 25 25' dur='0.6s' repeatCount='indefinite'/%3E%3C/path%3E%3C/svg%3E");
+  background-position: right 1em center;
+  background-size: 20px;
+  animation: none;
+}
+
+/* Selection indicator */
+.country-selector-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #5e42a6, #764ba2);
+  transition: width 0.3s ease;
+}
+
+.country-selector-wrapper:focus-within::after {
+  width: 100%;
+}
+
+/* Mobile optimizations */
+@media screen and (max-width: 736px) {
+  .country-select {
+    font-size: 16px;
+    padding: 0.75em;
+  }
+  
+  .country-selector-wrapper label {
+    font-size: 1em;
+  }
+}
+
+/* Accessibility */
+.country-select:focus-visible {
+  outline: 3px solid #5e42a6;
+  outline-offset: 2px;
+}
+
+/* Better spacing for flag emojis */
+.country-select option {
+  letter-spacing: 0.3px;
+}

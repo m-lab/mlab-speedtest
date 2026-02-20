@@ -13,6 +13,22 @@
             href="http://www.measurementlab.net/privacy/">data policy</a>, which includes retention and publication of
           IP addresses.</label>
       </p>
+      <div class="row">
+        <div class="12u">
+          <div class="country-selector-wrapper">
+            <label translate>🌍 Server Location (Optional)</label>
+            <select 
+              ng-model="selectedCountry" 
+              ng-disabled="privacyConsent !== true || loadingCountries"
+              ng-class="{'loading': loadingCountries}"
+              class="country-select"
+              size="1">
+              <option value="">{{loadingCountries ? '⏳ Loading servers...' : '🌐 Nearest Server (Auto)'}}</option>
+              <option ng-repeat="c in countries" value="{{c.code}}">{{c.flag}} {{c.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
       <div>
         <div class="row">
           <div class="6u">
