@@ -1,0 +1,18 @@
+{
+    "env": {
+        "node": true,
+        "es2020": true
+    },
+    "plugins": [
+        "simple-import-sort"
+    ],
+    "rules": {
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error"
+    },
+    "ignorePatterns": [
+        "node_modules/",
+        "dist/",
+        "app/"
+    ]
+}

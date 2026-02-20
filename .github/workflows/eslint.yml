@@ -1,0 +1,35 @@
+name: Lint import order
+
+'on':
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/**'
+      - 'src/js/**'
+      - 'eslint.config.js'
+      - 'package.json'
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'src/js/**'
+      - 'eslint.config.js'
+      - 'package.json'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  eslint-import-sort:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Check import order
+        run: npm run lint
