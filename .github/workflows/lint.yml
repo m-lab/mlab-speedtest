@@ -22,3 +22,32 @@ jobs:
       - uses: actions/checkout@v4
       - name: Lint GitHub Actions workflow files
         uses: rhysd/actionlint@v1.7.7
+
+  cspell:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check spelling
+        uses: streetsidesoftware/cspell-action@v6
+        with:
+          inline_config: |
+            {
+              "version": "0.2",
+              "language": "en",
+              "ignorePaths": [
+                ".github/workflows/lint.yml",
+                "node_modules/**",
+                "app/libraries/**",
+                "yarn.lock",
+                "**/*.min.js",
+                "translations/**"
+              ],
+              "words": [
+                "mlab", "msak", "ndt", "ndt7", "oti",
+                "measurementlab", "firebase", "firebaserc",
+                "jshint", "jshintrc", "jshintignore",
+                "gulpfile", "gettext", "protractor",
+                "rhysd", "actionlint", "cspell"
+              ]
+            }
