@@ -162,7 +162,6 @@ const SpeedTest = {
       console.warn('Failed to fetch token, running without priority access:', err);
     }
 
-    const self = this;
     return ndt7.test(
       {
         clientRegistrationToken: token,
@@ -176,90 +175,89 @@ const SpeedTest = {
         }
       },
       {
-        serverChosen: function(server) {
-          self.els.location.textContent = server.location.city + ', ' + server.location.country;
+        serverChosen: (server) => {
+          this.els.location.textContent = server.location.city + ', ' + server.location.country;
           console.log('Testing to:', {
             machine: server.machine,
             locations: server.location,
           });
         },
-        downloadStart: function() {
-          self.els.currentPhase.textContent = i18n.t('Download');
-          self.els.currentSpeed.textContent = i18n.t('Initializing');
+        downloadStart: () => {
+          this.els.currentPhase.textContent = i18n.t('Download');
+          this.els.currentSpeed.textContent = i18n.t('Initializing');
         },
-        downloadMeasurement: function(data) {
+        downloadMeasurement: (data) => {
           if (data.Source === 'client') {
-            self.els.currentSpeed.textContent = data.Data.MeanClientMbps.toFixed(2) + ' Mb/s';
-            const progress = (data.Data.ElapsedTime > self.TIME_EXPECTED) ? 0.5 :
-              data.Data.ElapsedTime / (self.TIME_EXPECTED * 2);
+            this.els.currentSpeed.textContent = data.Data.MeanClientMbps.toFixed(2) + ' Mb/s';
+            const progress = (data.Data.ElapsedTime > this.TIME_EXPECTED) ? 0.5 :
+              data.Data.ElapsedTime / (this.TIME_EXPECTED * 2);
             ProgressGauge.progress(progress);
           }
         },
-        downloadComplete: function(data) {
-          self.measurementResult.s2cRate =
+        downloadComplete: (data) => {
+          this.measurementResult.s2cRate =
             data.LastClientMeasurement.MeanClientMbps.toFixed(2) + ' Mb/s';
-          self.measurementResult.latency =
+          this.measurementResult.latency =
             (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0) + ' ms';
-          self.measurementResult.loss =
+          this.measurementResult.loss =
             (data.LastServerMeasurement.TCPInfo.BytesRetrans /
               data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2) + '%';
-          self.els.s2cRate.textContent = self.measurementResult.s2cRate;
-          self.els.latency.textContent = self.measurementResult.latency;
-          self.els.loss.textContent = self.measurementResult.loss;
+          this.els.s2cRate.textContent = this.measurementResult.s2cRate;
+          this.els.latency.textContent = this.measurementResult.latency;
+          this.els.loss.textContent = this.measurementResult.loss;
           console.log(data);
         },
-        uploadStart: function() {
-          self.els.currentPhase.textContent = i18n.t('Upload');
-          self.els.currentSpeed.textContent = i18n.t('Initializing');
+        uploadStart: () => {
+          this.els.currentPhase.textContent = i18n.t('Upload');
+          this.els.currentSpeed.textContent = i18n.t('Initializing');
         },
-        uploadMeasurement: function(data) {
+        uploadMeasurement: (data) => {
           if (data.Source === 'server') {
-            self.els.currentSpeed.textContent = (data.Data.TCPInfo.BytesReceived /
+            this.els.currentSpeed.textContent = (data.Data.TCPInfo.BytesReceived /
               data.Data.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
           }
           if (data.Source === 'client') {
-            const progress = (data.Data.ElapsedTime > self.TIME_EXPECTED) ? 1.0 :
-              data.Data.ElapsedTime / (self.TIME_EXPECTED * 2) + 0.5;
+            const progress = (data.Data.ElapsedTime > this.TIME_EXPECTED) ? 1.0 :
+              data.Data.ElapsedTime / (this.TIME_EXPECTED * 2) + 0.5;
             ProgressGauge.progress(progress);
           }
         },
-        uploadComplete: function(data) {
-          self.measurementResult.c2sRate =
+        uploadComplete: (data) => {
+          this.measurementResult.c2sRate =
             (data.LastServerMeasurement.TCPInfo.BytesReceived /
               data.LastServerMeasurement.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
-          self.els.c2sRate.textContent = self.measurementResult.c2sRate;
+          this.els.c2sRate.textContent = this.measurementResult.c2sRate;
         },
       },
     );
   },
 
   async runMSAK(sid) {
-    const self = this;
     const client = new msak.Client('speed-measurementlab-net', '0.0.1', {
-      onDownloadStart: function(server) {
+      onDownloadStart: (server) => {
         console.log('Server: ' + server.machine);
-        self.els.msakLocation.textContent = server.location.city + ', ' + server.location.country;
+        this.els.msakLocation.textContent = server.location.city + ', ' + server.location.country;
       },
-      onDownloadResult: function(result) {
-        self.msakResult.download = result.goodput.toFixed(2) + ' Mb/s';
-        self.msakResult.loss = (result.retransmission * 100).toFixed(2) + '%';
-        self.msakResult.latency = (result.minRTT / 1000).toFixed(0) + ' ms';
-        self.els.currentPhase.textContent = i18n.t('Download');
-        self.els.currentSpeed.textContent = result.goodput.toFixed(2) + ' Mb/s';
-        self.els.msakDownload.textContent = self.msakResult.download;
-        self.els.msakLatency.textContent = self.msakResult.latency;
-        self.els.msakLoss.textContent = self.msakResult.loss;
-        const progress = (result.elapsed > self.TIME_EXPECTED) ? 0.5 :
-          result.elapsed / (self.TIME_EXPECTED * 2);
+      onDownloadResult: (result) => {
+        this.msakResult.download = result.goodput.toFixed(2) + ' Mb/s';
+        this.msakResult.loss = (result.retransmission * 100).toFixed(2) + '%';
+        this.msakResult.latency = (result.minRTT / 1000).toFixed(0) + ' ms';
+        this.els.currentPhase.textContent = i18n.t('Download');
+        this.els.currentSpeed.textContent = result.goodput.toFixed(2) + ' Mb/s';
+        this.els.msakDownload.textContent = this.msakResult.download;
+        this.els.msakLatency.textContent = this.msakResult.latency;
+        this.els.msakLoss.textContent = this.msakResult.loss;
+        const progress = (result.elapsed > this.TIME_EXPECTED) ? 0.5 :
+          result.elapsed / (this.TIME_EXPECTED * 2);
         ProgressGauge.progress(progress);
       },
-      onUploadResult: function(result) {
-        self.msakResult.upload = result.goodput.toFixed(2) + ' Mb/s';
-        self.els.currentPhase.textContent = i18n.t('Upload');
-        self.els.currentSpeed.textContent = result.goodput.toFixed(2) + ' Mb/s';
-        self.els.msakUpload.textContent = self.msakResult.upload;
-        const progress = (result.elapsed > self.TIME_EXPECTED) ? 1.0 :
-          result.elapsed / (self.TIME_EXPECTED * 2) + 0.5;
+      onUploadResult: (result) => {
+        this.msakResult.upload = result.goodput.toFixed(2) + ' Mb/s';
+        this.els.currentPhase.textContent = i18n.t('Upload');
+        this.els.currentSpeed.textContent = result.goodput.toFixed(2) + ' Mb/s';
+        this.els.msakUpload.textContent = this.msakResult.upload;
+        const progress = (result.elapsed > this.TIME_EXPECTED) ? 1.0 :
+          result.elapsed / (this.TIME_EXPECTED * 2) + 0.5;
         ProgressGauge.progress(progress);
       }
     });
@@ -315,7 +313,6 @@ const SpeedTest = {
       },
     ];
 
-    const self = this;
     return pt.test(
       {
         userAcceptedDataPolicy: true,
@@ -323,14 +320,14 @@ const SpeedTest = {
         metadata: md[Math.floor(Math.random() * md.length)]
       },
       {
-        serverChosen: function(server) {
-          self.els.location.textContent = server.location.city + ', ' + server.location.country;
+        serverChosen: (server) => {
+          this.els.location.textContent = server.location.city + ', ' + server.location.country;
           console.log('Testing PT to:', {
             machine: server.machine,
             locations: server.location,
           });
         },
-        downloadComplete: function(data) {
+        downloadComplete: (data) => {
           console.log('PT result:', data);
         },
       },
