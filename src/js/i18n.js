@@ -56,24 +56,41 @@ const i18n = {
     return this.translations[key] || key;
   },
 
+  deriveKeyFromElement(el) {
+    const explicit = el.dataset.i18n;
+    if (explicit && explicit.trim() !== "") {
+      return explicit.trim();
+    }
+  
+    let raw = (el.dataset.i18nHtml !== undefined)
+      ? el.innerHTML
+      : el.textContent;
+  
+    if (!raw) {
+      console.warn("i18n: unable to derive key (empty content):", el);
+      return null;
+    }
+  
+    const key = raw.trim();
+    if (!key) {
+      console.warn("i18n: unable to derive key (whitespace):", el);
+      return null;
+    }
+  
+    return key;
+  },
+  
   translatePage() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
-      // Use explicit key if provided, otherwise derive from element content.
-      // This avoids fragile duplication of text in both the attribute and content.
-      let key = el.dataset.i18n;
-      if (!key) {
-        key = (el.dataset.i18nHtml !== undefined)
-          ? el.innerHTML.trim()
-          : el.textContent.trim();
-        // Store derived key for subsequent calls (e.g. re-translation)
-        el.dataset.i18n = key;
-      }
-      if (key) {
+      let key = this.deriveKeyFromElement(el);
+      if (!key) return;
+      el.dataset.i18n = key;
+      
+     
         if (el.dataset.i18nHtml !== undefined) {
           el.innerHTML = this.t(key);
         } else {
           el.textContent = this.t(key);
-        }
       }
     });
   }
