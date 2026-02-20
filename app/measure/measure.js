@@ -15,6 +15,20 @@ angular.module('Measure.Measure', ['ngRoute'])
 
     var gaugeProgress;
 
+    function safeMbpsFromBytes(bytes, micros) {
+      if (!micros || micros <= 0) {
+        return null;
+      }
+      return (bytes / micros * 8).toFixed(2) + ' Mb/s';
+    }
+
+    function safePercent(numerator, denominator) {
+      if (!denominator || denominator <= 0) {
+        return null;
+      }
+      return (numerator / denominator * 100).toFixed(2) + '%';
+    }
+
     $scope.startTest = async function () {
 
 
@@ -47,22 +61,31 @@ angular.module('Measure.Measure', ['ngRoute'])
       // Generate a random UUID
       const sessionID = uuidv4();
 
-      // Randomly choose which test to start first.
-      if (Math.random() < 0.5) {
-        await runNdt7(sessionID)
-        await runMSAK(sessionID);
-      } else {
-        await runMSAK(sessionID);
-        await runNdt7(sessionID);
-      }
+      try {
+        // Randomly choose which test to start first.
+        if (Math.random() < 0.5) {
+          await runNdt7(sessionID)
+          await runMSAK(sessionID);
+        } else {
+          await runMSAK(sessionID);
+          await runNdt7(sessionID);
+        }
 
-      $scope.$apply(function () {
-        $scope.currentPhase = gettextCatalog.getString('Complete');
-        $scope.currentSpeed = '';
-        $scope.measurementComplete = true;
-        $scope.startButtonClass = '';
-      });
-      testRunning = false;
+        $scope.$applyAsync(function () {
+          $scope.currentPhase = gettextCatalog.getString('Complete');
+          $scope.currentSpeed = '';
+          $scope.measurementComplete = true;
+          $scope.startButtonClass = '';
+        });
+      } catch (err) {
+        console.error('Measurement failed:', err);
+        $scope.$applyAsync(function () {
+          $scope.currentSpeed = '';
+          $scope.startButtonClass = '';
+        });
+      } finally {
+        testRunning = false;
+      }
     }
 
     // Determine the M-Lab project based on a placeholder that is substituted
@@ -134,14 +157,14 @@ angular.module('Measure.Measure', ['ngRoute'])
             });
           },
           downloadStart: (data) => {
-            $scope.$apply(function () {
+            $scope.$applyAsync(function () {
               $scope.currentPhase = gettextCatalog.getString('Download');
               $scope.currentSpeed = gettextCatalog.getString('Initializing');
             });
           },
           downloadMeasurement: (data) => {
             if (data.Source === 'client') {
-              $scope.$apply(function () {
+              $scope.$applyAsync(function () {
                 $scope.currentSpeed = data.Data.MeanClientMbps.toFixed(2) + ' Mb/s';
               });
               gaugeProgress = (data.Data.ElapsedTime > TIME_EXPECTED) ? 0.5 :
@@ -150,27 +173,42 @@ angular.module('Measure.Measure', ['ngRoute'])
             }
           },
           downloadComplete: (data) => {
+            var s2cRate = data.LastClientMeasurement &&
+              data.LastClientMeasurement.MeanClientMbps;
+            var minRtt = data.LastServerMeasurement &&
+              data.LastServerMeasurement.TCPInfo &&
+              data.LastServerMeasurement.TCPInfo.MinRTT;
+            var bytesRetrans = data.LastServerMeasurement &&
+              data.LastServerMeasurement.TCPInfo &&
+              data.LastServerMeasurement.TCPInfo.BytesRetrans;
+            var bytesSent = data.LastServerMeasurement &&
+              data.LastServerMeasurement.TCPInfo &&
+              data.LastServerMeasurement.TCPInfo.BytesSent;
             $scope.measurementResult.s2cRate =
-              data.LastClientMeasurement.MeanClientMbps.toFixed(2) + ' Mb/s';
+              (s2cRate != null) ? s2cRate.toFixed(2) + ' Mb/s' : '--';
             $scope.measurementResult.latency =
-              (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0) + ' ms';
+              (minRtt != null) ? (minRtt / 1000).toFixed(0) + ' ms' : '--';
             $scope.measurementResult.loss =
-              (data.LastServerMeasurement.TCPInfo.BytesRetrans /
-                data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2) + '%';
+              (bytesRetrans != null && bytesSent != null)
+                ? (safePercent(bytesRetrans, bytesSent) || '--')
+                : '--';
             console.log(data);
           },
           uploadStart: (data) => {
-            $scope.$apply(function () {
+            $scope.$applyAsync(function () {
               $scope.currentPhase = gettextCatalog.getString('Upload');
               $scope.currentSpeed = gettextCatalog.getString('Initializing');
             })
           },
           uploadMeasurement: function (data) {
             if (data.Source === 'server') {
-              $scope.$apply(function () {
+              $scope.$applyAsync(function () {
                 // bytes * 1/microseconds * bits/byte
-                $scope.currentSpeed = (data.Data.TCPInfo.BytesReceived /
-                  data.Data.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
+                var serverRate = safeMbpsFromBytes(
+                  data.Data.TCPInfo.BytesReceived,
+                  data.Data.TCPInfo.ElapsedTime
+                );
+                $scope.currentSpeed = serverRate || '--';
               });
             }
             if (data.Source === 'client') {
@@ -180,9 +218,11 @@ angular.module('Measure.Measure', ['ngRoute'])
             }
           },
           uploadComplete: function (data) {
-            $scope.measurementResult.c2sRate =
-              (data.LastServerMeasurement.TCPInfo.BytesReceived /
-                data.LastServerMeasurement.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
+            var uploadRate = safeMbpsFromBytes(
+              data.LastServerMeasurement.TCPInfo.BytesReceived,
+              data.LastServerMeasurement.TCPInfo.ElapsedTime
+            );
+            $scope.measurementResult.c2sRate = uploadRate || '--';
           },
         },
       )
@@ -198,7 +238,7 @@ angular.module('Measure.Measure', ['ngRoute'])
           $scope.msakResult.download = result.goodput.toFixed(2) + ' Mb/s';
           $scope.msakResult.loss = (result.retransmission * 100).toFixed(2) + '%';
           $scope.msakResult.latency = (result.minRTT / 1000).toFixed(0) + ' ms';
-          $scope.$apply(function () {
+          $scope.$applyAsync(function () {
             $scope.currentPhase = gettextCatalog.getString('Download');
             $scope.currentSpeed = result.goodput.toFixed(2) + ' Mb/s';
           });
@@ -209,7 +249,7 @@ angular.module('Measure.Measure', ['ngRoute'])
 
         onUploadResult: (result) => {
           $scope.msakResult.upload = result.goodput.toFixed(2) + ' Mb/s';
-          $scope.$apply(function () {
+          $scope.$applyAsync(function () {
             $scope.currentPhase = gettextCatalog.getString('Upload');
             $scope.currentSpeed = result.goodput.toFixed(2) + ' Mb/s';
           });

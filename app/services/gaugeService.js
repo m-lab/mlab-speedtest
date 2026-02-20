@@ -2,6 +2,15 @@ angular.module('Measure.GaugeService', [])
 
 .factory('ProgressGauge', function() {
   var aProgress = document.getElementById('activeProgress');
+  if (!aProgress) {
+    console.warn('ProgressGauge: missing #activeProgress element');
+    return {
+      element: null,
+      reset: function() {},
+      progress: function() {},
+      create: function() {}
+    };
+  }
   var barCTX = aProgress.getContext("2d");
 
   function setInactive() {
