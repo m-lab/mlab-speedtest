@@ -7,8 +7,6 @@
   "license": "MIT",
   "devDependencies": {
     "bower": "^1.8.8",
-    "eslint": "^8.57.0",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
     "gulp": "^4.0.2",
     "gulp-angular-gettext": "^2.3.0",
     "gulp-inject": "^5.0.5",
@@ -24,7 +22,6 @@
   },
   "scripts": {
     "build": "npm install -g firebase-tools gulp && yarn install && yarn && gulp copy_libs",
-    "lint": "eslint scripts/",
     "postinstall": "node -e \"try { require('fs').symlinkSync(require('path').resolve('node_modules/@bower_components'), 'app/libraries', 'junction') } catch (e) { }\"",
     "pretest": "npm install"
   },

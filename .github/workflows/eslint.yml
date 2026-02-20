@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile
+      - name: Install ESLint and import-sort plugin
+        run: npm install --no-save eslint@8 eslint-plugin-simple-import-sort
       - name: Check import order
-        run: npm run lint
+        run: npx eslint scripts/
