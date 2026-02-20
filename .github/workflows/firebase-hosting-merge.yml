@@ -16,6 +16,7 @@ permissions:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - run: npm install -g yarn && yarn install --frozen-lockfile && yarn build
