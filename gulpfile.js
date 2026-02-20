@@ -2,18 +2,18 @@ var gulp = require('gulp');
 var inject = require('gulp-inject');
 var gettext = require('gulp-angular-gettext');
 
-function inject(cb) {
+function injectTranslations(cb) {
   gulp.src('www/index.html')
-  .pipe(inject(gulp.src('www/translations/scripts/*.js', {read: false}), {relative: true, name: 'translations'}))
-  .pipe(gulp.dest('www'));
+    .pipe(inject(gulp.src('www/translations/scripts/*.js', { read: false }), { relative: true, name: 'translations' }))
+    .pipe(gulp.dest('www'));
 
   cb();
 };
 
 function translations(cb) {
   return gulp.src('translations/languages/*.po')
-  .pipe(gettext.compile())
-  .pipe(gulp.dest('app/assets/translations/'));
+    .pipe(gettext.compile())
+    .pipe(gulp.dest('app/assets/translations/'));
   cb();
 };
 
@@ -23,10 +23,10 @@ function pot(cb) {
     'app/measure/*.html',
     'app/index.html',
   ])
-  .pipe(gettext.extract('application.pot', {
-    // options to pass to angular-gettext-tools...
-  }))
-  .pipe(gulp.dest('translations/source'));
+    .pipe(gettext.extract('application.pot', {
+      // options to pass to angular-gettext-tools...
+    }))
+    .pipe(gulp.dest('translations/source'));
 
   cb();
 };
@@ -36,7 +36,7 @@ function copy_libs(cb) {
   // Copy all the libraries under @bower_components to libraries/.
   gulp.src([
     "./node_modules/@bower_components/**/*.**",
-  ], {base: "./node_modules/@bower_components"})
+  ], { base: "./node_modules/@bower_components" })
     .pipe(gulp.dest('./app/libraries'));
 
   // Copy the @m-lab js files to libraries/.
@@ -45,7 +45,7 @@ function copy_libs(cb) {
     "./node_modules/@m-lab/msak/dist/*.min.js",
   ])
 
-  .pipe(gulp.dest('./app/libraries'));
+    .pipe(gulp.dest('./app/libraries'));
 
   gulp.src([
     "./node_modules/ua-device-detector/ua-device-detector.min.js",
@@ -58,7 +58,7 @@ function copy_libs(cb) {
 };
 
 exports.translations = gulp.series(pot, translations);
-exports.inject = gulp.series(translations, inject);
+exports.inject = gulp.series(translations, injectTranslations);
 exports.copy_libs = copy_libs;
 exports.pot = pot;
 
