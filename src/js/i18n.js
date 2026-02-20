@@ -58,9 +58,17 @@ const i18n = {
 
   translatePage() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.dataset.i18n;
+      // Use explicit key if provided, otherwise derive from element content.
+      // This avoids fragile duplication of text in both the attribute and content.
+      let key = el.dataset.i18n;
+      if (!key) {
+        key = (el.dataset.i18nHtml !== undefined)
+          ? el.innerHTML.trim()
+          : el.textContent.trim();
+        // Store derived key for subsequent calls (e.g. re-translation)
+        el.dataset.i18n = key;
+      }
       if (key) {
-        // Check if element has HTML content that needs translation
         if (el.dataset.i18nHtml !== undefined) {
           el.innerHTML = this.t(key);
         } else {

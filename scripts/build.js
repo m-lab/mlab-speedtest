@@ -66,7 +66,8 @@ function build() {
 
   // Convert .po translations to JSON
   console.log('Converting translations...');
-  require('./po-to-json');
+  const convertTranslations = require('./po-to-json');
+  convertTranslations(path.join(DIST, 'translations'));
 
   // Copy M-Lab libraries from node_modules
   console.log('Copying M-Lab libraries...');
