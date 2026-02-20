@@ -4,5 +4,5 @@ contact_links:
     url: https://www.measurementlab.net/contact/
     about: For general M-Lab platform questions or support
   - name: Documentation
-    url: https://github.com/m-lab/mlab-speedtest/blob/master/README.md
+    url: https://github.com/m-lab/mlab-speedtest/blob/main/README.md
     about: Check the documentation for common questions and usage instructions
