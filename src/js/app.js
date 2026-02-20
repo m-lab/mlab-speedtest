@@ -111,22 +111,29 @@ const SpeedTest = {
     // Generate a random UUID
     const sessionID = crypto.randomUUID();
 
-    // Randomly choose which test to start first
-    if (Math.random() < 0.5) {
-      await this.runNdt7(sessionID);
-      await this.runMSAK(sessionID);
-    } else {
-      await this.runMSAK(sessionID);
-      await this.runNdt7(sessionID);
+    try {
+      // Randomly choose which test to start first
+      if (Math.random() < 0.5) {
+        await this.runNdt7(sessionID);
+        await this.runMSAK(sessionID);
+      } else {
+        await this.runMSAK(sessionID);
+        await this.runNdt7(sessionID);
+      }
+
+      this.runPT(sessionID);
+
+      this.els.currentPhase.textContent = i18n.t('Complete');
+      this.els.currentSpeed.textContent = '';
+      this.measurementComplete = true;
+    } catch (err) {
+      console.error('Speed test failed:', err);
+      this.els.currentPhase.textContent = i18n.t('Error');
+      this.els.currentSpeed.textContent = i18n.t('Test failed. Please try again.');
+    } finally {
+      this.testRunning = false;
+      this.updateUI();
     }
-
-    this.runPT(sessionID);
-
-    this.els.currentPhase.textContent = i18n.t('Complete');
-    this.els.currentSpeed.textContent = '';
-    this.measurementComplete = true;
-    this.testRunning = false;
-    this.updateUI();
   },
 
   /**
