@@ -200,9 +200,15 @@ const SpeedTest = {
             data.LastClientMeasurement.MeanClientMbps.toFixed(2) + ' Mb/s';
           self.measurementResult.latency =
             (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0) + ' ms';
-          self.measurementResult.loss =
-            (data.LastServerMeasurement.TCPInfo.BytesRetrans /
-              data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2) + '%';
+            const bytesSent = data.LastServerMeasurement.TCPInfo.BytesSent;
+            const bytesRetrans = data.LastServerMeasurement.TCPInfo.BytesRetrans;
+            
+            if (bytesSent > 0) {
+              self.measurementResult.loss = ((bytesRetrans / bytesSent) * 100).toFixed(2) + '%';
+            } else {
+              // no data sent, avoid division by zero
+              self.measurementResult.loss = 'N/A';
+            }
           self.els.s2cRate.textContent = self.measurementResult.s2cRate;
           self.els.latency.textContent = self.measurementResult.latency;
           self.els.loss.textContent = self.measurementResult.loss;
