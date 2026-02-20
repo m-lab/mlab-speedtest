@@ -26,6 +26,7 @@ const SpeedTest = {
       measurementSpace: document.getElementById('measurementSpace'),
       progressSection: document.getElementById('progressSection'),
       resultsSection: document.getElementById('resultsSection'),
+
       // Results
       location: document.getElementById('ndtLocation'),
       msakLocation: document.getElementById('msakLocation'),
