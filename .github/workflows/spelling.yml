@@ -1,0 +1,23 @@
+name: Spell check
+
+'on':
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  typos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check spelling
+        uses: crate-ci/typos@v1.29.10
+        with:
+          # Whitelist M-Lab specific technical terms
+          extend_words: 'mlab,msak,ndt,ndt7,oti'
