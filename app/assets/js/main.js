@@ -62,98 +62,60 @@
 		// Sidebar.
 			if ($sidebar.length > 0) {
 
-				var $sidebar_a = $sidebar.find('a');
+			var $sidebar_a = $sidebar.find('a');
+			var isScrollingByClick = false;
 
-				$sidebar_a
-					.addClass('scrolly')
-					.on('click', function () {
+			$sidebar_a
+				.addClass('scrolly')
+				.on('click', function () {
 
-						var $this = $(this);
+					var $this = $(this);
 
-						// External link? Bail.
-						if ($this.attr('href').charAt(0) != '#')
-							return;
+					if ($this.attr('href').charAt(0) != '#')
+						return;
 
-						// Deactivate all links.
-						$sidebar_a.removeClass('active');
+					isScrollingByClick = true;
 
-						// Activate link and lock it
-						$this
-							.addClass('active')
-							.addClass('active-locked');
+					$sidebar_a.removeClass('active');
+					$this.addClass('active');
 
-					})
-					.each(function () {
-
-						var $this = $(this),
-							id = $this.attr('href'),
-							$section = $(id);
-
-					 // No section for this link? Bail.
-						if ($section.length < 1)
-							return;
-                     // Scrollex.
-						$section.scrollex({
-							mode: 'top',
-							top: '15vh',
-							bottom: '15vh',
-							initialize: function () {
-                                // Deactivate section.
-								if (skel.canUse('transition'))
-									$section.addClass('inactive');
-
-							},
-							enter: function () {
-								// Activate section.
-								$section.removeClass('inactive');
-								// No locked links? Deactivate all links and activate this section's one.
-								if ($sidebar_a.filter('.active-locked').length === 0) {
-
-									$sidebar_a.removeClass('active');
-									$this.addClass('active');
-
-								}
-								// Otherwise, if this section's link is the one that's locked, unlock it.
-								else if ($this.hasClass('active-locked')) {
-
-									$this.removeClass('active-locked');
-
-								}
-
-							}
-						});
-
-					});
-
-				// Manual scroll fallback (more reliable)
-				$(window).on('scroll', function () {
-
-					var scrollPos = $(document).scrollTop();
-
-					$sidebar_a.each(function () {
-
-						var currLink = $(this);
-						var refElement = $(currLink.attr("href"));
-
-						if (refElement.length) {
-
-							var top = refElement.offset().top;
-							var bottom = top + refElement.outerHeight();
-
-							if (scrollPos + 150 >= top && scrollPos + 150 < bottom) {
-
-								$sidebar_a.removeClass("active");
-								currLink.addClass("active");
-
-							}
-
-						}
-
-					});
+					// Re-enable scroll detection after animation finishes
+					setTimeout(function () {
+						isScrollingByClick = false;
+					}, 1000); // must match scrolly speed
 
 				});
 
-			}
+			$(window).on('scroll', function () {
+
+				if (isScrollingByClick) return; // 🚀 prevent flicker
+
+				var scrollPos = $(document).scrollTop();
+
+				$sidebar_a.each(function () {
+
+					var currLink = $(this);
+					var refElement = $(currLink.attr("href"));
+
+					if (refElement.length) {
+
+						var top = refElement.offset().top;
+						var bottom = top + refElement.outerHeight();
+
+						if (scrollPos + 150 >= top && scrollPos + 150 < bottom) {
+
+							$sidebar_a.removeClass("active");
+							currLink.addClass("active");
+
+						}
+
+					}
+
+				});
+
+			});
+
+		}
 
 		// Scrolly.
 			$('.scrolly').scrolly({
