@@ -46,7 +46,7 @@ msgstr "Müzakirə və Bildiriş Qrupu"
 
 #: measure.html:97
 msgid ""
-"Distributed infrastructure and large user base provides an open, verifiable "
+"Distributed infrastructure and large user base provide an open, verifiable "
 "measurement platform for global network performance."
 msgstr ""
 "Paylanmış infrastruktur və geniş istifadəçi bazası qlobal şəbəkə işi üçün "
@@ -207,7 +207,7 @@ msgstr "Yüklə"
 
 #: measure.html:102
 msgid ""
-"Used by public organization, academic researchers, regulators and companies "
+"Used by public organizations, academic researchers, regulators and companies "
 "around the world to understand the health of the Internet."
 msgstr ""
 "İnternetin durumunu anlamaq üçün ictimai təşkilat, akademik tədqiqatçılar, "

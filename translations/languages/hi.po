@@ -45,7 +45,7 @@ msgstr "चर्चा और सूचना समूह"
 
 #: measure.html:97
 msgid ""
-"Distributed infrastructure and large user base provides an open, verifiable "
+"Distributed infrastructure and large user base provide an open, verifiable "
 "measurement platform for global network performance."
 msgstr ""
 "वितरित अवसंरचना और बड़े उपयोगकर्ता आधार वैश्विक नेटवर्क के प्रदर्शन के लिए "
@@ -204,7 +204,7 @@ msgstr "अपलोड करें"
 
 #: measure.html:102
 msgid ""
-"Used by public organization, academic researchers, regulators and companies "
+"Used by public organizations, academic researchers, regulators and companies "
 "around the world to understand the health of the Internet."
 msgstr ""
 "इंटरनेट के स्वास्थ्य को समझने के लिए सार्वजनिक संगठन, शैक्षिक शोधकर्ताओं, "

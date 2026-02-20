@@ -43,7 +43,7 @@ msgstr "討論與公告群組"
 
 #: measure.html:97
 msgid ""
-"Distributed infrastructure and large user base provides an open, verifiable "
+"Distributed infrastructure and large user base provide an open, verifiable "
 "measurement platform for global network performance."
 msgstr "分散式的基礎設施和大型用戶基礎提供了一個開放、可查證的測量平台來了解全球的網路表現。"
 
@@ -192,7 +192,7 @@ msgstr "上傳"
 
 #: measure.html:102
 msgid ""
-"Used by public organization, academic researchers, regulators and companies "
+"Used by public organizations, academic researchers, regulators and companies "
 "around the world to understand the health of the Internet."
 msgstr "由全球的公共組織、學術研究人員、執法者以及商業公司利用來了解網際網路的健康狀況。"
 

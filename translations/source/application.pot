@@ -35,7 +35,7 @@ msgid "Discussion and Notification Group"
 msgstr ""
 
 #: measure.html:100
-msgid "Distributed infrastructure and large user base provides an open, verifiable measurement platform for global network performance."
+msgid "Distributed infrastructure and large user base provide an open, verifiable measurement platform for global network performance."
 msgstr ""
 
 #: measure.html:57
@@ -166,7 +166,7 @@ msgid "Upload"
 msgstr ""
 
 #: measure.html:105
-msgid "Used by public organization, academic researchers, regulators and companies around the world to understand the health of the Internet."
+msgid "Used by public organizations, academic researchers, regulators and companies around the world to understand the health of the Internet."
 msgstr ""
 
 #: measure.html:121

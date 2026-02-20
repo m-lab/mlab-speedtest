@@ -45,7 +45,7 @@ msgstr "گروه بحث و اطلاع‌رسانی"
 
 #: measure.html:97
 msgid ""
-"Distributed infrastructure and large user base provides an open, verifiable "
+"Distributed infrastructure and large user base provide an open, verifiable "
 "measurement platform for global network performance."
 msgstr ""
 "زیرساخت توزیع شده و پایگاه وسیع کاربری یک پلتفرم سنجش آزاد و قابل تصدیق را "
@@ -203,7 +203,7 @@ msgstr "بارگذاری"
 
 #: measure.html:102
 msgid ""
-"Used by public organization, academic researchers, regulators and companies "
+"Used by public organizations, academic researchers, regulators and companies "
 "around the world to understand the health of the Internet."
 msgstr ""
 "برای فهم سلامت اینترنت توسط سازمان‌های عمومی، محققان دانشگاهی، رگولاتورها و "

@@ -46,7 +46,7 @@ msgstr "Groupe de discussion et de notification"
 
 #: measure.html:97
 msgid ""
-"Distributed infrastructure and large user base provides an open, verifiable "
+"Distributed infrastructure and large user base provide an open, verifiable "
 "measurement platform for global network performance."
 msgstr ""
 "Une infrastructure distribuée et un vaste parc d'utilisateurs fournissent "
@@ -212,7 +212,7 @@ msgstr "Téléversement"
 
 #: measure.html:102
 msgid ""
-"Used by public organization, academic researchers, regulators and companies "
+"Used by public organizations, academic researchers, regulators and companies "
 "around the world to understand the health of the Internet."
 msgstr ""
 "Utilisé par des organismes publics, des chercheurs universitaires, des "

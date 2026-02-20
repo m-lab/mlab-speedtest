@@ -21,13 +21,13 @@ Translations for this site are managed in the [Open Technology Fund's Localizati
 * Download a completed language translation file
   * Visit the Transifex site and locate a completed language
   * Click **Interface Language Strings** and then **Download for use** to download the completed language `.po` file
-  * Save it in the folder: `/translations/source/` using the file name pattern: **<two letter langugage code>.po**
+  * Save it in the folder: `/translations/source/` using the file name pattern: **<two letter language code>.po**
 * Create new language template & update language string references
   * Create a copy of an existing translation folder and index.html file, and make some edits to support the new language
     * Copy the folder and index file: `cp -r app/nl app/es`
     * Edit the index file to change the language it references. In `app/es/index.html`: 
       * change: `const INTERFACE_LANGUAGE = 'nl';` to `const INTERFACE_LANGUAGE = 'es';`
-      * change: `<script src="/assets/translations/it.js"></script>`
+      * change: `<script src="/assets/translations/nl.js"></script>`
     * to: `<script src="/assets/translations/es.js"></script>`
   * Regenerate the supported language strings: 
     * `gulp inject`
