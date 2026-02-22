@@ -14,7 +14,7 @@ function translations(cb) {
   return gulp.src('translations/languages/*.po')
   .pipe(gettext.compile())
   .pipe(gulp.dest('app/assets/translations/'));
-  cb();
+
 };
 
 function pot(cb) {
@@ -28,7 +28,7 @@ function pot(cb) {
   }))
   .pipe(gulp.dest('translations/source'));
 
-  cb();
+  
 };
 
 // Copy dependencies to ./public/libs/
