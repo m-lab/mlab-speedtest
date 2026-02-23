@@ -1,0 +1,216 @@
+<!DOCTYPE HTML>
+<!--
+  Hyperspace by HTML5 UP
+  html5up.net | @ajlkn
+  Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+  <head>
+    <title>Speed Test by Measurement Lab</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="assets/images/mlab_logo_m.ico">
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+
+    <!-- Sidebar -->
+    <section id="sidebar">
+      <div class="inner">
+        <nav>
+          <ul>
+            <li><a href="#intro" class="active" data-i18n>Measure</a></li>
+            <li><a href="#about" data-i18n>About</a></li>
+            <li><a href="#contact" data-i18n>Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </section>
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+      <!-- Intro -->
+      <section id="intro" class="wrapper style1 fullscreen">
+        <div class="features">
+          <section>
+            <h1 data-i18n>Test Your Speed</h1>
+            <p class="startIntroLabel">
+              <span data-i18n>M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection through quick measurements.</span><br />
+            </p>
+            <p>
+              <input type="checkbox" id="privacyConsent" name="privacyConsent">
+              <label for="privacyConsent" style="font-size: smaller;" data-i18n data-i18n-html>I agree to the <a href="http://www.measurementlab.net/privacy/">data policy</a>, which includes retention and publication of IP addresses.</label>
+            </p>
+            <div class="row">
+              <div class="col-6">
+                <a id="startButton" class="button special startButton big disabled">
+                  <span class="btn-begin"><span data-i18n>Begin</span> <i class="fa fa-play" aria-hidden="true"></i></span>
+                  <span class="btn-again" style="display:none;"><span data-i18n>Again</span> <i class="fa fa-repeat" aria-hidden="true"></i></span>
+                  <span class="btn-testing" style="display:none;"><span data-i18n>Testing</span> <i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i></span>
+                </a>
+              </div>
+              <div class="col-6">
+                <span id="privacyMessage" data-i18n class="privacyConsentMessage">Please agree to the data policy prior to the test.</span>
+              </div>
+            </div>
+            <small style="font-style: italic;" data-i18n>We are temporarily running multiple tests back to back to calibrate new measurement protocols. This means results may take a little longer to appear than usual. Thank you for your help.</small><br /><br />
+            <small data-i18n data-i18n-html>For more on M-Lab's data collection and measurement, including the disclosure of IP addresses, see our <a href="http://www.measurementlab.net/privacy/">Privacy Policy</a>.</small>
+          </section>
+          <section id="measurementSpace">
+            <div id="progressSection">
+              <h1 style="height: 0.5em"></h1>
+              <div class="progress-bar">
+                <canvas id="activeProgress" class="progress-active" height="275" width="275"></canvas>
+                <div class="progress-label">
+                  <h2 id="currentSpeed"></h2>
+                  <h4 id="currentPhase"></h4>
+                </div>
+              </div>
+            </div>
+            <div id="resultsSection" style="display: none;">
+              <h1 data-i18n>Results</h1>
+              <table class="alt">
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td>NDT <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/ndt/" target="_blank"></a></td>
+                    <td>MSAK <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/msak/" target="_blank"></a></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-server" aria-hidden="true"></i></td>
+                    <td data-i18n>Test Server</td>
+                    <td><strong id="ndtLocation"></strong></td>
+                    <td><strong id="msakLocation"></strong></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-download" aria-hidden="true"></i></td>
+                    <td data-i18n>Download</td>
+                    <td><strong id="s2cRate"></strong></td>
+                    <td><strong id="msakDownload"></strong></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-upload" aria-hidden="true"></i></td>
+                    <td data-i18n>Upload</td>
+                    <td><strong id="c2sRate"></strong></td>
+                    <td><strong id="msakUpload"></strong></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-hourglass-start" aria-hidden="true"></i></td>
+                    <td data-i18n>Latency</td>
+                    <td><strong id="latency"></strong></td>
+                    <td><strong id="msakLatency"></strong></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-signal" aria-hidden="true"></i></td>
+                    <td data-i18n>Retransmission</td>
+                    <td><strong id="loss"></strong></td>
+                    <td><strong id="msakLoss"></strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section id="about" class="wrapper style3">
+        <div class="inner">
+          <h2 data-i18n>About</h2>
+          <p data-i18n>Measurement Lab (M-Lab) provides the largest collection of open Internet performance data on the planet. As a consortium of research, industry, and public-interest partners, M-Lab is dedicated to providing an ecosystem for the open, verifiable measurement of global network performance.</p>
+          <div class="features">
+            <section>
+              <span class="icon major fa-code"></span>
+              <h3 data-i18n>Open Source</h3>
+              <p data-i18n>Measurement tools are openly licensed and operated, allowing third parties to develop their own client-side measurement software and audit the source.</p>
+            </section>
+            <section>
+              <span class="icon major fa-users"></span>
+              <h3 data-i18n>Public Data</h3>
+              <p data-i18n>Data collected is made available to the public, allowing researchers and anyone else to build on a common pool of network measurement information.</p>
+            </section>
+            <section>
+              <span class="icon major fa-globe"></span>
+              <h3 data-i18n>Global</h3>
+              <p data-i18n>Distributed infrastructure and large user base provides an open, verifiable measurement platform for global network performance.</p>
+            </section>
+            <section>
+              <span class="icon major fa-institution"></span>
+              <h3 data-i18n>Trusted</h3>
+              <p data-i18n>Used by public organization, academic researchers, regulators and companies around the world to understand the health of the Internet.</p>
+            </section>
+          </div>
+          <ul class="actions">
+            <li><a href="http://measurementlab.net" class="button" data-i18n>Learn more</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section id="contact" class="wrapper style1">
+        <div class="inner">
+          <h2 data-i18n>Contact</h2>
+          <ul class="alt">
+            <li data-i18n>Questions or comments about M-Lab and its tools?</li>
+            <li data-i18n>Want to participate in M-Lab?</li>
+            <li data-i18n>Need to report an issue or bug?</li>
+            <li data-i18n>Please contact us.</li>
+          </ul>
+          <div class="">
+            <section>
+              <ul class="contact">
+                <li>
+                  <h3 data-i18n>Email</h3>
+                  <a href="mailto:support@measurementlab.net">support@measurementlab.net</a>
+                </li>
+                <li>
+                  <h3 data-i18n>Discussion and Notification Group</h3>
+                  <a href="https://groups.google.com/a/measurementlab.net/forum/#!forum/discuss" target="_blank" data-i18n>Join Group</a>
+                  <i class="fa fa-link" aria-hidden="true"></i>
+                </li>
+                <li>
+                  <h3 data-i18n>Social</h3>
+                  <ul class="icons">
+                    <li><a href="https://twitter.com/MeasurementLab" class="fa-twitter" target="_blank"><span class="label" data-i18n>Twitter</span></a></li>
+                    <li><a href="https://github.com/m-lab" class="fa-github" target="_blank"><span class="label" data-i18n>GitHub</span></a></li>
+                  </ul>
+                </li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer" class="wrapper style1-alt">
+      <div class="inner">
+        <ul class="menu">
+          <li><a href="http://www.measurementlab.net/">Measurement Lab</a></li>
+          <li>Template: <a href="http://html5up.net">HTML5 UP</a></li>
+          <li><a href="http://www.measurementlab.net/privacy/" data-i18n>Privacy Policy</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="libraries/ndt7.js"></script>
+    <script src="libraries/msak.min.js"></script>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/gauge.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WV41BWS391"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WV41BWS391');
+    </script>
+  </body>
+</html>
