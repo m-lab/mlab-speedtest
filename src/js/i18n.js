@@ -6,12 +6,15 @@ const i18n = {
   translations: {},
   currentLang: 'en',
   supported: ['en', 'es', 'de', 'fr', 'it', 'nl', 'ru', 'zh', 'hi', 'el', 'az', 'fa', 'id', 'br', 'pt'],
+  rtlLanguages: ['fa'],
 
   async init() {
     this.currentLang = this.detectLanguage();
     if (this.currentLang !== 'en') {
       await this.load(this.currentLang);
     }
+    document.documentElement.lang = this.currentLang;
+    document.documentElement.dir = this.rtlLanguages.includes(this.currentLang) ? 'rtl' : 'ltr';
     this.translatePage();
   },
 
