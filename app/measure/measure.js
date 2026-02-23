@@ -7,6 +7,7 @@ angular.module('Measure.Measure', ['ngRoute'])
     var testRunning = false;
 
     $scope.measurementComplete = false;
+    $scope.testRunning = false;
 
     ProgressGauge.create();
 
@@ -31,6 +32,7 @@ angular.module('Measure.Measure', ['ngRoute'])
         return;
       }
       testRunning = true;
+      $scope.testRunning = true;
 
       if ($(window).width() < 981) {
         $('html, body').animate({
@@ -63,6 +65,7 @@ angular.module('Measure.Measure', ['ngRoute'])
         $scope.startButtonClass = '';
       });
       testRunning = false;
+      $scope.testRunning = false;
     }
 
     // Determine the M-Lab project based on a placeholder that is substituted
