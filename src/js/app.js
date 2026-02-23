@@ -60,6 +60,7 @@ const SpeedTest = {
     } else {
       this.els.startButton.classList.remove('disabled');
     }
+    this.els.privacyCheckbox.disabled = this.testRunning;
 
     // Update button text
     const beginSpan = this.els.startButton.querySelector('.btn-begin');
