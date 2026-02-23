@@ -233,7 +233,7 @@ const SpeedTest = {
   },
 
   async runMSAK(sid) {
-    const client = new msak.Client('speed-measurementlab-net', '0.0.1', {
+    const client = new msak.Client('speed-measurementlab-net', '1.0.0', {
       onDownloadStart: (server) => {
         console.log('Server: ' + server.machine);
         this.els.msakLocation.textContent = server.location.city + ', ' + server.location.country;
