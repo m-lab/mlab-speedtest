@@ -10,8 +10,7 @@
   },
   "dependencies": {
     "@m-lab/msak": "0.3.1",
-    "@m-lab/ndt7": "0.1.4",
-    "@m-lab/packet-test": "0.0.16"
+    "@m-lab/ndt7": "0.1.4"
   },
   "devDependencies": {
     "gettext-parser": "^8.0.0"

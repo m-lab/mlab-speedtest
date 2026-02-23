@@ -86,11 +86,6 @@ function build() {
   const msakPkg = path.join(NODE_MODULES, '@m-lab', 'msak', 'dist');
   copyFile(path.join(msakPkg, 'msak.min.js'), path.join(libDest, 'msak.min.js'));
 
-  // packet-test (uses src/ folder)
-  const ptPkg = path.join(NODE_MODULES, '@m-lab', 'packet-test', 'src');
-  copyFile(path.join(ptPkg, 'pt.min.js'), path.join(libDest, 'pt.min.js'));
-  copyFile(path.join(ptPkg, 'pt-download-worker.min.js'), path.join(libDest, 'pt-download-worker.min.js'));
-
   console.log('\nBuild complete! Output in dist/');
 }
 

@@ -120,8 +120,6 @@ const SpeedTest = {
       await this.runNdt7(sessionID);
     }
 
-    this.runPT(sessionID);
-
     this.els.currentPhase.textContent = i18n.t('Complete');
     this.els.currentSpeed.textContent = '';
     this.measurementComplete = true;
@@ -271,67 +269,6 @@ const SpeedTest = {
     client.debug = true;
 
     await client.start();
-  },
-
-  async runPT(sid) {
-    const md = [
-      {
-        client_name: 'speed-measurementlab-net',
-        client_session_id: sid,
-      },
-      {
-        client_name: 'speed-measurementlab-net',
-        client_session_id: sid,
-        client_immediate_exit: true,
-        max_cwnd_gain: '512',
-      },
-      {
-        client_name: 'speed-measurementlab-net',
-        client_session_id: sid,
-        client_immediate_exit: true,
-        max_elapsed_time: '5',
-      },
-      {
-        client_name: 'speed-measurementlab-net',
-        client_session_id: sid,
-        client_immediate_exit: true,
-        max_cwnd_gain: '512',
-        max_elapsed_time: '5',
-      },
-      {
-        client_name: 'speed-measurementlab-net',
-        client_session_id: sid,
-        client_immediate_exit: true,
-        early_exit: '50',
-      },
-      {
-        client_name: 'speed-measurementlab-net',
-        client_session_id: sid,
-        client_immediate_exit: true,
-        max_cwnd_gain: '512',
-        early_exit: '50',
-      },
-    ];
-
-    return pt.test(
-      {
-        userAcceptedDataPolicy: true,
-        downloadworkerfile: '/libraries/pt-download-worker.min.js',
-        metadata: md[Math.floor(Math.random() * md.length)]
-      },
-      {
-        serverChosen: (server) => {
-          this.els.location.textContent = server.location.city + ', ' + server.location.country;
-          console.log('Testing PT to:', {
-            machine: server.machine,
-            locations: server.location,
-          });
-        },
-        downloadComplete: (data) => {
-          console.log('PT result:', data);
-        },
-      },
-    );
   }
 };
 
