@@ -13,9 +13,9 @@
     "@m-lab/ndt7": "0.1.4"
   },
   "devDependencies": {
-    "gettext-parser": "^8.0.0"
+    "gettext-parser": "^9.0.1"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   }
 }
