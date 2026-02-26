@@ -134,7 +134,7 @@ const SpeedTest = {
    */
   mlabProject() {
     const placeholder = 'MLAB_PROJECT_PLACEHOLDER';
-    return placeholder === 'MLAB_PROJECT_PLACEHOLDER' ? 'mlab-staging' : placeholder;
+    return placeholder.includes('PLACEHOLDER') ? 'mlab-staging' : placeholder;
   },
 
   /**
