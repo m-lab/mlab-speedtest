@@ -49,7 +49,23 @@ function copyFile(src, dest) {
  * Main build process
  */
 function build() {
-  console.log('Building M-Lab Speed Test...\n');
+  // Read command line arguments
+  const argv = process.argv;
+  if (argv.length !== 3) {
+    console.log('usage: node scripts/build.js prod|staging');
+    process.exit(1);
+  }
+  const mlabEnvName = argv[2];
+  if (mlabEnvName !== 'prod' && mlabEnvName !== 'staging') {
+    console.log('usage: node scripts/build.js prod|staging');
+    process.exit(1);
+  }
+  console.log('Building M-Lab Speed Test...');
+  console.log('');
+  console.log(`DIST: ${DIST}`);
+  console.log(`Environment: ${mlabEnvName}`);
+  console.log(`SRC: ${SRC}`);
+  console.log('');
 
   // Clean dist directory
   if (fs.existsSync(DIST)) {
@@ -85,6 +101,11 @@ function build() {
   // msak (uses dist/ folder)
   const msakPkg = path.join(NODE_MODULES, '@m-lab', 'msak', 'dist');
   copyFile(path.join(msakPkg, 'msak.min.js'), path.join(libDest, 'msak.min.js'));
+
+  // Write dist/js/env.js
+  const envJsPath = path.join(DIST, 'js', 'env.js');
+  console.log(`Writing ${envJsPath}...`)
+  fs.writeFileSync(envJsPath, `const mlabEnvName = "${mlabEnvName}";\n`);
 
   console.log('\nBuild complete! Output in dist/');
 }
