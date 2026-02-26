@@ -22,7 +22,7 @@ The `mlab-speedtest` repository implements the https://speed.measurementlab.net/
 * Install website build dependencies for your operating system and environment
   * Node >= v20.0 - Using NVM: `nvm install v20.0`
   * Install libraries - `npm install`
-  * Build dist - `npm run build`
+  * Build dist - `npm run build -- staging`
   * Serving locally - `python3 -m http.server -d dist`
   * Firebase tools - `npm install -g firebase-tools`
 
@@ -37,7 +37,7 @@ Translations for this site are managed in the [Open Technology Fund's Localizati
 2. If the filename uses a locale code (e.g., `de_DE`), add a mapping in `scripts/po-to-json.js` so it maps to the short code (e.g., `de_DE` -> `de`)
 3. Add the short language code to the `supported` array in `src/js/i18n.js`
    * If the language is RTL, also add it to the `rtlLanguages` array
-4. Rebuild: `npm run build`
+4. Rebuild: `npm run build -- staging`
 
 The build converts `.po` files to JSON in `dist/translations/`. At runtime, `i18n.js` selects the language automatically via the `?lang=` query parameter, `localStorage`, or browser preference.
 
@@ -47,7 +47,7 @@ To preview the site locally, we recommend using Python:
 
 ```
 npm install
-npm run build
+npm run build -- staging
 python3 -m http.server -d dist
 ```
 

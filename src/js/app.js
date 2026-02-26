@@ -129,12 +129,14 @@ const SpeedTest = {
   },
 
   /**
-   * Determine the M-Lab project based on a placeholder that is substituted
-   * during deployment.
+   * Determine the M-Lab project based on js/env.js, which we
+   * generate using `./scripts/build.js`.
    */
   mlabProject() {
-    const placeholder = 'MLAB_PROJECT_PLACEHOLDER';
-    return placeholder.includes('PLACEHOLDER') ? 'mlab-staging' : placeholder;
+    if (mlabEnvName !== 'prod' && mlabEnvName !== 'staging') {
+      throw Error('The mlabEnvName variable has not been configured!');
+    }
+    return mlabEnvName === 'prod' ? 'mlab-oti' : 'mlab-staging';
   },
 
   /**
@@ -149,8 +151,13 @@ const SpeedTest = {
 
   async runNdt7(sid) {
     const project = this.mlabProject();
+    console.log(`[ndt7] mlabProject: ${project}`);
+
     const tokenURL = `https://speed-backend.${project}.measurementlab.net/v0/token`;
+    console.log(`[ndt7] tokenURL: ${tokenURL}`);
+
     const locatePriorityURL = this.locatePriorityURLForProject(project);
+    console.log(`[ndt7] locatePriorityURL: ${locatePriorityURL}`);
 
     let token = null;
     try {
@@ -158,13 +165,16 @@ const SpeedTest = {
       const tokenData = await tokenResp.json();
       token = tokenData.token;
     } catch (err) {
-      console.warn('Failed to fetch token, running without priority access:', err);
+      console.warn('[ndt7] Failed to fetch token, running without priority access:', err);
     }
+
+    const loadbalancer = token ? locatePriorityURL : null;
+    console.log(`[ndt7] loadbalancer: ${loadbalancer}`);
 
     return ndt7.test(
       {
         clientRegistrationToken: token,
-        loadbalancer: token ? locatePriorityURL : null,
+        loadbalancer: loadbalancer,
         userAcceptedDataPolicy: true,
         uploadworkerfile: '/libraries/ndt7-upload-worker.js',
         downloadworkerfile: '/libraries/ndt7-download-worker.js',
@@ -176,7 +186,7 @@ const SpeedTest = {
       {
         serverChosen: (server) => {
           this.els.location.textContent = server.location.city + ', ' + server.location.country;
-          console.log('Testing to:', {
+          console.log('[ndt7] Testing to:', {
             machine: server.machine,
             locations: server.location,
           });
@@ -234,7 +244,7 @@ const SpeedTest = {
   async runMSAK(sid) {
     const client = new msak.Client('speed-measurementlab-net', '1.0.0', {
       onDownloadStart: (server) => {
-        console.log('Server: ' + server.machine);
+        console.log('[msak] Server: ' + server.machine);
         this.els.msakLocation.textContent = server.location.city + ', ' + server.location.country;
       },
       onDownloadResult: (result) => {
