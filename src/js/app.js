@@ -46,6 +46,15 @@ const SpeedTest = {
 
     // Initialize gauge
     ProgressGauge.init();
+
+    // Set active nav link on click
+    const navLinks = document.querySelectorAll('#sidebar nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
   },
 
   onPrivacyChange() {
