@@ -260,7 +260,7 @@ const SpeedTest = {
   async runMSAK(sid) {
     const client = new msak.Client('speed-measurementlab-net', '1.0.0', {
       onError: (err) => {
-        console.error('msak error:', err);
+        console.error('[msak] error:', err);
       },
       onDownloadStart: (server) => {
         console.log('[msak] Server: ' + server.machine);
