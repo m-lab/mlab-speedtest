@@ -16,7 +16,9 @@ const SpeedTest = {
   els: {},
 
   init() {
-    Sentry.setTag('environment', mlabEnvName);
+    Sentry.onLoad(function() {
+      Sentry.setTag('environment', mlabEnvName);
+    });
 
     // Cache DOM elements
     this.els = {
