@@ -102,10 +102,25 @@ function build() {
   const msakPkg = path.join(NODE_MODULES, '@m-lab', 'msak', 'dist');
   copyFile(path.join(msakPkg, 'msak.min.js'), path.join(libDest, 'msak.min.js'));
 
+  // Bundle Sentry SDK
+  console.log('Bundling Sentry SDK...');
+  const esbuild = require('esbuild');
+  esbuild.buildSync({
+    entryPoints: [path.join(SRC, 'js', 'sentry-entry.js')],
+    bundle: true,
+    minify: true,
+    outfile: path.join(DIST, 'js', 'sentry.bundle.js'),
+    format: 'iife',
+  });
+
   // Write dist/js/env.js
+  const sentryDsn = process.env.SENTRY_DSN || '';
   const envJsPath = path.join(DIST, 'js', 'env.js');
   console.log(`Writing ${envJsPath}...`)
-  fs.writeFileSync(envJsPath, `const mlabEnvName = "${mlabEnvName}";\n`);
+  fs.writeFileSync(envJsPath,
+    `const mlabEnvName = "${mlabEnvName}";\n` +
+    `const mlabSentryDsn = "${sentryDsn}";\n`
+  );
 
   console.log('\nBuild complete! Output in dist/');
 }

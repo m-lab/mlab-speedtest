@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@m-lab/msak": "0.3.1",
-    "@m-lab/ndt7": "0.1.4"
+    "@m-lab/ndt7": "0.1.4",
+    "@sentry/browser": "^10.40.0"
   },
   "devDependencies": {
+    "esbuild": "^0.27.3",
     "gettext-parser": "^9.0.1"
   },
   "engines": {
