@@ -192,7 +192,7 @@ const SpeedTest = {
       },
       {
         error: (err) => {
-          console.error('ndt7 error:', err);
+          console.error('[ndt7] error:', err);
         },
         serverChosen: (server) => {
           this.els.location.textContent = server.location.city + ', ' + server.location.country;
