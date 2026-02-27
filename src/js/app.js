@@ -16,6 +16,8 @@ const SpeedTest = {
   els: {},
 
   init() {
+    Sentry.setTag('environment', mlabEnvName);
+
     // Cache DOM elements
     this.els = {
       startButton: document.getElementById('startButton'),
@@ -126,6 +128,7 @@ const SpeedTest = {
       this.measurementComplete = true;
     } catch (err) {
       console.error('Test failed:', err);
+      Sentry.captureException(err);
       this.els.currentPhase.textContent = i18n.t('Error');
       this.els.currentSpeed.textContent = '';
       this.measurementComplete = true;
@@ -173,6 +176,7 @@ const SpeedTest = {
       token = tokenData.token;
     } catch (err) {
       console.warn('[ndt7] Failed to fetch token, running without priority access:', err);
+      Sentry.captureException(err, { tags: { test: 'ndt7', phase: 'token-fetch' } });
     }
 
     const loadbalancer = token ? locatePriorityURL : null;
@@ -193,6 +197,7 @@ const SpeedTest = {
       {
         error: (err) => {
           console.error('[ndt7] error:', err);
+          Sentry.captureException(err, { tags: { test: 'ndt7' } });
         },
         serverChosen: (server) => {
           this.els.location.textContent = server.location.city + ', ' + server.location.country;
@@ -261,6 +266,7 @@ const SpeedTest = {
     const client = new msak.Client('speed-measurementlab-net', '1.0.0', {
       onError: (err) => {
         console.error('[msak] error:', err);
+        Sentry.captureException(err, { tags: { test: 'msak' } });
       },
       onDownloadStart: (server) => {
         console.log('[msak] Server: ' + server.machine);
