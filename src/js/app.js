@@ -47,14 +47,21 @@ const SpeedTest = {
     // Initialize gauge
     ProgressGauge.init();
 
-    // Set active nav link on click
+    // Scrollspy: update active nav link based on which section is in view
+    const sections = document.querySelectorAll('#wrapper > section[id]');
     const navLinks = document.querySelectorAll('#sidebar nav a');
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+          });
+        }
       });
-    });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+
+    sections.forEach(section => observer.observe(section));
   },
 
   onPrivacyChange() {
