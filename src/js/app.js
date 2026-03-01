@@ -248,9 +248,10 @@ const SpeedTest = {
           if (data.LastServerMeasurement?.TCPInfo) {
             this.measurementResult.latency =
               (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0) + ' ms';
-            this.measurementResult.loss =
-              (data.LastServerMeasurement.TCPInfo.BytesRetrans /
-                data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2) + '%';
+            this.measurementResult.loss = data.LastServerMeasurement.TCPInfo.BytesSent
+              ? (data.LastServerMeasurement.TCPInfo.BytesRetrans /
+                  data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2) + '%'
+              : '0.00%';
             this.els.latency.textContent = this.measurementResult.latency;
             this.els.loss.textContent = this.measurementResult.loss;
           }
@@ -262,8 +263,10 @@ const SpeedTest = {
         },
         uploadMeasurement: (data) => {
           if (data.Source === 'server') {
-            this.els.currentSpeed.textContent = (data.Data.TCPInfo.BytesReceived /
-              data.Data.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
+            this.els.currentSpeed.textContent = data.Data.TCPInfo.ElapsedTime
+              ? (data.Data.TCPInfo.BytesReceived /
+                  data.Data.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s'
+              : '0.00 Mb/s';
           }
           if (data.Source === 'client') {
             const progress = (data.Data.ElapsedTime > this.TIME_EXPECTED) ? 1.0 :
@@ -273,9 +276,10 @@ const SpeedTest = {
         },
         uploadComplete: (data) => {
           if (data.LastServerMeasurement?.TCPInfo) {
-            this.measurementResult.c2sRate =
-              (data.LastServerMeasurement.TCPInfo.BytesReceived /
-                data.LastServerMeasurement.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
+            this.measurementResult.c2sRate = data.LastServerMeasurement.TCPInfo.ElapsedTime
+              ? (data.LastServerMeasurement.TCPInfo.BytesReceived /
+                  data.LastServerMeasurement.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s'
+              : '0.00 Mb/s';
             this.els.c2sRate.textContent = this.measurementResult.c2sRate;
           }
         },
