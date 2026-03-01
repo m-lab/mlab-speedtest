@@ -63,10 +63,10 @@ msgstr "ईमेल"
 msgid ""
 "For more on M-Lab's data collection and measurement, including the "
 "disclosure of IP addresses, see our <a "
-"href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
+"href=\"https://www.measurementlab.net/privacy/\">Privacy Policy</a>."
 msgstr ""
 "एम-लैब के डेटा संग्रह और माप के बारे में अधिक जानकारी के लिए, आईपी पते के "
-"प्रकटीकरण सहित, हमारी <a href=\"http://www.measurementlab.net/privacy/\"> "
+"प्रकटीकरण सहित, हमारी <a href=\"https://www.measurementlab.net/privacy/\"> "
 "गोपनीयता नीति </a> देखें।"
 
 #: measure.html:138
@@ -79,10 +79,10 @@ msgstr "ग्लोबल"
 
 #: measure.html:14
 msgid ""
-"I agree to the <a href=\"http://www.measurementlab.net/privacy/\">data "
+"I agree to the <a href=\"https://www.measurementlab.net/privacy/\">data "
 "policy</a>, which includes retention and publication of IP addresses."
 msgstr ""
-"मैं <a href=\"http://www.measurementlab.net/privacy/\"> डेटा नीति </a> से "
+"मैं <a href=\"https://www.measurementlab.net/privacy/\"> डेटा नीति </a> से "
 "सहमत हूं, जिसमें आईपी पते के प्रतिधारण और प्रकाशन शामिल हैं I"
 
 #: measure.js:79 measure.js:82

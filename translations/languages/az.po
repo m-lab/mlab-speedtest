@@ -64,11 +64,11 @@ msgstr "Email"
 msgid ""
 "For more on M-Lab's data collection and measurement, including the "
 "disclosure of IP addresses, see our <a "
-"href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
+"href=\"https://www.measurementlab.net/privacy/\">Privacy Policy</a>."
 msgstr ""
 "M-Lab-ın İP ünvanların açıqlanması da daxil, məlumatların toplanması və "
 "ölçülməsi ilə bağlı daha ətraflı  <a "
-"href=\"http://www.measurementlab.net/privacy/\">Təhlükəsizlik "
+"href=\"https://www.measurementlab.net/privacy/\">Təhlükəsizlik "
 "Qaydalarına</a> baxın."
 
 #: measure.html:138
@@ -81,11 +81,11 @@ msgstr "Qlobal"
 
 #: measure.html:14
 msgid ""
-"I agree to the <a href=\"http://www.measurementlab.net/privacy/\">data "
+"I agree to the <a href=\"https://www.measurementlab.net/privacy/\">data "
 "policy</a>, which includes retention and publication of IP addresses."
 msgstr ""
 "İP ünvanların saxlanılması və yayımını nəzərdə tutan <a "
-"href=\"http://www.measurementlab.net/privacy/\">məlumat qaydalarını</a>qəbul"
+"href=\"https://www.measurementlab.net/privacy/\">məlumat qaydalarını</a>qəbul"
 " edirəm."
 
 #: measure.js:79 measure.js:82
