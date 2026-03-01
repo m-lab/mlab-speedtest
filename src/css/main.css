@@ -748,6 +748,26 @@ ul.icons li > span {
   text-decoration: none;
 }
 
+.social-icon-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  border: 0;
+}
+
+.social-icon-link:hover {
+  color: #ffffff;
+}
+
+.social-svg-icon {
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
 ul.actions {
   cursor: default;
   list-style: none;
