@@ -28,7 +28,7 @@ The `mlab-speedtest` repository implements the https://speed.measurementlab.net/
 
 ## Adding new languages
 
-Translations for this site are managed in the [Open Technology Fund's Localization Lab Transifex site](https://www.transifex.com/otf/m-lab-ndt-portal/dashboard/). Contributing translators may choose to translate and/or review translations there. Completed translations are then imported for use within this application and published by M-Lab staff.
+Translations for this site are managed in the [Open Technology Fund's Localization Lab Transifex site](https://explore.transifex.com/otf/m-lab-ndt-portal/). Contributing translators may choose to translate and/or review translations there. Completed translations are then imported for use within this application and published by M-Lab staff.
 
 ### How to add a new localization
 
