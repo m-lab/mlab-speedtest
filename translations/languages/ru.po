@@ -64,11 +64,11 @@ msgstr "Электронная почта"
 msgid ""
 "For more on M-Lab's data collection and measurement, including the "
 "disclosure of IP addresses, see our <a "
-"href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
+"href=\"https://www.measurementlab.net/privacy/\">Privacy Policy</a>."
 msgstr ""
 "Подробнее о сборе данных и измерениях теста M-Lab, в том  числе, о раскрытии"
 " IP-адресов, смотрите нашу<a "
-"href=\"http://www.measurementlab.net/privacy/\">Политику "
+"href=\"https://www.measurementlab.net/privacy/\">Политику "
 "Конфиденциальности</a>."
 
 #: measure.html:138
@@ -81,10 +81,10 @@ msgstr "Глобальные"
 
 #: measure.html:14
 msgid ""
-"I agree to the <a href=\"http://www.measurementlab.net/privacy/\">data "
+"I agree to the <a href=\"https://www.measurementlab.net/privacy/\">data "
 "policy</a>, which includes retention and publication of IP addresses."
 msgstr ""
-"Я соглашаюсь с<a href=\"http://www.measurementlab.net/privacy/\">политикой "
+"Я соглашаюсь с<a href=\"https://www.measurementlab.net/privacy/\">политикой "
 "данных</a>, которая включает сохранение и публикацию IP-адресов."
 
 #: measure.js:79 measure.js:82

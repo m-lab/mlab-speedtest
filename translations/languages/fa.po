@@ -63,10 +63,10 @@ msgstr "ایمیل"
 msgid ""
 "For more on M-Lab's data collection and measurement, including the "
 "disclosure of IP addresses, see our <a "
-"href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
+"href=\"https://www.measurementlab.net/privacy/\">Privacy Policy</a>."
 msgstr ""
 "برای اطلاعات بیشتر در خصوص جمع‌آوری داده M-Lab و سنجش، شامل افشای آدرس‌های "
-"Ip، <a href=\"http://www.measurementlab.net/privacy/\">سیاست حریم خصوصی</a> "
+"Ip، <a href=\"https://www.measurementlab.net/privacy/\">سیاست حریم خصوصی</a> "
 "ما را ببینید."
 
 #: measure.html:138
@@ -79,10 +79,10 @@ msgstr "جهانی"
 
 #: measure.html:14
 msgid ""
-"I agree to the <a href=\"http://www.measurementlab.net/privacy/\">data "
+"I agree to the <a href=\"https://www.measurementlab.net/privacy/\">data "
 "policy</a>, which includes retention and publication of IP addresses."
 msgstr ""
-"من <a href=\"http://www.measurementlab.net/privacy/\">سیاست داده‌ها</a> را "
+"من <a href=\"https://www.measurementlab.net/privacy/\">سیاست داده‌ها</a> را "
 "که شامل نگهداری و انتشار آدرس‌های IP است را قبول دارم."
 
 #: measure.js:79 measure.js:82

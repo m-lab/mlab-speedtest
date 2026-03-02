@@ -65,11 +65,11 @@ msgstr "Εmail"
 msgid ""
 "For more on M-Lab's data collection and measurement, including the "
 "disclosure of IP addresses, see our <a "
-"href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
+"href=\"https://www.measurementlab.net/privacy/\">Privacy Policy</a>."
 msgstr ""
 "Για περισσότερα σχετικά με την συλλογή δεδομένων και μέτρησης του M-Lab, "
 "συμπεριλαμβανομένης της δημοσιοποίησης των διευθύνσεων IP, δείτε την <a "
-"href=\"http://www.measurementlab.net/privacy/\">Ιδιωτική Πολιτική</a> μας. "
+"href=\"https://www.measurementlab.net/privacy/\">Ιδιωτική Πολιτική</a> μας. "
 
 #: measure.html:138
 msgid "GitHub"
@@ -81,10 +81,10 @@ msgstr "Παγκόσμια"
 
 #: measure.html:14
 msgid ""
-"I agree to the <a href=\"http://www.measurementlab.net/privacy/\">data "
+"I agree to the <a href=\"https://www.measurementlab.net/privacy/\">data "
 "policy</a>, which includes retention and publication of IP addresses."
 msgstr ""
-"Συμφωνώ με την <a href=\"http://www.measurementlab.net/privacy/\">πολιτική "
+"Συμφωνώ με την <a href=\"https://www.measurementlab.net/privacy/\">πολιτική "
 "δεδομένων</a>, η οποία περιλαμβάνει τη διατήρηση και τη δημοσίευση "
 "διευθύνσεων IP."
 

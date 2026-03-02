@@ -64,11 +64,11 @@ msgstr "Surel"
 msgid ""
 "For more on M-Lab's data collection and measurement, including the "
 "disclosure of IP addresses, see our <a "
-"href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
+"href=\"https://www.measurementlab.net/privacy/\">Privacy Policy</a>."
 msgstr ""
 "Untuk lebih lanjut tentang pengumpulan data dan pengukuran M-Lab, termasuk "
 "keterbukaan alamat IP, lihat <a "
-"href=\"http://www.measurementlab.net/privacy/\">Kebijakan Privasi</a>."
+"href=\"https://www.measurementlab.net/privacy/\">Kebijakan Privasi</a>."
 
 #: measure.html:138
 msgid "GitHub"
@@ -80,11 +80,11 @@ msgstr "Global"
 
 #: measure.html:14
 msgid ""
-"I agree to the <a href=\"http://www.measurementlab.net/privacy/\">data "
+"I agree to the <a href=\"https://www.measurementlab.net/privacy/\">data "
 "policy</a>, which includes retention and publication of IP addresses."
 msgstr ""
 "Saya setuju dengan <a "
-"href=\"http://www.measurementlab.net/privacy/\">kebijakan data</a>, termasuk"
+"href=\"https://www.measurementlab.net/privacy/\">kebijakan data</a>, termasuk"
 " penyimpanan dan publikasi alamat IP."
 
 #: measure.js:79 measure.js:82

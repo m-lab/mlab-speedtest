@@ -65,11 +65,11 @@ msgstr "Courriel"
 msgid ""
 "For more on M-Lab's data collection and measurement, including the "
 "disclosure of IP addresses, see our <a "
-"href=\"http://www.measurementlab.net/privacy/\">Privacy Policy</a>."
+"href=\"https://www.measurementlab.net/privacy/\">Privacy Policy</a>."
 msgstr ""
 "Pour en apprendre davantage sur la collecte de données et les mesures de "
 "M-Lab, incluant la divulgation des adresses IP, consulter notre <a "
-"href=\"http://www.measurementlab.net/privacy/\">politique de "
+"href=\"https://www.measurementlab.net/privacy/\">politique de "
 "confidentialité</a>."
 
 #: measure.html:138
@@ -82,10 +82,10 @@ msgstr "Mondial"
 
 #: measure.html:14
 msgid ""
-"I agree to the <a href=\"http://www.measurementlab.net/privacy/\">data "
+"I agree to the <a href=\"https://www.measurementlab.net/privacy/\">data "
 "policy</a>, which includes retention and publication of IP addresses."
 msgstr ""
-"J'accepte la <a href=\"http://www.measurementlab.net/privacy/\">politique "
+"J'accepte la <a href=\"https://www.measurementlab.net/privacy/\">politique "
 "des données</a> qui inclut la conservation et la publication des adresses "
 "IP."
 
