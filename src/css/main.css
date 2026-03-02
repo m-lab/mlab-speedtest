@@ -1153,8 +1153,7 @@ table.alt tfoot {
 /* Keep spinner rotation visually centered in the "Testing" button state. */
 #startButton .btn-testing .fa-spin {
   letter-spacing: 0;
-  transform-origin: 50% 50%;
-  vertical-align: middle;
+
 }
 
 @keyframes fa-spin {
