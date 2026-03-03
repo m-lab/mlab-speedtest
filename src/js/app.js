@@ -9,8 +9,7 @@ const SpeedTest = {
   testRunning: false,
   privacyConsent: false,
   measurementComplete: false,
-  measurementResult: {},
-  msakResult: {},
+  testResults: null, // Unified TestResults instance
 
   // DOM elements (cached on init)
   els: {},
@@ -120,8 +119,6 @@ const SpeedTest = {
     ProgressGauge.reset();
     this.testRunning = true;
     this.measurementComplete = false;
-    this.measurementResult = {};
-    this.msakResult = {};
     this.updateUI();
 
     // Scroll to measurement area on mobile
@@ -132,8 +129,9 @@ const SpeedTest = {
     this.els.currentSpeed.textContent = i18n.t('Starting');
     this.els.currentPhase.textContent = '';
 
-    // Generate a random UUID
+    // Generate a random UUID and create TestResults instance
     const sessionID = crypto.randomUUID();
+    this.testResults = new TestResults(sessionID);
 
     // Randomly choose which test to start first
     try {
@@ -221,7 +219,8 @@ const SpeedTest = {
           if (window.Sentry) Sentry.captureException(err, { tags: { test: 'ndt7' } });
         },
         serverChosen: (server) => {
-          this.els.location.textContent = server.location.city + ', ' + server.location.country;
+          this.testResults.setNdt7Server(server);
+          this.els.location.textContent = this.testResults.getNdt7Location();
           console.log('[ndt7] Testing to:', {
             machine: server.machine,
             locations: server.location,
@@ -241,18 +240,19 @@ const SpeedTest = {
         },
         downloadComplete: (data) => {
           if (data.LastClientMeasurement) {
-            this.measurementResult.s2cRate =
-              data.LastClientMeasurement.MeanClientMbps.toFixed(2) + ' Mb/s';
-            this.els.s2cRate.textContent = this.measurementResult.s2cRate;
+            this.testResults.setNdt7Download(data.LastClientMeasurement.MeanClientMbps);
+            this.els.s2cRate.textContent = this.testResults.ndt7.download.formatted;
           }
           if (data.LastServerMeasurement?.TCPInfo) {
-            this.measurementResult.latency =
-              (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0) + ' ms';
-            this.measurementResult.loss =
-              (data.LastServerMeasurement.TCPInfo.BytesRetrans /
-                data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2) + '%';
-            this.els.latency.textContent = this.measurementResult.latency;
-            this.els.loss.textContent = this.measurementResult.loss;
+            const latencyMs = data.LastServerMeasurement.TCPInfo.MinRTT / 1000;
+            const retransPercent = (data.LastServerMeasurement.TCPInfo.BytesRetrans /
+              data.LastServerMeasurement.TCPInfo.BytesSent * 100);
+            
+            this.testResults.setNdt7Latency(latencyMs);
+            this.testResults.setNdt7Retransmission(retransPercent);
+            
+            this.els.latency.textContent = this.testResults.ndt7.latency.formatted;
+            this.els.loss.textContent = this.testResults.ndt7.retransmission.formatted;
           }
           console.log(data);
         },
@@ -273,10 +273,11 @@ const SpeedTest = {
         },
         uploadComplete: (data) => {
           if (data.LastServerMeasurement?.TCPInfo) {
-            this.measurementResult.c2sRate =
-              (data.LastServerMeasurement.TCPInfo.BytesReceived /
-                data.LastServerMeasurement.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
-            this.els.c2sRate.textContent = this.measurementResult.c2sRate;
+            const uploadSpeedMbps = data.LastServerMeasurement.TCPInfo.BytesReceived /
+              data.LastServerMeasurement.TCPInfo.ElapsedTime * 8;
+            
+            this.testResults.setNdt7Upload(uploadSpeedMbps);
+            this.els.c2sRate.textContent = this.testResults.ndt7.upload.formatted;
           }
         },
       },
@@ -291,19 +292,22 @@ const SpeedTest = {
       },
       onDownloadStart: (server) => {
         console.log('[msak] Server: ' + server.machine);
-        this.els.msakLocation.textContent = server.location.city + ', ' + server.location.country;
+        this.testResults.setMsakServer(server);
+        this.els.msakLocation.textContent = this.testResults.getMsakLocation();
       },
       onDownloadResult: (result) => {
-        this.msakResult.download = result.goodput.toFixed(2) + ' Mb/s';
-        this.els.msakDownload.textContent = this.msakResult.download;
+        this.testResults.setMsakDownload(result.goodput);
+        this.els.msakDownload.textContent = this.testResults.msak.download.formatted;
+        
         if (result.retransmission != null && !isNaN(result.retransmission)) {
-          this.msakResult.loss = (result.retransmission * 100).toFixed(2) + '%';
-          this.els.msakLoss.textContent = this.msakResult.loss;
+          this.testResults.setMsakRetransmission(result.retransmission * 100);
+          this.els.msakLoss.textContent = this.testResults.msak.retransmission.formatted;
         }
         if (result.minRTT != null) {
-          this.msakResult.latency = (result.minRTT / 1000).toFixed(0) + ' ms';
-          this.els.msakLatency.textContent = this.msakResult.latency;
+          this.testResults.setMsakLatency(result.minRTT / 1000);
+          this.els.msakLatency.textContent = this.testResults.msak.latency.formatted;
         }
+        
         this.els.currentPhase.textContent = i18n.t('Download');
         this.els.currentSpeed.textContent = result.goodput.toFixed(2) + ' Mb/s';
         const progress = (result.elapsed > this.TIME_EXPECTED) ? 0.5 :
@@ -311,10 +315,10 @@ const SpeedTest = {
         ProgressGauge.progress(progress);
       },
       onUploadResult: (result) => {
-        this.msakResult.upload = result.goodput.toFixed(2) + ' Mb/s';
+        this.testResults.setMsakUpload(result.goodput);
         this.els.currentPhase.textContent = i18n.t('Upload');
         this.els.currentSpeed.textContent = result.goodput.toFixed(2) + ' Mb/s';
-        this.els.msakUpload.textContent = this.msakResult.upload;
+        this.els.msakUpload.textContent = this.testResults.msak.upload.formatted;
         const progress = (result.elapsed > this.TIME_EXPECTED) ? 1.0 :
           result.elapsed / (this.TIME_EXPECTED * 2) + 0.5;
         ProgressGauge.progress(progress);
