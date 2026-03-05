@@ -179,6 +179,7 @@ body {
    ============================================ */
 .row {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: 1.5em;
 }
