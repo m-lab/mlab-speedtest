@@ -179,9 +179,9 @@ body {
    ============================================ */
 .row {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: 1.5em;
-  margin-bottom: 34px;
 }
 
 .row > * {
