@@ -11,11 +11,11 @@
   "dependencies": {
     "@m-lab/msak": "0.3.1",
     "@m-lab/ndt7": "0.1.4",
-    "@sentry/browser": "^10.40.0"
+    "@sentry/browser": "^10.43.0"
   },
   "devDependencies": {
-    "esbuild": "^0.27.3",
-    "gettext-parser": "^9.0.1"
+    "esbuild": "^0.27.4",
+    "gettext-parser": "^9.0.2"
   },
   "engines": {
     "node": ">=20.0.0"
