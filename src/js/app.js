@@ -20,6 +20,8 @@ const SpeedTest = {
       Sentry.init({
         dsn: mlabSentryDsn,
         environment: mlabEnvName,
+        integrations: [Sentry.browserTracingIntegration()],
+        tracesSampleRate: 0.01,
       });
     }
 
