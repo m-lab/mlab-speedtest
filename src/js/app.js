@@ -220,7 +220,10 @@ const SpeedTest = {
       {
         error: (err) => {
           console.error('[ndt7] error:', err);
-          if (window.Sentry) Sentry.captureException(err, { tags: { test: 'ndt7' } });
+          if (window.Sentry) Sentry.captureException(
+            err instanceof Error ? err : new Error(String(err)),
+            { tags: { test: 'ndt7' } },
+          );
         },
         serverChosen: (server) => {
           this.els.location.textContent = server.location.city + ', ' + server.location.country;
