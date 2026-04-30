@@ -21,7 +21,7 @@ const SpeedTest = {
         dsn: mlabSentryDsn,
         environment: mlabEnvName,
         integrations: [Sentry.browserTracingIntegration()],
-        tracesSampleRate: 0.01,
+        tracesSampleRate: 1.0,
       });
     }
 
