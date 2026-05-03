@@ -289,7 +289,7 @@ const SpeedTest = {
   },
 
   async runMSAK(sid) {
-    const client = new msak.Client('speed-measurementlab-net', '1.0.0', {
+    const client = new msak.Client('speed-measurementlab-net', '1.1.0', {
       onError: (err) => {
         console.error('[msak] error:', err);
         if (window.Sentry) Sentry.captureException(err, { tags: { test: 'msak' } });
