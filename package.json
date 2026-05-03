@@ -1,7 +1,7 @@
 {
   "name": "mlab-speedtest",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "M-Lab Speed Test - measure your internet connection speed",
   "homepage": "https://speed.measurementlab.net",
   "license": "Apache-2.0",
