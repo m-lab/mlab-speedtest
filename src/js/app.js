@@ -329,9 +329,10 @@ const SpeedTest = {
     client.metadata = {
       client_session_id: sid
     };
+    // TODO(https://github.com/m-lab/mlab-speedtest/issues/77)
     client.cc = 'cubic';
     client.duration = 10000; // 10s
-    client.streams = 1;
+    client.streams = 2;
     client.debug = true;
 
     await client.start();
