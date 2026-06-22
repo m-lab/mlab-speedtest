@@ -14,7 +14,7 @@
     "@sentry/browser": "^10.40.0"
   },
   "devDependencies": {
-    "esbuild": "^0.27.3",
+    "esbuild": "^0.28.1",
     "gettext-parser": "^9.0.1"
   },
   "engines": {
