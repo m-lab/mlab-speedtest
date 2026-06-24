@@ -107,7 +107,7 @@ const SpeedTest = {
     }
 
     // Show/hide privacy message
-    this.els.privacyMessage.style.display = this.privacyConsent ? 'none' : 'inline';
+    this.els.privacyMessage.style.display = this.privacyConsent ? 'none' : 'block';
 
     // Show/hide progress vs results
     this.els.progressSection.style.display = this.measurementComplete ? 'none' : 'block';

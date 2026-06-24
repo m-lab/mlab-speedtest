@@ -53,7 +53,7 @@ table.transparent tbody tr:nth-child(2n + 1) {
     padding: 3em 2em 1em 2em;
     width: auto;
   }
-  span.privacyConsentMessage {
+  .privacyConsentMessage {
     display: none;
   }
 }
@@ -116,9 +116,14 @@ canvas.progressGauge {
   }
 }
 
-span.privacyConsentMessage {
+.privacyConsentMessage {
   font-size: small;
   color: rgba(255, 255, 255, 1.0);
+}
+
+.speedtestNotes > * {
+  display: block;
+  margin-top: 1em;
 }
 
 /* ============================================
