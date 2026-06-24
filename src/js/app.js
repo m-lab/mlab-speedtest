@@ -65,6 +65,11 @@ const SpeedTest = {
     }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
 
     sections.forEach(section => observer.observe(section));
+
+    // Force a known-good UI state on init: browsers may restore form
+    // values or cached display styles without firing change events.
+    this.els.privacyCheckbox.checked = false;
+    this.updateUI();
   },
 
   onPrivacyChange() {
