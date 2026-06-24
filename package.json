@@ -9,7 +9,6 @@
     "build": "node scripts/build.js"
   },
   "dependencies": {
-    "@m-lab/msak": "^0.3.2",
     "@m-lab/ndt7": "0.1.4",
     "@sentry/browser": "^10.59.0"
   },
