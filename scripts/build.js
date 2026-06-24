@@ -98,10 +98,6 @@ function build() {
   copyFile(path.join(ndt7Pkg, 'ndt7-upload-worker.js'), path.join(libDest, 'ndt7-upload-worker.js'));
   copyFile(path.join(ndt7Pkg, 'ndt7-download-worker.js'), path.join(libDest, 'ndt7-download-worker.js'));
 
-  // msak (uses dist/ folder)
-  const msakPkg = path.join(NODE_MODULES, '@m-lab', 'msak', 'dist');
-  copyFile(path.join(msakPkg, 'msak.min.js'), path.join(libDest, 'msak.min.js'));
-
   // Bundle Sentry SDK
   console.log('Bundling Sentry SDK...');
   const esbuild = require('esbuild');

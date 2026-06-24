@@ -10,7 +10,6 @@ const SpeedTest = {
   privacyConsent: false,
   measurementComplete: false,
   measurementResult: {},
-  msakResult: {},
 
   // DOM elements (cached on init)
   els: {},
@@ -38,15 +37,10 @@ const SpeedTest = {
 
       // Results
       location: document.getElementById('ndtLocation'),
-      msakLocation: document.getElementById('msakLocation'),
       s2cRate: document.getElementById('s2cRate'),
       c2sRate: document.getElementById('c2sRate'),
       latency: document.getElementById('latency'),
       loss: document.getElementById('loss'),
-      msakDownload: document.getElementById('msakDownload'),
-      msakUpload: document.getElementById('msakUpload'),
-      msakLatency: document.getElementById('msakLatency'),
-      msakLoss: document.getElementById('msakLoss'),
     };
 
     // Bind events
@@ -123,7 +117,6 @@ const SpeedTest = {
     this.testRunning = true;
     this.measurementComplete = false;
     this.measurementResult = {};
-    this.msakResult = {};
     this.updateUI();
 
     // Scroll to measurement area on mobile
@@ -137,15 +130,9 @@ const SpeedTest = {
     // Generate a random UUID
     const sessionID = crypto.randomUUID();
 
-    // Randomly choose which test to start first
+    // Execute ndt7
     try {
-      if (Math.random() < 0.5) {
-        await this.runNdt7(sessionID);
-        await this.runMSAK(sessionID);
-      } else {
-        await this.runMSAK(sessionID);
-        await this.runNdt7(sessionID);
-      }
+      await this.runNdt7(sessionID);
       this.els.currentPhase.textContent = i18n.t('Complete');
       this.els.currentSpeed.textContent = '';
       this.measurementComplete = true;
@@ -287,56 +274,6 @@ const SpeedTest = {
       },
     );
   },
-
-  async runMSAK(sid) {
-    const client = new msak.Client('speed-measurementlab-net', '1.1.0', {
-      onError: (err) => {
-        console.error('[msak] error:', err);
-        if (window.Sentry) Sentry.captureException(err, { tags: { test: 'msak' } });
-      },
-      onDownloadStart: (server) => {
-        console.log('[msak] Server: ' + server.machine);
-        this.els.msakLocation.textContent = server.location.city + ', ' + server.location.country;
-      },
-      onDownloadResult: (result) => {
-        this.msakResult.download = result.goodput.toFixed(2) + ' Mb/s';
-        this.els.msakDownload.textContent = this.msakResult.download;
-        if (result.retransmission != null && !isNaN(result.retransmission)) {
-          this.msakResult.loss = (result.retransmission * 100).toFixed(2) + '%';
-          this.els.msakLoss.textContent = this.msakResult.loss;
-        }
-        if (result.minRTT != null) {
-          this.msakResult.latency = (result.minRTT / 1000).toFixed(0) + ' ms';
-          this.els.msakLatency.textContent = this.msakResult.latency;
-        }
-        this.els.currentPhase.textContent = i18n.t('Download');
-        this.els.currentSpeed.textContent = result.goodput.toFixed(2) + ' Mb/s';
-        const progress = (result.elapsed > this.TIME_EXPECTED) ? 0.5 :
-          result.elapsed / (this.TIME_EXPECTED * 2);
-        ProgressGauge.progress(progress);
-      },
-      onUploadResult: (result) => {
-        this.msakResult.upload = result.goodput.toFixed(2) + ' Mb/s';
-        this.els.currentPhase.textContent = i18n.t('Upload');
-        this.els.currentSpeed.textContent = result.goodput.toFixed(2) + ' Mb/s';
-        this.els.msakUpload.textContent = this.msakResult.upload;
-        const progress = (result.elapsed > this.TIME_EXPECTED) ? 1.0 :
-          result.elapsed / (this.TIME_EXPECTED * 2) + 0.5;
-        ProgressGauge.progress(progress);
-      }
-    });
-
-    client.metadata = {
-      client_session_id: sid
-    };
-    // TODO(https://github.com/m-lab/mlab-speedtest/issues/77)
-    client.cc = 'cubic';
-    client.duration = 10000; // 10s
-    client.streams = 2;
-    client.debug = true;
-
-    await client.start();
-  }
 };
 
 // Initialize on DOM ready
