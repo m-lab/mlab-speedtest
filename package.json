@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@m-lab/ndt7": "0.1.4",
-    "@sentry/browser": "^10.59.0"
+    "@sentry/browser": "^10.62.0"
   },
   "devDependencies": {
     "esbuild": "^0.28.1",
