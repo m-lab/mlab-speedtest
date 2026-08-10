@@ -9,12 +9,12 @@
     "build": "node scripts/build.js"
   },
   "dependencies": {
-    "@m-lab/ndt7": "0.1.4",
-    "@sentry/browser": "^10.59.0"
+    "@m-lab/ndt7": "0.1.5",
+    "@sentry/browser": "^10.69.0"
   },
   "devDependencies": {
     "esbuild": "^0.28.1",
-    "gettext-parser": "^9.0.2"
+    "gettext-parser": "^9.1.1"
   },
   "engines": {
     "node": ">=20.0.0"
