@@ -175,6 +175,10 @@ const SpeedTest = {
   },
 
   async runNdt7(sid) {
+    // Current phase and server, used to tag ndt7 errors in Sentry.
+    this.ndt7Phase = 'discovery';
+    this.ndt7Machine = null;
+
     const project = this.mlabProject();
     console.log(`[ndt7] mlabProject: ${project}`);
 
@@ -212,12 +216,25 @@ const SpeedTest = {
       {
         error: (err) => {
           console.error('[ndt7] error:', err);
+          const tags = { test: 'ndt7', phase: this.ndt7Phase };
+          if (this.ndt7Machine) tags.machine = this.ndt7Machine;
+          // The ndt7 workers report WebSocket failures as the bare string
+          // 'error', so group those by phase. Locate failures embed the
+          // per-session URL in the message, so group them under one issue.
+          let fingerprint;
+          if (err === 'error') {
+            fingerprint = ['ndt7-websocket-error', this.ndt7Phase];
+          } else if (typeof err === 'string' &&
+              err.startsWith('Could not understand response from')) {
+            fingerprint = ['ndt7-locate-error'];
+          }
           if (window.Sentry) Sentry.captureException(
             err instanceof Error ? err : new Error(String(err)),
-            { tags: { test: 'ndt7' } },
+            fingerprint ? { tags, fingerprint } : { tags },
           );
         },
         serverChosen: (server) => {
+          this.ndt7Machine = server.machine;
           this.els.location.textContent = server.location.city + ', ' + server.location.country;
           console.log('[ndt7] Testing to:', {
             machine: server.machine,
@@ -225,6 +242,7 @@ const SpeedTest = {
           });
         },
         downloadStart: () => {
+          this.ndt7Phase = 'download';
           this.els.currentPhase.textContent = i18n.t('Download');
           this.els.currentSpeed.textContent = i18n.t('Initializing');
         },
@@ -254,6 +272,7 @@ const SpeedTest = {
           console.log(data);
         },
         uploadStart: () => {
+          this.ndt7Phase = 'upload';
           this.els.currentPhase.textContent = i18n.t('Upload');
           this.els.currentSpeed.textContent = i18n.t('Initializing');
         },
