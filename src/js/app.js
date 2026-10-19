@@ -191,11 +191,33 @@ const SpeedTest = {
     let token = null;
     try {
       const tokenResp = await fetch(tokenURL);
-      const tokenData = await tokenResp.json();
+      if (!tokenResp.ok) {
+        const httpErr = new Error(`Token fetch failed: HTTP ${tokenResp.status}`);
+        httpErr.status = tokenResp.status;
+        throw httpErr;
+      }
+      let tokenData;
+      try {
+        tokenData = await tokenResp.json();
+      } catch (parseErr) {
+        const bodyErr = new Error(`Token fetch returned an invalid body: ${parseErr.message}`);
+        bodyErr.invalidBody = true;
+        throw bodyErr;
+      }
       token = tokenData.token;
     } catch (err) {
       console.warn('[ndt7] Failed to fetch token, running without priority access:', err);
-      if (window.Sentry) Sentry.captureException(err, { tags: { test: 'ndt7', phase: 'token-fetch' } });
+      // Aborts happen when the browser cancels the fetch on navigation; not worth reporting.
+      if (window.Sentry && err.name !== 'AbortError') {
+        // Group HTTP and bad-body failures by cause; network errors keep default grouping.
+        const fingerprint = err.status ? ['token-fetch', String(err.status)]
+          : err.invalidBody ? ['token-fetch', 'invalid-json'] : undefined;
+        Sentry.captureException(err, {
+          level: 'warning',
+          tags: { test: 'ndt7', phase: 'token-fetch', status: err.status || 'none' },
+          ...(fingerprint && { fingerprint }),
+        });
+      }
     }
 
     const loadbalancer = token ? locatePriorityURL : null;
