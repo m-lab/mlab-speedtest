@@ -193,9 +193,12 @@ const SpeedTest = {
   },
 
   async runNdt7(sid) {
-    // Current phase and server, used to tag ndt7 errors in Sentry.
+    // Current phase and server, used to tag ndt7 errors in Sentry. The phase
+    // moves through discovery, download-connect, download, upload-connect and
+    // upload, so connection failures can be told apart from mid-test drops.
     this.ndt7Phase = 'discovery';
     this.ndt7Machine = null;
+    this.ndt7Site = null;
 
     const project = this.mlabProject();
     console.log(`[ndt7] mlabProject: ${project}`);
@@ -258,6 +261,7 @@ const SpeedTest = {
           console.error('[ndt7] error:', err);
           const tags = { test: 'ndt7', phase: this.ndt7Phase };
           if (this.ndt7Machine) tags.machine = this.ndt7Machine;
+          if (this.ndt7Site) tags.site = this.ndt7Site;
           // The ndt7 workers report WebSocket failures as the bare string
           // 'error', so group those by phase. Locate failures embed the
           // per-session URL in the message, so group them under one issue.
@@ -272,15 +276,24 @@ const SpeedTest = {
             err instanceof Error ? err : new Error(String(err)),
             fingerprint ? { tags, fingerprint } : { tags },
           );
+          // ndt7 still runs the upload after a failed download.
+          if (this.ndt7Phase === 'download-connect' || this.ndt7Phase === 'download') {
+            this.ndt7Phase = 'upload-connect';
+          }
         },
         serverChosen: (server) => {
+          this.ndt7Phase = 'download-connect';
           this.ndt7Machine = server.machine;
+          // Site is the second dash-separated part of the hostname, for both
+          // mlab3-bog02.mlab-oti... and ndt-sin15830-931cb329.equinix.autojoin...
+          this.ndt7Site = (server.machine || '').split('.')[0].split('-')[1] || null;
           this.els.location.textContent = server.location.city + ', ' + server.location.country;
           console.log('[ndt7] Testing to:', {
             machine: server.machine,
             locations: server.location,
           });
         },
+        // ndt7 calls downloadStart and uploadStart when the WebSocket opens.
         downloadStart: () => {
           this.ndt7Phase = 'download';
           this.els.currentPhase.textContent = i18n.t('Download');
@@ -295,6 +308,7 @@ const SpeedTest = {
           }
         },
         downloadComplete: (data) => {
+          this.ndt7Phase = 'upload-connect';
           if (data.LastClientMeasurement) {
             this.measurementResult.s2cRate =
               data.LastClientMeasurement.MeanClientMbps.toFixed(2) + ' Mb/s';
