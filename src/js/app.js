@@ -132,11 +132,9 @@ const SpeedTest = {
     this.els.currentSpeed.textContent = i18n.t('Starting');
     this.els.currentPhase.textContent = '';
 
-    // Generate a random UUID
-    const sessionID = crypto.randomUUID();
-
     // Execute ndt7
     try {
+      const sessionID = this.generateSessionID();
       await this.runNdt7(sessionID);
       this.els.currentPhase.textContent = i18n.t('Complete');
       this.els.currentSpeed.textContent = '';
@@ -151,6 +149,26 @@ const SpeedTest = {
       this.testRunning = false;
       this.updateUI();
     }
+  },
+
+  /**
+   * Generate a random UUID, falling back to crypto.getRandomValues on
+   * browsers without crypto.randomUUID (e.g. Chrome < 92, iOS Safari < 15.4).
+   */
+  generateSessionID() {
+    if (typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+    const b = crypto.getRandomValues(new Uint8Array(16));
+    // Set version 4 and the RFC 4122 variant bits
+    b[6] = (b[6] & 0x0f) | 0x40;
+    b[8] = (b[8] & 0x3f) | 0x80;
+    let hex = '';
+    for (let i = 0; i < 16; i++) {
+      hex += (b[i] + 0x100).toString(16).slice(1);
+    }
+    return hex.slice(0, 8) + '-' + hex.slice(8, 12) + '-' + hex.slice(12, 16) +
+      '-' + hex.slice(16, 20) + '-' + hex.slice(20);
   },
 
   /**
