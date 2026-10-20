@@ -113,6 +113,17 @@ const SpeedTest = {
     this.els.resultsSection.style.display = this.measurementComplete ? 'block' : 'none';
   },
 
+  /**
+   * Clear the displayed result fields so a re-run can't show stale
+   * values from a previous test if the current one fails partway.
+   */
+  clearResults() {
+    this.els.s2cRate.textContent = '';
+    this.els.c2sRate.textContent = '';
+    this.els.latency.textContent = '';
+    this.els.loss.textContent = '';
+  },
+
   async startTest() {
     if (!this.privacyConsent || this.testRunning) {
       return;
@@ -122,6 +133,7 @@ const SpeedTest = {
     this.testRunning = true;
     this.measurementComplete = false;
     this.measurementResult = {};
+    this.clearResults();
     this.updateUI();
 
     // Scroll to measurement area on mobile
