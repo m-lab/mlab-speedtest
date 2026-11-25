@@ -612,9 +612,11 @@ main {
   display: none;
 }
 
+/* Fixed rows, so filling in the values never changes the height:
+   latency and retransmission share a line, the server has its own */
 .details {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
   justify-content: center;
   gap: var(--space-2) var(--space-8);
   margin: 0;
@@ -625,7 +627,12 @@ main {
 .detail {
   display: flex;
   align-items: baseline;
+  justify-content: center;
   gap: var(--space-2);
+}
+
+.detail:last-child {
+  grid-column: 1 / -1;
 }
 
 .details dd {
@@ -635,6 +642,25 @@ main {
 .detail-value {
   color: var(--text-heading);
   font-weight: 600;
+}
+
+/* One figure per direction, marked with an arrow in the ring's colour */
+.detail-pair {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.detail-arrow {
+  margin-inline-end: 0.25em;
+  font-weight: 600;
+}
+
+.detail-arrow-download {
+  color: var(--color-speed-600);
+}
+
+.detail-arrow-upload {
+  color: var(--color-primary-700);
 }
 
 .server-test {
@@ -822,18 +848,36 @@ main {
   overflow-wrap: anywhere;
 }
 
-/* Short figures: label over value, several to a row */
-.stat-cells {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
-  gap: var(--space-3) var(--space-4);
+/* One line of short figures per direction. Both use the same columns, so
+   the figures of the download and the upload line up. */
+.stat-group {
+  display: flex;
+  gap: var(--space-4);
   padding-block: var(--space-3);
-  border-block: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.stat-group h3 {
+  flex: none;
+  width: 5.5rem;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.stat-cells {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: var(--space-3) var(--space-4);
 }
 
 /* Long values: label and value on one line */
 .stat-rows {
   padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .stat-rows div {
@@ -1056,6 +1100,10 @@ main {
 
   .button-xl {
     width: 100%;
+  }
+
+  .details {
+    grid-template-columns: 1fr;
   }
 }
 

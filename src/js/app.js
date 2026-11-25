@@ -42,6 +42,7 @@ const SpeedTest = {
       s2cRate: document.getElementById('s2cRate'),
       c2sRate: document.getElementById('c2sRate'),
       latency: document.getElementById('latency'),
+      latencyUpload: document.getElementById('latencyUpload'),
       loss: document.getElementById('loss'),
     };
 
@@ -112,6 +113,7 @@ const SpeedTest = {
     this.els.s2cRate.textContent = '';
     this.els.c2sRate.textContent = '';
     this.els.latency.textContent = '';
+    this.els.latencyUpload.textContent = '';
     this.els.loss.textContent = '';
   },
 
@@ -125,6 +127,15 @@ const SpeedTest = {
     this.els.currentSpeed.parentElement.classList.toggle('is-rate', isRate);
     // Lets CSS shrink multi-gigabit rates so they stay inside the rings
     this.els.currentSpeed.parentElement.style.setProperty('--chars', this.els.currentSpeed.textContent.length);
+  },
+
+  /**
+   * Show the latency of one direction: the minimum round-trip time the
+   * server has seen so far, from any of its measurements, final or not.
+   */
+  setLatency(el, measurement) {
+    const minRTT = measurement && measurement.TCPInfo && measurement.TCPInfo.MinRTT;
+    if (minRTT > 0) el.textContent = (minRTT / 1000).toFixed(0);
   },
 
   /**
@@ -345,6 +356,7 @@ const SpeedTest = {
             Sparkline.add('download', data.Data.ElapsedTime, data.Data.NumBytes);
           } else if (data.Source === 'server') {
             Advanced.addDownloadSample(data.Data);
+            this.setLatency(this.els.latency, data.Data);
           }
         },
         downloadComplete: (data) => {
@@ -357,12 +369,10 @@ const SpeedTest = {
             ProgressGauge.setSpeed('download', data.LastClientMeasurement.MeanClientMbps);
           }
           if (data.LastServerMeasurement?.TCPInfo) {
-            this.measurementResult.latency =
-              (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0);
             this.measurementResult.loss =
               (data.LastServerMeasurement.TCPInfo.BytesRetrans /
                 data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2);
-            this.els.latency.textContent = this.measurementResult.latency;
+            this.setLatency(this.els.latency, data.LastServerMeasurement);
             this.els.loss.textContent = this.measurementResult.loss;
           }
           console.log(data);
@@ -375,6 +385,7 @@ const SpeedTest = {
         },
         uploadMeasurement: (data) => {
           if (data.Source === 'server') {
+            this.setLatency(this.els.latencyUpload, data.Data);
             const mbps = data.Data.TCPInfo.BytesReceived / data.Data.TCPInfo.ElapsedTime * 8;
             this.setReadout(null, mbps);
             ProgressGauge.setSpeed('upload', mbps);
@@ -384,6 +395,7 @@ const SpeedTest = {
         },
         uploadComplete: (data) => {
           Advanced.setFinal('Upload', data);
+          this.setLatency(this.els.latencyUpload, data.LastServerMeasurement);
           if (data.LastServerMeasurement?.TCPInfo) {
             this.measurementResult.c2sRate =
               (data.LastServerMeasurement.TCPInfo.BytesReceived /

@@ -3,8 +3,8 @@
  * TCPInfo over the download, the final figures of both directions, and a
  * copy of the raw result.
  *
- * The charts cover the download only. Retransmissions, busy time and window
- * limits describe the sending side, and the server only sends during download.
+ * The charts cover the download only: they describe the sending side, and
+ * the server only sends during download.
  * Labels here are protocol field names and are deliberately not translated.
  */
 const Advanced = {
@@ -16,10 +16,6 @@ const Advanced = {
       value: t => t.RTT / 1000 },
     { key: 'retrans', title: 'Retransmission rate', field: 'BytesRetrans / BytesSent', unit: '%', digits: 2,
       value: t => Advanced.percent(t.BytesRetrans, t.BytesSent) },
-    { key: 'busy', title: 'Sender busy', field: 'BusyTime / ElapsedTime', unit: '%', digits: 1, max: 100,
-      value: t => Advanced.percent(t.BusyTime, t.ElapsedTime) },
-    { key: 'rwnd', title: 'Receive-window limited', field: 'RWndLimited / ElapsedTime', unit: '%', digits: 1,
-      value: t => Advanced.percent(t.RWndLimited, t.ElapsedTime) },
   ],
 
   charts: {},
@@ -151,9 +147,9 @@ const Advanced = {
 
   /**
    * The final figures that the charts don't already show, as [label, value]
-   * pairs: short ones for the grid of cells, long ones for full-width rows.
-   * Entries whose source field is missing are left out. The arrows mark the
-   * direction: down for the download, up for the upload.
+   * pairs: one group of short figures per direction, with the bytes
+   * transferred first in each so they line up, and long values as rows.
+   * Entries whose source field is missing are left out.
    */
   stats() {
     const r = this.result;
@@ -164,21 +160,23 @@ const Advanced = {
     const has = v => typeof v === 'number' && isFinite(v);
     const ms = v => (v / 1000).toFixed(1);
     const mb = v => has(v) && `${(v / 1e6).toFixed(2)} MB`;
-    const secs = v => has(v) && `${(v / 1e6).toFixed(2)} s`;
     const present = pairs => pairs.filter(([, value]) => value);
     return {
-      cells: present([
-        ['\u2193 MinRTT', has(t.MinRTT) && `${ms(t.MinRTT)} ms`],
-        ['\u2193 RTT \u00b1 RTTVar', has(t.RTT) && has(t.RTTVar) && `${ms(t.RTT)} \u00b1 ${ms(t.RTTVar)} ms`],
-        ['\u2193 BytesSent', mb(t.BytesSent)],
-        ['\u2193 BytesRetrans', mb(t.BytesRetrans)],
-        ['\u2193 SndBufLimited', has(t.SndBufLimited) && t.ElapsedTime > 0 &&
-          `${this.percent(t.SndBufLimited, t.ElapsedTime).toFixed(2)} %`],
-        ['\u2193 BBRInfo.BW', dl.BBRInfo && has(dl.BBRInfo.BW) && `${(dl.BBRInfo.BW / 1e6).toFixed(2)} Mb/s`],
-        ['\u2193 ElapsedTime', secs(t.ElapsedTime)],
-        ['\u2191 BytesReceived', mb(u.BytesReceived)],
-        ['\u2191 ElapsedTime', secs(u.ElapsedTime)],
-      ]),
+      groups: [
+        // BytesAcked is what the client received; BytesSent also counts retransmissions
+        ['\u2193 Download', present([
+          ['BytesAcked', mb(t.BytesAcked)],
+          ['BytesRetrans', mb(t.BytesRetrans)],
+          ['MinRTT', has(t.MinRTT) && `${ms(t.MinRTT)} ms`],
+          ['RTT \u00b1 RTTVar', has(t.RTT) && has(t.RTTVar) && `${ms(t.RTT)} \u00b1 ${ms(t.RTTVar)} ms`],
+          ['SndBufLimited', has(t.SndBufLimited) && t.ElapsedTime > 0 &&
+            `${this.percent(t.SndBufLimited, t.ElapsedTime).toFixed(2)} %`],
+          ['BBRInfo.BW', dl.BBRInfo && has(dl.BBRInfo.BW) && `${(dl.BBRInfo.BW / 1e6).toFixed(2)} Mb/s`],
+        ])],
+        ['\u2191 Upload', present([
+          ['BytesReceived', mb(u.BytesReceived)],
+        ])],
+      ].filter(([, cells]) => cells.length),
       rows: present([
         ['Server', r.Server],
         ['\u2193 UUID', dl.ConnectionInfo && dl.ConnectionInfo.UUID],
@@ -203,9 +201,16 @@ const Advanced = {
       }
       return dl;
     };
-    const { cells, rows } = this.stats();
+    const { groups, rows } = this.stats();
     this.els.stats.replaceChildren(
-      ...(cells.length ? [list('stat-cells', cells)] : []),
+      ...groups.map(([title, cells]) => {
+        const group = document.createElement('section');
+        const heading = document.createElement('h3');
+        group.className = 'stat-group';
+        heading.textContent = title;
+        group.append(heading, list('stat-cells', cells));
+        return group;
+      }),
       ...(rows.length ? [list('stat-rows', rows)] : []));
   },
 
