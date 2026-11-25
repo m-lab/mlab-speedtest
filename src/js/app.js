@@ -52,6 +52,7 @@ const SpeedTest = {
     // Initialize gauge
     ProgressGauge.init();
     Sparkline.init();
+    Advanced.init();
 
     // Scrollspy: update active nav link based on which section is in view
     const sections = document.querySelectorAll('main > section[id]');
@@ -144,6 +145,7 @@ const SpeedTest = {
 
     ProgressGauge.reset();
     Sparkline.reset();
+    Advanced.reset();
     this.testRunning = true;
     this.measurementComplete = false;
     this.measurementResult = {};
@@ -319,6 +321,7 @@ const SpeedTest = {
         serverChosen: (server) => {
           this.ndt7Phase = 'download-connect';
           this.ndt7Machine = server.machine;
+          Advanced.setServer(server.machine);
           // Site is the second dash-separated part of the hostname, for both
           // mlab3-bog02.mlab-oti... and ndt-sin15830-931cb329.equinix.autojoin...
           this.ndt7Site = (server.machine || '').split('.')[0].split('-')[1] || null;
@@ -340,10 +343,13 @@ const SpeedTest = {
             this.setReadout(null, data.Data.MeanClientMbps);
             ProgressGauge.setSpeed('download', data.Data.MeanClientMbps);
             Sparkline.add('download', data.Data.ElapsedTime, data.Data.NumBytes);
+          } else if (data.Source === 'server') {
+            Advanced.addDownloadSample(data.Data);
           }
         },
         downloadComplete: (data) => {
           this.ndt7Phase = 'upload-connect';
+          Advanced.setFinal('Download', data);
           if (data.LastClientMeasurement) {
             this.measurementResult.s2cRate =
               data.LastClientMeasurement.MeanClientMbps.toFixed(2);
@@ -377,6 +383,7 @@ const SpeedTest = {
           }
         },
         uploadComplete: (data) => {
+          Advanced.setFinal('Upload', data);
           if (data.LastServerMeasurement?.TCPInfo) {
             this.measurementResult.c2sRate =
               (data.LastServerMeasurement.TCPInfo.BytesReceived /
