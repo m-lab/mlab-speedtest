@@ -713,10 +713,6 @@ main {
   text-align: left;
 }
 
-.advanced-body .fine-print {
-  margin: 0;
-}
-
 .charts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
