@@ -613,13 +613,21 @@ main {
   margin-block: var(--space-10);
 }
 
+/* Lucide line icons (assets/icons), tinted through a mask */
 .feature-icon {
   display: block;
-  width: auto;
-  height: 3.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
   margin-bottom: var(--space-4);
-  color: var(--color-primary-700);
+  background-color: var(--color-primary-700);
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
 }
+
+.icon-code-xml { --icon: url("../assets/icons/code-xml.svg"); }
+.icon-database { --icon: url("../assets/icons/database.svg"); }
+.icon-globe { --icon: url("../assets/icons/globe.svg"); }
+.icon-landmark { --icon: url("../assets/icons/landmark.svg"); }
 
 .feature p {
   font-size: 0.9375rem;
