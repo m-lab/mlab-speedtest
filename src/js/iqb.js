@@ -22,12 +22,12 @@ const Iqb = {
 
   // [threshold, weight] per requirement. Every use case has weight 1.
   USE_CASES: [
-    { name: 'Web browsing', download: [10, 3], upload: [10, 2], latency: [100, 4], loss: [0.01, 4] },
-    { name: 'Video streaming', download: [25, 4], upload: [10, 2], latency: [100, 4], loss: [0.01, 4] },
-    { name: 'Audio streaming', download: [10, 4], upload: [5, 1], latency: [100, 3], loss: [0.01, 4] },
-    { name: 'Video conferencing', download: [25, 4], upload: [25, 4], latency: [50, 4], loss: [0.005, 4] },
-    { name: 'Online backup', download: [10, 4], upload: [25, 4], latency: [100, 2], loss: [0.01, 4] },
-    { name: 'Gaming', download: [25, 4], upload: [25, 4], latency: [10, 5], loss: [0.005, 4] },
+    { name: 'Web browsing', icon: 'globe', download: [10, 3], upload: [10, 2], latency: [100, 4], loss: [0.01, 4] },
+    { name: 'Video streaming', icon: 'tv', download: [25, 4], upload: [10, 2], latency: [100, 4], loss: [0.01, 4] },
+    { name: 'Audio streaming', icon: 'headphones', download: [10, 4], upload: [5, 1], latency: [100, 3], loss: [0.01, 4] },
+    { name: 'Video conferencing', icon: 'video', download: [25, 4], upload: [25, 4], latency: [50, 4], loss: [0.005, 4] },
+    { name: 'Online backup', icon: 'cloud-upload', download: [10, 4], upload: [25, 4], latency: [100, 2], loss: [0.01, 4] },
+    { name: 'Gaming', icon: 'gamepad-2', download: [25, 4], upload: [25, 4], latency: [10, 5], loss: [0.005, 4] },
   ],
 
   els: {},
@@ -38,25 +38,41 @@ const Iqb = {
       badges: document.getElementById('iqbBadges'),
       checks: document.getElementById('iqbChecks'),
     };
-    this.els.badges.replaceChildren(...this.USE_CASES.map(useCase => {
-      const item = document.createElement('li');
-      const name = document.createElement('span');
-      const value = document.createElement('span');
-      item.className = 'iqb-badge';
-      name.textContent = i18n.t(useCase.name);
-      value.className = 'iqb-value';
-      item.append(name, value);
-      return item;
-    }));
+    // One ring per use case: an icon inside a circle that fills to the score
+    this.els.badges.innerHTML = this.USE_CASES.map(useCase => `<li class="iqb-item">
+      <span class="iqb-ring">
+        <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+          <circle class="iqb-ring-track" cx="24" cy="24" r="21" />
+          <circle class="iqb-ring-value" cx="24" cy="24" r="21" pathLength="100" transform="rotate(-90 24 24)" />
+        </svg>
+        <span class="iqb-icon icon-${useCase.icon}"></span>
+      </span>
+      <span class="iqb-name"></span>
+      <span class="iqb-value" dir="ltr"></span>
+    </li>`).join('');
+    this.USE_CASES.forEach((useCase, i) => {
+      this.els.badges.children[i].querySelector('.iqb-name').textContent = i18n.t(useCase.name);
+    });
     this.reset();
+  },
+
+  /**
+   * Fill a use case's ring to a score in [0, 1], or empty it with null.
+   */
+  setRing(item, score) {
+    const arc = item.querySelector('.iqb-ring-value');
+    const filled = score > 0;
+    arc.setAttribute('stroke-dasharray', `${filled ? (score * 100).toFixed(1) : 0} 100`);
+    // A zero-length dash with round caps would still draw a dot
+    arc.style.visibility = filled ? 'visible' : 'hidden';
+    item.classList.toggle('is-full', score === 1);
+    item.classList.toggle('is-partial', score !== null && score < 1);
+    item.querySelector('.iqb-value').textContent = score === null ? '' : score.toFixed(2);
   },
 
   reset() {
     this.els.score.textContent = '';
-    for (const badge of this.els.badges.children) {
-      badge.classList.remove('is-full', 'is-partial');
-      badge.querySelector('.iqb-value').textContent = '';
-    }
+    for (const item of this.els.badges.children) this.setRing(item, null);
     this.els.checks.hidden = true;
   },
 
@@ -118,9 +134,7 @@ const Iqb = {
     const result = this.score(inputs);
     this.els.score.textContent = result.score.toFixed(2);
     result.useCases.forEach((useCase, i) => {
-      const badge = this.els.badges.children[i];
-      badge.classList.add(useCase.score === 1 ? 'is-full' : 'is-partial');
-      badge.querySelector('.iqb-value').textContent = useCase.score.toFixed(2);
+      this.setRing(this.els.badges.children[i], useCase.score);
     });
     this.renderChecks(inputs, result);
   },
