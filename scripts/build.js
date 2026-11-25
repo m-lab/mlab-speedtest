@@ -6,6 +6,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const ROOT = path.join(__dirname, '..');
 const SRC = path.join(ROOT, 'src');
@@ -54,6 +55,23 @@ function copyFontCSS(srcCSS, destCSS) {
   for (const [, rel] of css.matchAll(/url\((\.\/files\/[^)]+)\)/g)) {
     copyFile(path.join(path.dirname(srcCSS), rel), path.join(path.dirname(destCSS), rel));
   }
+}
+
+/**
+ * Append a content hash to the local stylesheet and script URLs of an HTML
+ * file, so a new deploy is never paired with a browser-cached older asset.
+ */
+function versionAssets(htmlPath) {
+  const html = fs.readFileSync(htmlPath, 'utf8');
+  const versioned = html.replace(
+    /(<(?:link|script)\b[^>]*?\b(?:href|src)=")([^"?#:]+\.(?:css|js))(")/g,
+    (match, before, url, after) => {
+      const file = path.join(path.dirname(htmlPath), url);
+      if (!fs.existsSync(file)) return match;
+      const hash = crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex').slice(0, 10);
+      return `${before}${url}?v=${hash}${after}`;
+    });
+  fs.writeFileSync(htmlPath, versioned);
 }
 
 /**
@@ -133,6 +151,12 @@ function build() {
     `const mlabEnvName = "${mlabEnvName}";\n` +
     `const mlabSentryDsn = "${sentryDsn}";\n`
   );
+
+  // Must come last: the hashes cover the final contents of every asset
+  console.log('Versioning asset URLs...');
+  for (const name of fs.readdirSync(DIST).filter(f => f.endsWith('.html'))) {
+    versionAssets(path.join(DIST, name));
+  }
 
   console.log('\nBuild complete! Output in dist/');
 }
