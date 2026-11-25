@@ -1182,6 +1182,56 @@ main {
   text-decoration: underline;
 }
 
+/* ---------- Wide screens: gauge and controls on the left, results on the right ---------- */
+
+@media (min-width: 1100px) {
+  /* Only the test page: the 404 page shares .hero-inner */
+  #intro .hero-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+    /* The last row takes any extra height of the right column, so opening
+       the details never spreads the controls on the left apart */
+    grid-template-rows: repeat(4, auto) 1fr;
+    column-gap: var(--space-16);
+    align-items: start;
+    justify-items: center;
+  }
+
+  .measurement { grid-area: 1 / 1; }
+  .agreement { grid-area: 2 / 1; }
+  #startButton { grid-area: 3 / 1; }
+  .agreement-hint { grid-area: 4 / 1; }
+  .hero .fine-print { grid-area: 5 / 1; }
+
+  /* The intro copy and the results take turns in the right column, which
+     spans every row so swapping them never changes the height */
+  .hero-intro,
+  .results {
+    grid-column: 2;
+    grid-row: 1 / span 5;
+  }
+
+  .hero-intro {
+    align-self: center;
+    justify-self: start;
+    text-align: start;
+  }
+
+  .hero .hero-intro h1 {
+    font-size: 3.5rem;
+  }
+
+  .hero .hero-intro .lead {
+    margin-bottom: 0;
+    font-size: 1.125rem;
+  }
+
+  .results {
+    max-width: none;
+    margin-bottom: 0;
+  }
+}
+
 /* ---------- 404 ---------- */
 
 .not-found-code {
