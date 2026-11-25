@@ -17,7 +17,6 @@
   --color-neutral-700: #314158;
   --color-neutral-900: #0f172b;
   --color-primary-100: #dff2fe;
-  --color-primary-400: #00bcff;
   --color-primary-600: #0084d1;
   --color-primary-700: #0069a8;
   --color-primary-800: #00598a;
@@ -35,6 +34,7 @@
   --font-sans: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 
+  --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
@@ -49,7 +49,6 @@
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
   --btn-edge-width: 2px;
-  --chamfer: 28px;
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --dur-base: 200ms;
 }
@@ -278,60 +277,45 @@ main {
   color: var(--text-heading);
 }
 
-/* ---------- Hero: white octagon panel over the zigzag band ---------- */
-
-.zigzag {
-  position: relative;
-  overflow: hidden;
-  background: var(--color-primary-800);
-}
-
-.zigzag::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.35;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 635 439' fill='none'%3E%3Cpath d='M632 486V222.385L601.71 192.413H409.868M603.604 486V237.872L588.459 222.385H386.953M573.314 486V253.025H376.665M154.517 93.9178L154.517 223.053L184.807 253.025L376.651 253.025M182.914 93.9178L182.914 207.567L198.058 223.053L401.05 222.385M213.203 93.9178L213.203 192.414L409.853 192.414M-192 3H183.249L213.204 33.3059L213.203 128.092M-192 31.4118H167.77L182.915 46.5647L182.914 128.092M-192 61.7176H154.519L154.517 128.092' stroke='%2300bcff' stroke-width='6'/%3E%3C/svg%3E") no-repeat right center / auto 100%;
-  pointer-events: none;
-}
-
-[dir="rtl"] .zigzag::before {
-  transform: scaleX(-1);
-}
+/* ---------- Hero: one centered column on white ---------- */
 
 .hero {
-  padding-block: var(--space-16);
-}
-
-.hero > .container {
-  position: relative;
-}
-
-.hero-panel {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: center;
-  gap: var(--space-12);
-  padding: 56px 64px;
+  padding-block: 4.5rem var(--space-16);
   background: var(--color-white);
-  clip-path: polygon(
-    var(--chamfer) 0, calc(100% - var(--chamfer)) 0,
-    100% var(--chamfer), 100% calc(100% - var(--chamfer)),
-    calc(100% - var(--chamfer)) 100%, var(--chamfer) 100%,
-    0 calc(100% - var(--chamfer)), 0 var(--chamfer)
-  );
 }
 
-.consent {
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero h1 {
+  margin-bottom: var(--space-4);
+  font-size: 2.5rem;
+  line-height: 1.1;
+}
+
+.hero .lead {
+  max-width: 36rem;
+  margin-bottom: var(--space-8);
+  color: var(--color-neutral-500);
+  font-size: 1rem;
+}
+
+.agreement {
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
-  margin-block: var(--space-6);
+  max-width: 32rem;
+  margin-bottom: var(--space-6);
   font-size: 0.9375rem;
   line-height: 1.5;
+  text-align: start;
 }
 
-.consent input {
+.agreement input {
   flex: none;
   width: 1.25rem;
   height: 1.25rem;
@@ -340,45 +324,41 @@ main {
   cursor: pointer;
 }
 
-.consent input:disabled {
+.agreement input:disabled {
   cursor: default;
 }
 
-.consent label {
+.agreement label {
   color: var(--text-heading);
   cursor: pointer;
 }
 
-.speedtest-notes {
-  margin-top: var(--space-6);
-}
-
-.privacy-message {
+.agreement-hint {
+  margin: var(--space-4) 0 0;
   color: var(--color-neutral-700);
   font-size: 0.875rem;
   font-weight: 500;
 }
 
+.hero .fine-print {
+  max-width: 32rem;
+  margin: var(--space-8) 0 0;
+}
+
 /* ---------- Gauge ---------- */
 
 .measurement {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 0;
-}
-
-#progressSection {
   position: relative;
+  width: min(20rem, 100%);
+  margin-bottom: var(--space-4);
   container-type: inline-size;
-  width: min(22rem, 100%);
 }
 
 .gauge svg {
   display: block;
-  overflow: visible;
   width: 100%;
   height: auto;
+  overflow: visible;
   fill: none;
 }
 
@@ -392,18 +372,26 @@ main {
 }
 
 .gauge-value {
-  stroke: var(--color-speed-600);
-  transition: stroke-dasharray 0.25s linear;
+  transition: stroke-dasharray 0.15s linear, opacity var(--dur-base) var(--ease-standard);
 }
 
-.gauge.is-upload .gauge-value {
-  stroke: var(--color-primary-600);
+.gauge-download {
+  stroke: var(--color-speed-600);
+}
+
+.gauge-upload {
+  stroke: var(--color-primary-700);
+}
+
+/* While upload runs, the finished download arc steps back */
+.gauge.is-upload .gauge-download {
+  opacity: 0.35;
 }
 
 .gauge-ticks text {
-  fill: var(--color-neutral-500);
+  fill: var(--color-neutral-400);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   text-anchor: middle;
   dominant-baseline: middle;
 }
@@ -415,14 +403,13 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 16%;
+  padding: 0 24%;
   text-align: center;
 }
 
 .gauge-speed {
-  color: var(--text-heading);
-  font-size: 1.25rem;
-  font-weight: 600;
+  color: var(--color-neutral-500);
+  font-size: 0.9375rem;
   line-height: 1.2;
 }
 
@@ -430,61 +417,77 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: var(--color-speed-700);
   font-family: var(--font-mono);
-  font-size: min(2.75rem, 12cqi);
+  /* Digits are 0.6em wide: keep the number under half the gauge's width */
+  font-size: min(2.75rem, calc(80cqi / max(var(--chars, 6), 6)));
   font-weight: 700;
   line-height: 1;
 }
 
+.measurement:has(.is-upload) .gauge-speed.is-rate {
+  color: var(--color-primary-700);
+}
+
 .gauge-speed.is-rate .unit {
   margin: var(--space-2) 0 0;
+  color: var(--color-neutral-400);
 }
 
 .unit {
   margin-inline-start: 0.375em;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-400);
   font-family: var(--font-mono);
   font-size: 0.875rem;
   font-weight: 400;
 }
 
+.gauge-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-mono);
+  /* As above, leaving room for the arrow */
+  font-size: min(2rem, calc(64cqi / max(var(--chars, 6), 6)));
+  font-weight: 700;
+  line-height: 1;
+}
+
+.summary-line {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.summary-download {
+  color: var(--color-speed-600);
+}
+
+.summary-upload {
+  color: var(--color-primary-700);
+}
+
+.summary-arrow {
+  width: 0.5em;
+  height: 0.6em;
+}
+
+.summary-upload .summary-arrow {
+  transform: rotate(180deg);
+}
+
+.summary-value:empty::before {
+  content: "\2013";
+  color: var(--color-neutral-300);
+}
+
+.gauge-summary .unit {
+  margin: var(--space-1) 0 0;
+}
+
 .gauge-phase {
   margin-top: var(--space-2);
-  color: var(--color-neutral-600);
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-/* ---------- Results: cut-corner card ---------- */
-
-.results {
-  width: 100%;
-  padding: var(--space-8);
-  background: var(--color-neutral-50);
-  border-bottom: 4px solid var(--border-subtle);
-  clip-path: polygon(var(--chamfer) 0, 100% 0, 100% 100%, 0 100%, 0 var(--chamfer));
-}
-
-[dir="rtl"] .results {
-  clip-path: polygon(0 0, calc(100% - var(--chamfer)) 0, 100% var(--chamfer), 100% 100%, 0 100%);
-}
-
-.results-title {
-  font-size: 1.5rem;
-  font-weight: 800;
-}
-
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-6);
-  margin: 0 0 var(--space-6);
-}
-
-.metrics dt,
-.server dt {
   color: var(--color-neutral-600);
   font-size: 0.75rem;
   font-weight: 600;
@@ -492,25 +495,61 @@ main {
   text-transform: uppercase;
 }
 
-.metrics dd {
-  margin: var(--space-2) 0 0;
-  text-align: start;
+/* ---------- Results: a row of headline numbers ---------- */
+
+.results {
+  width: 100%;
+  max-width: 48rem;
+  margin-top: var(--space-10);
 }
 
-[dir="rtl"] .metrics dd {
-  text-align: end;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-8) var(--space-6);
+  margin: 0 0 var(--space-6);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.metrics dt,
+.server dt {
+  color: var(--color-neutral-500);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.metrics dd {
+  margin: 0;
 }
 
 .metric-value {
-  color: var(--text-heading);
+  color: var(--color-neutral-600);
   font-family: var(--font-mono);
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 700;
   line-height: 1;
 }
 
 .metric-download .metric-value {
-  color: var(--color-speed-700);
+  color: var(--color-speed-600);
 }
 
 .metric-upload .metric-value {
@@ -519,7 +558,7 @@ main {
 
 .metric-value:empty::before {
   content: "\2013";
-  color: var(--color-neutral-400);
+  color: var(--color-neutral-300);
 }
 
 .metric-value:empty + .unit {
@@ -530,6 +569,7 @@ main {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
+  justify-content: center;
   gap: var(--space-2) var(--space-3);
   margin: 0;
   padding-top: var(--space-4);
@@ -560,6 +600,10 @@ main {
 
 .section-muted {
   background: var(--color-neutral-50);
+}
+
+.section-accent {
+  border-top: 4px solid var(--color-speed-600);
 }
 
 .features {
@@ -684,12 +728,6 @@ main {
 
 /* ---------- 404 ---------- */
 
-.not-found .hero-panel {
-  grid-template-columns: minmax(0, 1fr);
-  max-width: 48rem;
-  margin-inline: auto;
-}
-
 .not-found-code {
   margin: 0;
   color: var(--color-speed-600);
@@ -710,14 +748,15 @@ main {
   }
 
   .hero {
-    padding-block: var(--space-8);
+    padding-block: var(--space-10) var(--space-12);
   }
 
-  .hero-panel {
-    --chamfer: 20px;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-8);
-    padding: var(--space-10) var(--space-6);
+  .hero h1 {
+    font-size: 2.25rem;
+  }
+
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .section {
@@ -760,12 +799,8 @@ main {
     width: 100%;
   }
 
-  .results {
-    padding: var(--space-6) var(--space-4);
-  }
-
   .metric-value {
-    font-size: 1.625rem;
+    font-size: 1.75rem;
   }
 }
 

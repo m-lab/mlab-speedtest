@@ -26,13 +26,16 @@ const SpeedTest = {
     // Cache DOM elements
     this.els = {
       startButton: document.getElementById('startButton'),
-      privacyCheckbox: document.getElementById('privacyConsent'),
+      privacyCheckbox: document.getElementById('dataPolicyAgreement'),
       privacyMessage: document.getElementById('privacyMessage'),
       currentSpeed: document.getElementById('currentSpeed'),
       currentUnit: document.getElementById('currentUnit'),
       currentPhase: document.getElementById('currentPhase'),
+      gaugeLive: document.getElementById('gaugeLive'),
+      gaugeSummary: document.getElementById('gaugeSummary'),
+      summaryDownload: document.getElementById('summaryDownload'),
+      summaryUpload: document.getElementById('summaryUpload'),
       measurementSpace: document.getElementById('measurementSpace'),
-      progressSection: document.getElementById('progressSection'),
       resultsSection: document.getElementById('resultsSection'),
 
       // Results
@@ -94,8 +97,7 @@ const SpeedTest = {
     // Show/hide privacy message
     this.els.privacyMessage.hidden = this.privacyConsent;
 
-    // Show/hide progress vs results
-    this.els.progressSection.hidden = this.measurementComplete;
+    // Show results once a test has finished
     this.els.resultsSection.hidden = !this.measurementComplete;
   },
 
@@ -119,7 +121,24 @@ const SpeedTest = {
     this.els.currentSpeed.textContent = isRate ? mbps.toFixed(2) : text;
     this.els.currentUnit.hidden = !isRate;
     this.els.currentSpeed.parentElement.classList.toggle('is-rate', isRate);
-    ProgressGauge.setSpeed(isRate ? mbps : 0);
+    // Lets CSS shrink multi-gigabit rates so they stay inside the rings
+    this.els.currentSpeed.parentElement.style.setProperty('--chars', this.els.currentSpeed.textContent.length);
+  },
+
+  /**
+   * Swap the live readout in the middle of the gauge for the final download
+   * and upload rates (true), or back again (false).
+   */
+  showSummary(show) {
+    this.els.gaugeLive.hidden = show;
+    this.els.gaugeSummary.hidden = !show;
+    if (show) {
+      this.els.summaryDownload.textContent = this.measurementResult.s2cRate || '';
+      this.els.summaryUpload.textContent = this.measurementResult.c2sRate || '';
+      const chars = Math.max(this.els.summaryDownload.textContent.length,
+        this.els.summaryUpload.textContent.length);
+      this.els.gaugeSummary.style.setProperty('--chars', chars);
+    }
   },
 
   async startTest() {
@@ -139,6 +158,7 @@ const SpeedTest = {
       this.els.measurementSpace.scrollIntoView({ behavior: 'smooth' });
     }
 
+    this.showSummary(false);
     this.setReadout(i18n.t('Starting'));
     this.els.currentPhase.textContent = '';
 
@@ -146,18 +166,19 @@ const SpeedTest = {
     try {
       const sessionID = this.generateSessionID();
       await this.runNdt7(sessionID);
-      this.els.currentPhase.textContent = i18n.t('Complete');
-      this.setReadout('');
+      // Both arcs stay at their final rates; the centre summarises them
+      ProgressGauge.setPhase('done');
+      this.showSummary(true);
       this.measurementComplete = true;
     } catch (err) {
       console.error('Test failed:', err);
       if (window.Sentry) Sentry.captureException(err);
+      ProgressGauge.reset();
       this.els.currentPhase.textContent = i18n.t('Error');
       this.setReadout('');
       this.measurementComplete = true;
     } finally {
       this.testRunning = false;
-      ProgressGauge.setInactive();
       this.updateUI();
     }
   },
@@ -314,6 +335,7 @@ const SpeedTest = {
         downloadMeasurement: (data) => {
           if (data.Source === 'client') {
             this.setReadout(null, data.Data.MeanClientMbps);
+            ProgressGauge.setSpeed('download', data.Data.MeanClientMbps);
           }
         },
         downloadComplete: (data) => {
@@ -322,6 +344,7 @@ const SpeedTest = {
             this.measurementResult.s2cRate =
               data.LastClientMeasurement.MeanClientMbps.toFixed(2);
             this.els.s2cRate.textContent = this.measurementResult.s2cRate;
+            ProgressGauge.setSpeed('download', data.LastClientMeasurement.MeanClientMbps);
           }
           if (data.LastServerMeasurement?.TCPInfo) {
             this.measurementResult.latency =
@@ -342,8 +365,9 @@ const SpeedTest = {
         },
         uploadMeasurement: (data) => {
           if (data.Source === 'server') {
-            this.setReadout(null, data.Data.TCPInfo.BytesReceived /
-              data.Data.TCPInfo.ElapsedTime * 8);
+            const mbps = data.Data.TCPInfo.BytesReceived / data.Data.TCPInfo.ElapsedTime * 8;
+            this.setReadout(null, mbps);
+            ProgressGauge.setSpeed('upload', mbps);
           }
         },
         uploadComplete: (data) => {
@@ -352,6 +376,7 @@ const SpeedTest = {
               (data.LastServerMeasurement.TCPInfo.BytesReceived /
                 data.LastServerMeasurement.TCPInfo.ElapsedTime * 8).toFixed(2);
             this.els.c2sRate.textContent = this.measurementResult.c2sRate;
+            ProgressGauge.setSpeed('upload', parseFloat(this.measurementResult.c2sRate));
           }
         },
       },

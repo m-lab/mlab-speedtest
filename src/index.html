@@ -39,69 +39,77 @@
     <main>
 
       <!-- Intro -->
-      <section id="intro" class="hero zigzag">
-        <div class="container">
-          <div class="hero-panel">
-            <div class="hero-text">
-              <h1 data-i18n>Test Your Speed</h1>
-              <p class="lead" data-i18n>M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection through quick measurements.</p>
-              <div class="consent">
-                <input type="checkbox" id="privacyConsent" name="privacyConsent">
-                <label for="privacyConsent" data-i18n data-i18n-html>I agree to the <a href="https://www.measurementlab.net/privacy/">data policy</a>, which includes retention and publication of IP addresses.</label>
+      <section id="intro" class="hero">
+        <div class="container hero-inner">
+          <div id="measurementSpace" class="measurement">
+            <div id="gauge" class="gauge" dir="ltr"></div>
+            <div class="gauge-readout">
+              <div id="gaugeLive" aria-live="polite">
+                <div class="gauge-speed" dir="ltr"><span id="currentSpeed"></span><span id="currentUnit" class="unit" hidden>Mb/s</span></div>
+                <div id="currentPhase" class="gauge-phase"></div>
               </div>
-              <button type="button" id="startButton" class="button button-speed button-xl" disabled>
-                <span class="btn-begin" data-i18n>Begin</span>
-                <span class="btn-again" data-i18n hidden>Again</span>
-                <span class="btn-testing" hidden><span data-i18n>Testing</span><span class="spinner" aria-hidden="true"></span></span>
-              </button>
-              <div class="speedtest-notes">
-                <p id="privacyMessage" class="privacy-message" data-i18n>Please agree to the data policy prior to the test.</p>
-                <p class="fine-print" data-i18n data-i18n-html>For more on M-Lab's data collection and measurement, including the disclosure of IP addresses, see our <a href="https://www.measurementlab.net/privacy/">Privacy Policy</a>.</p>
-              </div>
-            </div>
-
-            <div id="measurementSpace" class="measurement">
-              <div id="progressSection">
-                <div id="gauge" class="gauge" dir="ltr"></div>
-                <div class="gauge-readout" aria-live="polite">
-                  <div class="gauge-speed" dir="ltr"><span id="currentSpeed"></span><span id="currentUnit" class="unit" hidden>Mb/s</span></div>
-                  <div id="currentPhase" class="gauge-phase"></div>
+              <!-- Final download and upload; the results list below carries the same values for assistive tech -->
+              <div id="gaugeSummary" class="gauge-summary" dir="ltr" aria-hidden="true" hidden>
+                <div class="summary-line summary-download">
+                  <svg class="summary-arrow" viewBox="0 0 18 20" fill="currentColor"><path d="M8.10895 18.7319C8.49183 19.1191 9.12463 19.1135 9.52236 18.7194L16.0037 12.2973C16.4015 11.9032 16.4135 11.2698 16.0306 10.8826C15.6477 10.4954 15.0149 10.5009 14.6172 10.895L8.85599 16.6036L3.30993 10.9945C2.92705 10.6073 2.29424 10.6129 1.89652 11.007C1.49879 11.4011 1.48675 12.0345 1.86962 12.4217L8.10895 18.7319ZM8.8291 18.0183L9.82853 18.0095L10.1709 -1.68478e-05L9.17145 0.00878098L8.17202 0.0175769L7.82967 18.0271L8.8291 18.0183Z"/></svg>
+                  <span id="summaryDownload" class="summary-value"></span>
                 </div>
-              </div>
-
-              <div id="resultsSection" class="results" hidden>
-                <h2 class="results-title" data-i18n>Results</h2>
-                <dl class="metrics">
-                  <div class="metric metric-download">
-                    <dt data-i18n>Download</dt>
-                    <dd dir="ltr"><span id="s2cRate" class="metric-value"></span><span class="unit">Mb/s</span></dd>
-                  </div>
-                  <div class="metric metric-upload">
-                    <dt data-i18n>Upload</dt>
-                    <dd dir="ltr"><span id="c2sRate" class="metric-value"></span><span class="unit">Mb/s</span></dd>
-                  </div>
-                  <div class="metric">
-                    <dt data-i18n>Latency</dt>
-                    <dd dir="ltr"><span id="latency" class="metric-value"></span><span class="unit">ms</span></dd>
-                  </div>
-                  <div class="metric">
-                    <dt data-i18n>Retransmission</dt>
-                    <dd dir="ltr"><span id="loss" class="metric-value"></span><span class="unit">%</span></dd>
-                  </div>
-                </dl>
-                <dl class="server">
-                  <dt data-i18n>Test Server</dt>
-                  <dd id="ndtLocation"></dd>
-                  <dd class="server-test"><a href="https://www.measurementlab.net/tests/ndt/" target="_blank" rel="noopener">NDT</a></dd>
-                </dl>
+                <div class="summary-line summary-upload">
+                  <svg class="summary-arrow" viewBox="0 0 18 20" fill="currentColor"><path d="M8.10895 18.7319C8.49183 19.1191 9.12463 19.1135 9.52236 18.7194L16.0037 12.2973C16.4015 11.9032 16.4135 11.2698 16.0306 10.8826C15.6477 10.4954 15.0149 10.5009 14.6172 10.895L8.85599 16.6036L3.30993 10.9945C2.92705 10.6073 2.29424 10.6129 1.89652 11.007C1.49879 11.4011 1.48675 12.0345 1.86962 12.4217L8.10895 18.7319ZM8.8291 18.0183L9.82853 18.0095L10.1709 -1.68478e-05L9.17145 0.00878098L8.17202 0.0175769L7.82967 18.0271L8.8291 18.0183Z"/></svg>
+                  <span id="summaryUpload" class="summary-value"></span>
+                </div>
+                <div class="unit">Mb/s</div>
               </div>
             </div>
           </div>
+
+          <h1 data-i18n>Test Your Speed</h1>
+          <p class="lead" data-i18n>M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection through quick measurements.</p>
+
+          <div class="agreement">
+            <input type="checkbox" id="dataPolicyAgreement" name="dataPolicyAgreement">
+            <label for="dataPolicyAgreement" data-i18n data-i18n-html>I agree to the <a href="https://www.measurementlab.net/privacy/">data policy</a>, which includes retention and publication of IP addresses.</label>
+          </div>
+          <button type="button" id="startButton" class="button button-speed button-xl" disabled>
+            <span class="btn-begin" data-i18n>Begin</span>
+            <span class="btn-again" data-i18n hidden>Again</span>
+            <span class="btn-testing" hidden><span data-i18n>Testing</span><span class="spinner" aria-hidden="true"></span></span>
+          </button>
+          <p id="privacyMessage" class="agreement-hint" data-i18n>Please agree to the data policy prior to the test.</p>
+
+          <div id="resultsSection" class="results" hidden>
+            <h2 class="visually-hidden" data-i18n>Results</h2>
+            <dl class="metrics">
+              <div class="metric metric-download">
+                <dt data-i18n>Download</dt>
+                <dd dir="ltr"><span id="s2cRate" class="metric-value"></span><span class="unit">Mb/s</span></dd>
+              </div>
+              <div class="metric metric-upload">
+                <dt data-i18n>Upload</dt>
+                <dd dir="ltr"><span id="c2sRate" class="metric-value"></span><span class="unit">Mb/s</span></dd>
+              </div>
+              <div class="metric">
+                <dt data-i18n>Latency</dt>
+                <dd dir="ltr"><span id="latency" class="metric-value"></span><span class="unit">ms</span></dd>
+              </div>
+              <div class="metric">
+                <dt data-i18n>Retransmission</dt>
+                <dd dir="ltr"><span id="loss" class="metric-value"></span><span class="unit">%</span></dd>
+              </div>
+            </dl>
+            <dl class="server">
+              <dt data-i18n>Test Server</dt>
+              <dd id="ndtLocation"></dd>
+              <dd class="server-test"><a href="https://www.measurementlab.net/tests/ndt/" target="_blank" rel="noopener">NDT</a></dd>
+            </dl>
+          </div>
+
+          <p class="fine-print" data-i18n data-i18n-html>For more on M-Lab's data collection and measurement, including the disclosure of IP addresses, see our <a href="https://www.measurementlab.net/privacy/">Privacy Policy</a>.</p>
         </div>
       </section>
 
       <!-- About -->
-      <section id="about" class="section section-muted">
+      <section id="about" class="section section-muted section-accent">
         <div class="container">
           <h2 data-i18n>About</h2>
           <p class="lead" data-i18n>Measurement Lab (M-Lab) provides the largest collection of open Internet performance data on the planet. As a consortium of research, industry, and public-interest partners, M-Lab is dedicated to providing an ecosystem for the open, verifiable measurement of global network performance.</p>
@@ -213,7 +221,7 @@
     <footer id="footer" class="site-footer">
       <div class="container site-footer-inner">
         <a class="logo logo-white" href="https://www.measurementlab.net/">
-          <svg viewBox="0 0 94 75" role="img" aria-label="Measurement Lab" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 256 75" role="img" aria-label="Measurement Lab" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(14.5, 3.5)">
               <path d="M39.1587 0H1C0.447715 0 0 0.447715 0 1V17.5C0 18.0523 0.447715 18.5 1 18.5H29.5C30.0523 18.5 30.5 18.9477 30.5 19.5V37.0546C30.5 37.3381 30.6203 37.6083 30.831 37.7979L40.2148 46.2433C40.3984 46.4086 40.6367 46.5 40.8837 46.5H58.5C59.0523 46.5 59.5 46.9477 59.5 47.5V70.5C59.5 71.0523 59.9477 71.5 60.5 71.5H78.5C79.0523 71.5 79.5 71.0523 79.5 70.5V36.9599C79.5 36.668 79.3724 36.3907 79.1508 36.2007L69.2809 27.7407C69.0996 27.5854 68.8688 27.5 68.6301 27.5H51.5C50.9477 27.5 50.5 27.0523 50.5 26.5V8.99104C50.5 8.68134 50.3565 8.38912 50.1114 8.19975L39.7701 0.208715C39.595 0.0734046 39.3799 0 39.1587 0Z" />
             </g>
@@ -221,6 +229,8 @@
             <rect x="7" y="7" width="5" height="12" rx="2.5" />
             <circle cx="2.5" cy="16.5" r="2.5" /><circle cx="2.5" cy="9.5" r="2.5" />
             <circle cx="2.5" cy="2.5" r="2.5" /><circle cx="9.5" cy="2.5" r="2.5" />
+            <text x="100" y="42">Measurement</text>
+            <text x="100" y="66">Lab</text>
           </svg>
         </a>
         <ul class="footer-menu">

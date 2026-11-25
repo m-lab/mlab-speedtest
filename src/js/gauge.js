@@ -1,5 +1,6 @@
 /**
- * SVG speed gauge: a 270-degree arc showing the current rate in Mb/s.
+ * SVG speed gauge: two concentric 270-degree arcs, the outer one for the
+ * download rate and the inner one for the upload rate, in Mb/s.
  *
  * The scale is piecewise-linear between TICKS, each tick getting an equal
  * share of the arc, so common speeds (10-100 Mb/s) use a useful part of the
@@ -8,19 +9,24 @@
 const ProgressGauge = {
   TICKS: [0, 10, 50, 100, 250, 500, 1000],
   SIZE: 300,
-  RADIUS: 110,
-  STROKE: 16,
+  RINGS: {
+    download: { radius: 110, stroke: 16 },
+    upload: { radius: 88, stroke: 10 },
+  },
   START_DEG: 135,
   SWEEP_DEG: 270,
 
   root: null,
-  value: null,
+  arcs: {},
 
   init() {
     this.root = document.getElementById('gauge');
     this.root.innerHTML = this.render();
-    this.value = this.root.querySelector('.gauge-value');
-    this.setInactive();
+    this.arcs = {
+      download: this.root.querySelector('.gauge-download'),
+      upload: this.root.querySelector('.gauge-upload'),
+    };
+    this.reset();
   },
 
   /**
@@ -41,47 +47,53 @@ const ProgressGauge = {
     return [(c + r * Math.cos(rad)).toFixed(2), (c + r * Math.sin(rad)).toFixed(2)];
   },
 
-  render() {
-    const r = this.RADIUS;
+  arcPath(r) {
     const [x0, y0] = this.point(this.START_DEG, r);
     const [x1, y1] = this.point(this.START_DEG + this.SWEEP_DEG, r);
-    const arc = `M ${x0} ${y0} A ${r} ${r} 0 1 1 ${x1} ${y1}`;
+    return `M ${x0} ${y0} A ${r} ${r} 0 1 1 ${x1} ${y1}`;
+  },
+
+  render() {
+    const rings = Object.entries(this.RINGS).map(([name, { radius, stroke }]) => {
+      const d = this.arcPath(radius);
+      return `<path class="gauge-track" d="${d}" stroke-width="${stroke}" />
+      <path class="gauge-value gauge-${name}" d="${d}" stroke-width="${stroke}" pathLength="100" stroke-dasharray="0 100" />`;
+    }).join('');
     const step = this.SWEEP_DEG / (this.TICKS.length - 1);
+    const labelRadius = this.RINGS.download.radius + 26;
     const labels = this.TICKS.map((tick, i) => {
-      const [x, y] = this.point(this.START_DEG + i * step, r + 26);
+      const [x, y] = this.point(this.START_DEG + i * step, labelRadius);
       return `<text x="${x}" y="${y}">${tick}</text>`;
     }).join('');
     return `<svg viewBox="0 0 ${this.SIZE} ${this.SIZE}" aria-hidden="true" focusable="false">
-      <path class="gauge-track" d="${arc}" stroke-width="${this.STROKE}" />
-      <path class="gauge-value" d="${arc}" stroke-width="${this.STROKE}" pathLength="100" stroke-dasharray="0 100" />
+      ${rings}
       <g class="gauge-ticks">${labels}</g>
     </svg>`;
   },
 
-  setSpeed(mbps) {
+  /**
+   * Fill the 'download' or 'upload' arc to the given rate in Mb/s.
+   */
+  setSpeed(direction, mbps) {
+    const arc = this.arcs[direction];
     const f = this.fraction(mbps);
-    this.value.setAttribute('stroke-dasharray', `${(f * 100).toFixed(2)} 100`);
+    arc.setAttribute('stroke-dasharray', `${(f * 100).toFixed(2)} 100`);
     // A zero-length dash with round caps would still draw a dot.
-    this.value.style.visibility = f > 0 ? 'visible' : 'hidden';
+    arc.style.visibility = f > 0 ? 'visible' : 'hidden';
   },
 
   /**
-   * Colour the arc by test direction: 'download', 'upload' or null.
+   * Mark the test stage: 'download', 'upload', 'done' or null.
    */
   setPhase(phase) {
-    this.root.classList.toggle('is-download', phase === 'download');
-    this.root.classList.toggle('is-upload', phase === 'upload');
-  },
-
-  setInactive() {
-    this.setSpeed(0);
-    this.setPhase(null);
-    this.root.classList.remove('is-active');
+    for (const p of ['download', 'upload', 'done']) {
+      this.root.classList.toggle(`is-${p}`, phase === p);
+    }
   },
 
   reset() {
-    this.setSpeed(0);
+    this.setSpeed('download', 0);
+    this.setSpeed('upload', 0);
     this.setPhase(null);
-    this.root.classList.add('is-active');
   },
 };
