@@ -342,6 +342,10 @@ main {
   font-weight: 500;
 }
 
+.agreement-hint.is-met {
+  visibility: hidden;
+}
+
 .hero .fine-print {
   max-width: 32rem;
   margin: var(--space-8) 0 0;

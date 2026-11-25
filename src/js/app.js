@@ -94,8 +94,8 @@ const SpeedTest = {
     againSpan.hidden = this.testRunning || !this.measurementComplete;
     beginSpan.hidden = this.testRunning || this.measurementComplete;
 
-    // Show/hide privacy message
-    this.els.privacyMessage.hidden = this.privacyConsent;
+    // Hide the privacy message once agreed, keeping its space so nothing below moves
+    this.els.privacyMessage.classList.toggle('is-met', this.privacyConsent);
 
     this.els.resultsSection.hidden = !this.resultsVisible;
     // From the first run on, the results panel takes the place of the intro copy
