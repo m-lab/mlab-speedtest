@@ -250,6 +250,8 @@ main {
   height: 3rem;
   width: auto;
   fill: currentColor;
+  /* The wordmark is Latin text placed by x offset: keep it left-to-right on RTL pages */
+  direction: ltr;
 }
 
 .logo text {
@@ -389,7 +391,7 @@ main {
 }
 
 .gauge-ticks text {
-  fill: var(--color-neutral-400);
+  fill: var(--color-neutral-500);
   font-family: var(--font-mono);
   font-size: 11px;
   text-anchor: middle;
@@ -431,59 +433,27 @@ main {
 
 .gauge-speed.is-rate .unit {
   margin: var(--space-2) 0 0;
-  color: var(--color-neutral-400);
+  color: var(--color-neutral-500);
 }
 
 .unit {
   margin-inline-start: 0.375em;
-  color: var(--color-neutral-400);
+  color: var(--color-neutral-500);
   font-family: var(--font-mono);
   font-size: 0.875rem;
   font-weight: 400;
 }
 
-.gauge-summary {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-  font-family: var(--font-mono);
-  /* As above, leaving room for the arrow */
-  font-size: min(2rem, calc(64cqi / max(var(--chars, 6), 6)));
-  font-weight: 700;
-  line-height: 1;
-}
-
-.summary-line {
-  display: flex;
-  align-items: center;
-  gap: 0.25em;
-}
-
-.summary-download {
+/* Shown in place of the live rate once the test is complete */
+.gauge-check {
+  display: none;
+  width: 3rem;
+  height: 3rem;
   color: var(--color-speed-600);
 }
 
-.summary-upload {
-  color: var(--color-primary-700);
-}
-
-.summary-arrow {
-  width: 0.5em;
-  height: 0.6em;
-}
-
-.summary-upload .summary-arrow {
-  transform: rotate(180deg);
-}
-
-.summary-value:empty::before {
-  content: "\2013";
-  color: var(--color-neutral-300);
-}
-
-.gauge-summary .unit {
-  margin: var(--space-1) 0 0;
+.gauge.is-done ~ .gauge-readout .gauge-check {
+  display: block;
 }
 
 .gauge-phase {
@@ -495,40 +465,39 @@ main {
   text-transform: uppercase;
 }
 
-/* ---------- Results: a row of headline numbers ---------- */
+/* ---------- Results: two headline rates, then one line of supporting figures ---------- */
 
 .results {
   width: 100%;
-  max-width: 48rem;
-  margin-top: var(--space-10);
+  max-width: 40rem;
+  margin-bottom: var(--space-8);
 }
 
-.visually-hidden {
+/* The results stand in for the intro copy once a test has produced them */
+.hero.has-results .lead {
+  display: none;
+}
+
+.visually-hidden,
+.hero.has-results h1 {
   position: absolute;
   width: 1px;
   height: 1px;
+  margin: 0;
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
 
-.metrics {
+.headline {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-8) var(--space-6);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
   margin: 0 0 var(--space-6);
 }
 
-.metric {
-  display: flex;
-  flex-direction: column-reverse;
-  justify-content: flex-end;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.metrics dt,
-.server dt {
+.headline dt,
+.details dt {
   color: var(--color-neutral-500);
   font-size: 0.75rem;
   font-weight: 600;
@@ -536,53 +505,125 @@ main {
   text-transform: uppercase;
 }
 
-.metrics dd {
-  margin: 0;
+.headline dt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
 }
 
-.metric-value {
-  color: var(--color-neutral-600);
-  font-family: var(--font-mono);
-  font-size: 2.25rem;
-  font-weight: 700;
-  line-height: 1;
+/* The arrow carries the colour of the matching gauge ring */
+.headline-arrow {
+  width: 0.875rem;
+  height: 1rem;
 }
 
-.metric-download .metric-value {
+.headline-download .headline-arrow,
+.headline-download .headline-value {
   color: var(--color-speed-600);
 }
 
-.metric-upload .metric-value {
+.headline-upload .headline-arrow,
+.headline-upload .headline-value {
   color: var(--color-primary-700);
 }
 
-.metric-value:empty::before {
-  content: "\2013";
-  color: var(--color-neutral-300);
+.headline-upload .headline-arrow {
+  transform: rotate(180deg);
 }
 
-.metric-value:empty + .unit {
-  display: none;
-}
-
-.server {
+.headline dd {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: center;
-  gap: var(--space-2) var(--space-3);
+  margin: 0;
+}
+
+.headline-value {
+  font-family: var(--font-mono);
+  font-size: clamp(2rem, 9vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.headline-value:empty::before,
+.detail-value:empty::before {
+  content: "\2013";
+  color: var(--color-neutral-300);
+}
+
+.headline-value:empty + .unit {
+  visibility: hidden;
+}
+
+/* Throughput over the run, in the colour of the matching ring */
+.headline dd.headline-graph {
+  display: block;
+  margin-top: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.headline-graph svg {
+  display: block;
+  width: 100%;
+  height: 2.5rem;
+}
+
+.spark-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spark-area {
+  fill: currentColor;
+  opacity: 0.12;
+}
+
+.headline-download .headline-graph {
+  color: var(--color-speed-600);
+}
+
+.headline-upload .headline-graph {
+  color: var(--color-primary-700);
+}
+
+.detail-value:empty + .unit,
+.detail-value:empty + .server-test {
+  display: none;
+}
+
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2) var(--space-8);
   margin: 0;
   padding-top: var(--space-4);
   border-top: 1px solid var(--border-subtle);
 }
 
-.server dd {
+.detail {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.details dd {
   margin: 0;
+}
+
+.detail-value {
   color: var(--text-heading);
   font-weight: 600;
 }
 
-.server .server-test a {
+.server-test {
+  margin-inline-start: var(--space-2);
   padding: 2px 8px;
   border-radius: var(--radius-md);
   background: var(--color-primary-100);
@@ -763,10 +804,6 @@ main {
     font-size: 2.25rem;
   }
 
-  .metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .section {
     padding-block: var(--space-12);
   }
@@ -805,10 +842,6 @@ main {
 
   .button-xl {
     width: 100%;
-  }
-
-  .metric-value {
-    font-size: 1.75rem;
   }
 }
 

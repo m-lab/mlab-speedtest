@@ -8,6 +8,7 @@ const SpeedTest = {
   testRunning: false,
   privacyConsent: false,
   measurementComplete: false,
+  resultsVisible: false,
   measurementResult: {},
 
   // DOM elements (cached on init)
@@ -31,12 +32,10 @@ const SpeedTest = {
       currentSpeed: document.getElementById('currentSpeed'),
       currentUnit: document.getElementById('currentUnit'),
       currentPhase: document.getElementById('currentPhase'),
-      gaugeLive: document.getElementById('gaugeLive'),
-      gaugeSummary: document.getElementById('gaugeSummary'),
-      summaryDownload: document.getElementById('summaryDownload'),
-      summaryUpload: document.getElementById('summaryUpload'),
+      hero: document.getElementById('intro'),
       measurementSpace: document.getElementById('measurementSpace'),
       resultsSection: document.getElementById('resultsSection'),
+      resultsStatus: document.getElementById('resultsStatus'),
 
       // Results
       location: document.getElementById('ndtLocation'),
@@ -52,6 +51,7 @@ const SpeedTest = {
 
     // Initialize gauge
     ProgressGauge.init();
+    Sparkline.init();
 
     // Scrollspy: update active nav link based on which section is in view
     const sections = document.querySelectorAll('main > section[id]');
@@ -97,8 +97,9 @@ const SpeedTest = {
     // Show/hide privacy message
     this.els.privacyMessage.hidden = this.privacyConsent;
 
-    // Show results once a test has finished
-    this.els.resultsSection.hidden = !this.measurementComplete;
+    this.els.resultsSection.hidden = !this.resultsVisible;
+    // From the first run on, the results panel takes the place of the intro copy
+    if (this.resultsVisible) this.els.hero.classList.add('has-results');
   },
 
   /**
@@ -126,19 +127,14 @@ const SpeedTest = {
   },
 
   /**
-   * Swap the live readout in the middle of the gauge for the final download
-   * and upload rates (true), or back again (false).
+   * Announce the final rates once to assistive tech.
    */
-  showSummary(show) {
-    this.els.gaugeLive.hidden = show;
-    this.els.gaugeSummary.hidden = !show;
-    if (show) {
-      this.els.summaryDownload.textContent = this.measurementResult.s2cRate || '';
-      this.els.summaryUpload.textContent = this.measurementResult.c2sRate || '';
-      const chars = Math.max(this.els.summaryDownload.textContent.length,
-        this.els.summaryUpload.textContent.length);
-      this.els.gaugeSummary.style.setProperty('--chars', chars);
-    }
+  announceResults() {
+    const r = this.measurementResult;
+    const parts = [];
+    if (r.s2cRate) parts.push(`${i18n.t('Download')} ${r.s2cRate} Mb/s`);
+    if (r.c2sRate) parts.push(`${i18n.t('Upload')} ${r.c2sRate} Mb/s`);
+    this.els.resultsStatus.textContent = parts.join(', ');
   },
 
   async startTest() {
@@ -147,10 +143,13 @@ const SpeedTest = {
     }
 
     ProgressGauge.reset();
+    Sparkline.reset();
     this.testRunning = true;
     this.measurementComplete = false;
     this.measurementResult = {};
     this.clearResults();
+    // The results panel is on screen for the whole run and fills in as it goes
+    this.resultsVisible = true;
     this.updateUI();
 
     // Scroll to measurement area on mobile
@@ -158,7 +157,7 @@ const SpeedTest = {
       this.els.measurementSpace.scrollIntoView({ behavior: 'smooth' });
     }
 
-    this.showSummary(false);
+    this.els.resultsStatus.textContent = '';
     this.setReadout(i18n.t('Starting'));
     this.els.currentPhase.textContent = '';
 
@@ -166,9 +165,13 @@ const SpeedTest = {
     try {
       const sessionID = this.generateSessionID();
       await this.runNdt7(sessionID);
-      // Both arcs stay at their final rates; the centre summarises them
+      // The gauge is a live instrument: once the rates are in the results
+      // panel it empties and only marks the test as complete
+      ProgressGauge.reset();
       ProgressGauge.setPhase('done');
-      this.showSummary(true);
+      this.setReadout('');
+      this.els.currentPhase.textContent = i18n.t('Complete');
+      this.announceResults();
       this.measurementComplete = true;
     } catch (err) {
       console.error('Test failed:', err);
@@ -336,6 +339,7 @@ const SpeedTest = {
           if (data.Source === 'client') {
             this.setReadout(null, data.Data.MeanClientMbps);
             ProgressGauge.setSpeed('download', data.Data.MeanClientMbps);
+            Sparkline.add('download', data.Data.ElapsedTime, data.Data.NumBytes);
           }
         },
         downloadComplete: (data) => {
@@ -368,6 +372,8 @@ const SpeedTest = {
             const mbps = data.Data.TCPInfo.BytesReceived / data.Data.TCPInfo.ElapsedTime * 8;
             this.setReadout(null, mbps);
             ProgressGauge.setSpeed('upload', mbps);
+            // TCPInfo.ElapsedTime is in microseconds
+            Sparkline.add('upload', data.Data.TCPInfo.ElapsedTime / 1e6, data.Data.TCPInfo.BytesReceived);
           }
         },
         uploadComplete: (data) => {

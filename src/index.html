@@ -44,24 +44,45 @@
           <div id="measurementSpace" class="measurement">
             <div id="gauge" class="gauge" dir="ltr"></div>
             <div class="gauge-readout">
-              <div id="gaugeLive" aria-live="polite">
+              <svg class="gauge-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+              <div id="gaugeLive">
                 <div class="gauge-speed" dir="ltr"><span id="currentSpeed"></span><span id="currentUnit" class="unit" hidden>Mb/s</span></div>
-                <div id="currentPhase" class="gauge-phase"></div>
-              </div>
-              <!-- Final download and upload; the results list below carries the same values for assistive tech -->
-              <div id="gaugeSummary" class="gauge-summary" dir="ltr" aria-hidden="true" hidden>
-                <div class="summary-line summary-download">
-                  <svg class="summary-arrow" viewBox="0 0 18 20" fill="currentColor"><path d="M8.10895 18.7319C8.49183 19.1191 9.12463 19.1135 9.52236 18.7194L16.0037 12.2973C16.4015 11.9032 16.4135 11.2698 16.0306 10.8826C15.6477 10.4954 15.0149 10.5009 14.6172 10.895L8.85599 16.6036L3.30993 10.9945C2.92705 10.6073 2.29424 10.6129 1.89652 11.007C1.49879 11.4011 1.48675 12.0345 1.86962 12.4217L8.10895 18.7319ZM8.8291 18.0183L9.82853 18.0095L10.1709 -1.68478e-05L9.17145 0.00878098L8.17202 0.0175769L7.82967 18.0271L8.8291 18.0183Z"/></svg>
-                  <span id="summaryDownload" class="summary-value"></span>
-                </div>
-                <div class="summary-line summary-upload">
-                  <svg class="summary-arrow" viewBox="0 0 18 20" fill="currentColor"><path d="M8.10895 18.7319C8.49183 19.1191 9.12463 19.1135 9.52236 18.7194L16.0037 12.2973C16.4015 11.9032 16.4135 11.2698 16.0306 10.8826C15.6477 10.4954 15.0149 10.5009 14.6172 10.895L8.85599 16.6036L3.30993 10.9945C2.92705 10.6073 2.29424 10.6129 1.89652 11.007C1.49879 11.4011 1.48675 12.0345 1.86962 12.4217L8.10895 18.7319ZM8.8291 18.0183L9.82853 18.0095L10.1709 -1.68478e-05L9.17145 0.00878098L8.17202 0.0175769L7.82967 18.0271L8.8291 18.0183Z"/></svg>
-                  <span id="summaryUpload" class="summary-value"></span>
-                </div>
-                <div class="unit">Mb/s</div>
+                <div id="currentPhase" class="gauge-phase" aria-live="polite"></div>
               </div>
             </div>
           </div>
+
+          <!-- Results: the headline rates, then the supporting figures -->
+          <div id="resultsSection" class="results" hidden>
+            <h2 class="visually-hidden" data-i18n>Results</h2>
+            <dl class="headline">
+              <div class="headline-item headline-download">
+                <dt><svg class="headline-arrow" viewBox="0 0 18 20" fill="currentColor" aria-hidden="true"><path d="M8.10895 18.7319C8.49183 19.1191 9.12463 19.1135 9.52236 18.7194L16.0037 12.2973C16.4015 11.9032 16.4135 11.2698 16.0306 10.8826C15.6477 10.4954 15.0149 10.5009 14.6172 10.895L8.85599 16.6036L3.30993 10.9945C2.92705 10.6073 2.29424 10.6129 1.89652 11.007C1.49879 11.4011 1.48675 12.0345 1.86962 12.4217L8.10895 18.7319ZM8.8291 18.0183L9.82853 18.0095L10.1709 -1.68478e-05L9.17145 0.00878098L8.17202 0.0175769L7.82967 18.0271L8.8291 18.0183Z"/></svg><span data-i18n>Download</span></dt>
+                <dd dir="ltr"><span id="s2cRate" class="headline-value"></span><span class="unit">Mb/s</span></dd>
+                <dd id="downloadGraph" class="headline-graph" aria-hidden="true"></dd>
+              </div>
+              <div class="headline-item headline-upload">
+                <dt><svg class="headline-arrow" viewBox="0 0 18 20" fill="currentColor" aria-hidden="true"><path d="M8.10895 18.7319C8.49183 19.1191 9.12463 19.1135 9.52236 18.7194L16.0037 12.2973C16.4015 11.9032 16.4135 11.2698 16.0306 10.8826C15.6477 10.4954 15.0149 10.5009 14.6172 10.895L8.85599 16.6036L3.30993 10.9945C2.92705 10.6073 2.29424 10.6129 1.89652 11.007C1.49879 11.4011 1.48675 12.0345 1.86962 12.4217L8.10895 18.7319ZM8.8291 18.0183L9.82853 18.0095L10.1709 -1.68478e-05L9.17145 0.00878098L8.17202 0.0175769L7.82967 18.0271L8.8291 18.0183Z"/></svg><span data-i18n>Upload</span></dt>
+                <dd dir="ltr"><span id="c2sRate" class="headline-value"></span><span class="unit">Mb/s</span></dd>
+                <dd id="uploadGraph" class="headline-graph" aria-hidden="true"></dd>
+              </div>
+            </dl>
+            <dl class="details">
+              <div class="detail">
+                <dt data-i18n>Latency</dt>
+                <dd dir="ltr"><span id="latency" class="detail-value"></span><span class="unit">ms</span></dd>
+              </div>
+              <div class="detail">
+                <dt data-i18n>Retransmission</dt>
+                <dd dir="ltr"><span id="loss" class="detail-value"></span><span class="unit">%</span></dd>
+              </div>
+              <div class="detail">
+                <dt data-i18n>Test Server</dt>
+                <dd><span id="ndtLocation" class="detail-value"></span><a class="server-test" href="https://www.measurementlab.net/tests/ndt/" target="_blank" rel="noopener">NDT</a></dd>
+              </div>
+            </dl>
+          </div>
+          <p id="resultsStatus" class="visually-hidden" role="status"></p>
 
           <h1 data-i18n>Test Your Speed</h1>
           <p class="lead" data-i18n>M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection through quick measurements.</p>
@@ -76,33 +97,6 @@
             <span class="btn-testing" hidden><span data-i18n>Testing</span><span class="spinner" aria-hidden="true"></span></span>
           </button>
           <p id="privacyMessage" class="agreement-hint" data-i18n>Please agree to the data policy prior to the test.</p>
-
-          <div id="resultsSection" class="results" hidden>
-            <h2 class="visually-hidden" data-i18n>Results</h2>
-            <dl class="metrics">
-              <div class="metric metric-download">
-                <dt data-i18n>Download</dt>
-                <dd dir="ltr"><span id="s2cRate" class="metric-value"></span><span class="unit">Mb/s</span></dd>
-              </div>
-              <div class="metric metric-upload">
-                <dt data-i18n>Upload</dt>
-                <dd dir="ltr"><span id="c2sRate" class="metric-value"></span><span class="unit">Mb/s</span></dd>
-              </div>
-              <div class="metric">
-                <dt data-i18n>Latency</dt>
-                <dd dir="ltr"><span id="latency" class="metric-value"></span><span class="unit">ms</span></dd>
-              </div>
-              <div class="metric">
-                <dt data-i18n>Retransmission</dt>
-                <dd dir="ltr"><span id="loss" class="metric-value"></span><span class="unit">%</span></dd>
-              </div>
-            </dl>
-            <dl class="server">
-              <dt data-i18n>Test Server</dt>
-              <dd id="ndtLocation"></dd>
-              <dd class="server-test"><a href="https://www.measurementlab.net/tests/ndt/" target="_blank" rel="noopener">NDT</a></dd>
-            </dl>
-          </div>
 
           <p class="fine-print" data-i18n data-i18n-html>For more on M-Lab's data collection and measurement, including the disclosure of IP addresses, see our <a href="https://www.measurementlab.net/privacy/">Privacy Policy</a>.</p>
         </div>
@@ -209,6 +203,7 @@
     <script src="js/env.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/gauge.js"></script>
+    <script src="js/sparkline.js"></script>
     <script src="js/app.js"></script>
 
     <!-- Google tag (gtag.js) -->

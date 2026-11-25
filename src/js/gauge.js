@@ -2,12 +2,11 @@
  * SVG speed gauge: two concentric 270-degree arcs, the outer one for the
  * download rate and the inner one for the upload rate, in Mb/s.
  *
- * The scale is piecewise-linear between TICKS, each tick getting an equal
- * share of the arc, so common speeds (10-100 Mb/s) use a useful part of the
- * dial while still reaching 1 Gb/s. Faster rates keep the arc full.
+ * The scale is logarithmic, so the first 100 Mb/s take two thirds of the dial
+ * while it still reaches 1 Gb/s. Faster rates keep the arc full.
  */
 const ProgressGauge = {
-  TICKS: [0, 10, 50, 100, 250, 500, 1000],
+  TICKS: [0, 5, 10, 25, 50, 100, 250, 500, 1000],
   SIZE: 300,
   RINGS: {
     download: { radius: 110, stroke: 16 },
@@ -33,12 +32,11 @@ const ProgressGauge = {
    * Map a rate in Mb/s to the filled fraction of the arc, in [0, 1].
    */
   fraction(mbps) {
-    const t = this.TICKS;
+    const max = this.TICKS[this.TICKS.length - 1];
     if (!(mbps > 0)) return 0;
-    if (mbps >= t[t.length - 1]) return 1;
-    const i = t.findIndex(tick => mbps < tick) - 1;
-    const step = 1 / (t.length - 1);
-    return (i + (mbps - t[i]) / (t[i + 1] - t[i])) * step;
+    if (mbps >= max) return 1;
+    // log(1 + x) keeps zero on the scale
+    return Math.log1p(mbps) / Math.log1p(max);
   },
 
   point(deg, r) {
@@ -59,10 +57,9 @@ const ProgressGauge = {
       return `<path class="gauge-track" d="${d}" stroke-width="${stroke}" />
       <path class="gauge-value gauge-${name}" d="${d}" stroke-width="${stroke}" pathLength="100" stroke-dasharray="0 100" />`;
     }).join('');
-    const step = this.SWEEP_DEG / (this.TICKS.length - 1);
     const labelRadius = this.RINGS.download.radius + 26;
-    const labels = this.TICKS.map((tick, i) => {
-      const [x, y] = this.point(this.START_DEG + i * step, labelRadius);
+    const labels = this.TICKS.map(tick => {
+      const [x, y] = this.point(this.START_DEG + this.fraction(tick) * this.SWEEP_DEG, labelRadius);
       return `<text x="${x}" y="${y}">${tick}</text>`;
     }).join('');
     return `<svg viewBox="0 0 ${this.SIZE} ${this.SIZE}" aria-hidden="true" focusable="false">
