@@ -5,50 +5,70 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="assets/images/mlab_logo_m.ico">
+    <link rel="stylesheet" href="fonts/inter/inter.css" />
+    <link rel="stylesheet" href="fonts/ibm-plex-mono/700.css" />
     <link rel="stylesheet" href="css/main.css" />
   </head>
   <body>
 
-    <!-- Sidebar -->
-    <section id="sidebar">
-      <div class="inner">
-        <nav>
-          <ul>
-            <li><a href="/" data-i18n>Measure</a></li>
-            <li><a href="/#about" data-i18n>About</a></li>
-            <li><a href="/#contact" data-i18n>Contact</a></li>
-          </ul>
+    <!-- Header -->
+    <header id="header" class="site-header">
+      <div class="container site-header-inner">
+        <a class="logo" href="https://www.measurementlab.net/">
+          <svg viewBox="0 0 256 75" role="img" aria-label="Measurement Lab" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(14.5, 3.5)">
+              <path d="M39.1587 0H1C0.447715 0 0 0.447715 0 1V17.5C0 18.0523 0.447715 18.5 1 18.5H29.5C30.0523 18.5 30.5 18.9477 30.5 19.5V37.0546C30.5 37.3381 30.6203 37.6083 30.831 37.7979L40.2148 46.2433C40.3984 46.4086 40.6367 46.5 40.8837 46.5H58.5C59.0523 46.5 59.5 46.9477 59.5 47.5V70.5C59.5 71.0523 59.9477 71.5 60.5 71.5H78.5C79.0523 71.5 79.5 71.0523 79.5 70.5V36.9599C79.5 36.668 79.3724 36.3907 79.1508 36.2007L69.2809 27.7407C69.0996 27.5854 68.8688 27.5 68.6301 27.5H51.5C50.9477 27.5 50.5 27.0523 50.5 26.5V8.99104C50.5 8.68134 50.3565 8.38912 50.1114 8.19975L39.7701 0.208715C39.595 0.0734046 39.3799 0 39.1587 0Z" />
+            </g>
+            <circle cx="9.5" cy="9.5" r="2.5" /><circle cx="9.5" cy="16.5" r="2.5" />
+            <rect x="7" y="7" width="5" height="12" rx="2.5" />
+            <circle cx="2.5" cy="16.5" r="2.5" /><circle cx="2.5" cy="9.5" r="2.5" />
+            <circle cx="2.5" cy="2.5" r="2.5" /><circle cx="9.5" cy="2.5" r="2.5" />
+            <text x="100" y="42">Measurement</text>
+            <text x="100" y="66">Lab</text>
+          </svg>
+        </a>
+        <nav class="site-nav">
+          <a href="/" data-i18n>Measure</a>
+          <a href="/#about" data-i18n>About</a>
+          <a href="/#contact" data-i18n>Contact</a>
         </nav>
       </div>
-    </section>
+    </header>
 
-    <!-- Wrapper -->
-    <div id="wrapper">
+    <main>
 
       <!-- 404 -->
-      <section class="wrapper style1 fullscreen">
-        <div class="inner">
-          <h1>404</h1>
-          <h2 data-i18n>Page Not Found</h2>
-          <p data-i18n>The page you are looking for doesn't exist or may have been moved. Head back to the homepage to run your speed test.</p>
-          <ul class="actions">
-            <li>
-              <a href="/" class="button special big">
-                <i class="fa fa-home" aria-hidden="true"></i>&nbsp; <span data-i18n>Back to Homepage</span>
-              </a>
-            </li>
-          </ul>
+      <section class="hero zigzag not-found">
+        <div class="container">
+          <div class="hero-panel">
+            <div>
+              <p class="not-found-code">404</p>
+              <h1 data-i18n>Page Not Found</h1>
+              <p class="lead" data-i18n>The page you are looking for doesn't exist or may have been moved. Head back to the homepage to run your speed test.</p>
+              <a href="/" class="button button-speed button-xl" data-i18n>Back to Homepage</a>
+            </div>
+          </div>
         </div>
       </section>
 
-    </div>
+    </main>
 
     <!-- Footer -->
-    <footer id="footer" class="wrapper style1-alt">
-      <div class="inner">
-        <ul class="menu">
+    <footer id="footer" class="site-footer">
+      <div class="container site-footer-inner">
+        <a class="logo logo-white" href="https://www.measurementlab.net/">
+          <svg viewBox="0 0 94 75" role="img" aria-label="Measurement Lab" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(14.5, 3.5)">
+              <path d="M39.1587 0H1C0.447715 0 0 0.447715 0 1V17.5C0 18.0523 0.447715 18.5 1 18.5H29.5C30.0523 18.5 30.5 18.9477 30.5 19.5V37.0546C30.5 37.3381 30.6203 37.6083 30.831 37.7979L40.2148 46.2433C40.3984 46.4086 40.6367 46.5 40.8837 46.5H58.5C59.0523 46.5 59.5 46.9477 59.5 47.5V70.5C59.5 71.0523 59.9477 71.5 60.5 71.5H78.5C79.0523 71.5 79.5 71.0523 79.5 70.5V36.9599C79.5 36.668 79.3724 36.3907 79.1508 36.2007L69.2809 27.7407C69.0996 27.5854 68.8688 27.5 68.6301 27.5H51.5C50.9477 27.5 50.5 27.0523 50.5 26.5V8.99104C50.5 8.68134 50.3565 8.38912 50.1114 8.19975L39.7701 0.208715C39.595 0.0734046 39.3799 0 39.1587 0Z" />
+            </g>
+            <circle cx="9.5" cy="9.5" r="2.5" /><circle cx="9.5" cy="16.5" r="2.5" />
+            <rect x="7" y="7" width="5" height="12" rx="2.5" />
+            <circle cx="2.5" cy="16.5" r="2.5" /><circle cx="2.5" cy="9.5" r="2.5" />
+            <circle cx="2.5" cy="2.5" r="2.5" /><circle cx="9.5" cy="2.5" r="2.5" />
+          </svg>
+        </a>
+        <ul class="footer-menu">
           <li><a href="https://www.measurementlab.net/">Measurement Lab</a></li>
-          <li>Template: <a href="https://html5up.net">HTML5 UP</a></li>
           <li><a href="https://www.measurementlab.net/privacy/" data-i18n>Privacy Policy</a></li>
         </ul>
       </div>

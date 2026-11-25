@@ -1,193 +1,230 @@
 <!DOCTYPE HTML>
-<!--
-  Hyperspace by HTML5 UP
-  html5up.net | @ajlkn
-  Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html lang="en">
   <head>
     <title>Speed Test by Measurement Lab</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="assets/images/mlab_logo_m.ico">
+    <link rel="stylesheet" href="fonts/inter/inter.css" />
+    <link rel="stylesheet" href="fonts/ibm-plex-mono/400.css" />
+    <link rel="stylesheet" href="fonts/ibm-plex-mono/700.css" />
     <link rel="stylesheet" href="css/main.css" />
   </head>
   <body>
 
-    <!-- Sidebar -->
-    <section id="sidebar">
-      <div class="inner">
-        <nav>
-          <ul>
-            <li><a href="#intro" class="active" data-i18n>Measure</a></li>
-            <li><a href="#about" data-i18n>About</a></li>
-            <li><a href="#contact" data-i18n>Contact</a></li>
-          </ul>
+    <!-- Header -->
+    <header id="header" class="site-header">
+      <div class="container site-header-inner">
+        <a class="logo" href="https://www.measurementlab.net/">
+          <svg viewBox="0 0 256 75" role="img" aria-label="Measurement Lab" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(14.5, 3.5)">
+              <path d="M39.1587 0H1C0.447715 0 0 0.447715 0 1V17.5C0 18.0523 0.447715 18.5 1 18.5H29.5C30.0523 18.5 30.5 18.9477 30.5 19.5V37.0546C30.5 37.3381 30.6203 37.6083 30.831 37.7979L40.2148 46.2433C40.3984 46.4086 40.6367 46.5 40.8837 46.5H58.5C59.0523 46.5 59.5 46.9477 59.5 47.5V70.5C59.5 71.0523 59.9477 71.5 60.5 71.5H78.5C79.0523 71.5 79.5 71.0523 79.5 70.5V36.9599C79.5 36.668 79.3724 36.3907 79.1508 36.2007L69.2809 27.7407C69.0996 27.5854 68.8688 27.5 68.6301 27.5H51.5C50.9477 27.5 50.5 27.0523 50.5 26.5V8.99104C50.5 8.68134 50.3565 8.38912 50.1114 8.19975L39.7701 0.208715C39.595 0.0734046 39.3799 0 39.1587 0Z" />
+            </g>
+            <circle cx="9.5" cy="9.5" r="2.5" /><circle cx="9.5" cy="16.5" r="2.5" />
+            <rect x="7" y="7" width="5" height="12" rx="2.5" />
+            <circle cx="2.5" cy="16.5" r="2.5" /><circle cx="2.5" cy="9.5" r="2.5" />
+            <circle cx="2.5" cy="2.5" r="2.5" /><circle cx="9.5" cy="2.5" r="2.5" />
+            <text x="100" y="42">Measurement</text>
+            <text x="100" y="66">Lab</text>
+          </svg>
+        </a>
+        <nav class="site-nav">
+          <a href="#intro" class="active" data-i18n>Measure</a>
+          <a href="#about" data-i18n>About</a>
+          <a href="#contact" data-i18n>Contact</a>
         </nav>
       </div>
-    </section>
+    </header>
 
-    <!-- Wrapper -->
-    <div id="wrapper">
+    <main>
 
       <!-- Intro -->
-      <section id="intro" class="wrapper style1 fullscreen">
-        <div class="features">
-          <section>
-            <h1 data-i18n>Test Your Speed</h1>
-            <p class="startIntroLabel">
-              <span data-i18n>M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection through quick measurements.</span><br />
-            </p>
-            <p>
-              <input type="checkbox" id="privacyConsent" name="privacyConsent">
-              <label for="privacyConsent" style="font-size: smaller;" data-i18n data-i18n-html>I agree to the <a href="https://www.measurementlab.net/privacy/">data policy</a>, which includes retention and publication of IP addresses.</label>
-            </p>
-            <a id="startButton" class="button special startButton big disabled">
-              <span class="btn-begin"><span data-i18n>Begin</span> <i class="fa fa-play" aria-hidden="true"></i></span>
-              <span class="btn-again" style="display:none;"><span data-i18n>Again</span> <i class="fa fa-repeat" aria-hidden="true"></i></span>
-              <span class="btn-testing" style="display:none;"><span data-i18n>Testing</span> <i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i></span>
-            </a>
-            <div class="speedtestNotes">
-              <div id="privacyMessage" data-i18n class="privacyConsentMessage">Please agree to the data policy prior to the test.</div>
-              <small data-i18n data-i18n-html>For more on M-Lab's data collection and measurement, including the disclosure of IP addresses, see our <a href="https://www.measurementlab.net/privacy/">Privacy Policy</a>.</small>
-            </div>
-          </section>
-          <section id="measurementSpace">
-            <div id="progressSection">
-              <h1 style="height: 0.5em"></h1>
-              <div class="progress-bar">
-                <canvas id="activeProgress" class="progress-active" height="275" width="275"></canvas>
-                <div class="progress-label">
-                  <h2 id="currentSpeed"></h2>
-                  <h4 id="currentPhase"></h4>
-                </div>
+      <section id="intro" class="hero zigzag">
+        <div class="container">
+          <div class="hero-panel">
+            <div class="hero-text">
+              <h1 data-i18n>Test Your Speed</h1>
+              <p class="lead" data-i18n>M-Lab's Speed Test provides advanced diagnostics of the performance of your broadband connection through quick measurements.</p>
+              <div class="consent">
+                <input type="checkbox" id="privacyConsent" name="privacyConsent">
+                <label for="privacyConsent" data-i18n data-i18n-html>I agree to the <a href="https://www.measurementlab.net/privacy/">data policy</a>, which includes retention and publication of IP addresses.</label>
+              </div>
+              <button type="button" id="startButton" class="button button-speed button-xl" disabled>
+                <span class="btn-begin" data-i18n>Begin</span>
+                <span class="btn-again" data-i18n hidden>Again</span>
+                <span class="btn-testing" hidden><span data-i18n>Testing</span><span class="spinner" aria-hidden="true"></span></span>
+              </button>
+              <div class="speedtest-notes">
+                <p id="privacyMessage" class="privacy-message" data-i18n>Please agree to the data policy prior to the test.</p>
+                <p class="fine-print" data-i18n data-i18n-html>For more on M-Lab's data collection and measurement, including the disclosure of IP addresses, see our <a href="https://www.measurementlab.net/privacy/">Privacy Policy</a>.</p>
               </div>
             </div>
-            <div id="resultsSection" style="display: none;">
-              <h1 data-i18n>Results</h1>
-              <table class="alt">
-                <tbody>
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td>NDT <a class="fa fa-question-circle" href="https://www.measurementlab.net/tests/ndt/" target="_blank"></a></td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-server" aria-hidden="true"></i></td>
-                    <td data-i18n>Test Server</td>
-                    <td><strong id="ndtLocation"></strong></td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-download" aria-hidden="true"></i></td>
-                    <td data-i18n>Download</td>
-                    <td><strong id="s2cRate"></strong></td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-upload" aria-hidden="true"></i></td>
-                    <td data-i18n>Upload</td>
-                    <td><strong id="c2sRate"></strong></td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-hourglass-start" aria-hidden="true"></i></td>
-                    <td data-i18n>Latency</td>
-                    <td><strong id="latency"></strong></td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-signal" aria-hidden="true"></i></td>
-                    <td data-i18n>Retransmission</td>
-                    <td><strong id="loss"></strong></td>
-                  </tr>
-                </tbody>
-              </table>
+
+            <div id="measurementSpace" class="measurement">
+              <div id="progressSection">
+                <div id="gauge" class="gauge" dir="ltr"></div>
+                <div class="gauge-readout" aria-live="polite">
+                  <div class="gauge-speed" dir="ltr"><span id="currentSpeed"></span><span id="currentUnit" class="unit" hidden>Mb/s</span></div>
+                  <div id="currentPhase" class="gauge-phase"></div>
+                </div>
+              </div>
+
+              <div id="resultsSection" class="results" hidden>
+                <h2 class="results-title" data-i18n>Results</h2>
+                <dl class="metrics">
+                  <div class="metric metric-download">
+                    <dt data-i18n>Download</dt>
+                    <dd dir="ltr"><span id="s2cRate" class="metric-value"></span><span class="unit">Mb/s</span></dd>
+                  </div>
+                  <div class="metric metric-upload">
+                    <dt data-i18n>Upload</dt>
+                    <dd dir="ltr"><span id="c2sRate" class="metric-value"></span><span class="unit">Mb/s</span></dd>
+                  </div>
+                  <div class="metric">
+                    <dt data-i18n>Latency</dt>
+                    <dd dir="ltr"><span id="latency" class="metric-value"></span><span class="unit">ms</span></dd>
+                  </div>
+                  <div class="metric">
+                    <dt data-i18n>Retransmission</dt>
+                    <dd dir="ltr"><span id="loss" class="metric-value"></span><span class="unit">%</span></dd>
+                  </div>
+                </dl>
+                <dl class="server">
+                  <dt data-i18n>Test Server</dt>
+                  <dd id="ndtLocation"></dd>
+                  <dd class="server-test"><a href="https://www.measurementlab.net/tests/ndt/" target="_blank" rel="noopener">NDT</a></dd>
+                </dl>
+              </div>
             </div>
-          </section>
+          </div>
         </div>
       </section>
 
       <!-- About -->
-      <section id="about" class="wrapper style3">
-        <div class="inner">
+      <section id="about" class="section section-muted">
+        <div class="container">
           <h2 data-i18n>About</h2>
-          <p data-i18n>Measurement Lab (M-Lab) provides the largest collection of open Internet performance data on the planet. As a consortium of research, industry, and public-interest partners, M-Lab is dedicated to providing an ecosystem for the open, verifiable measurement of global network performance.</p>
+          <p class="lead" data-i18n>Measurement Lab (M-Lab) provides the largest collection of open Internet performance data on the planet. As a consortium of research, industry, and public-interest partners, M-Lab is dedicated to providing an ecosystem for the open, verifiable measurement of global network performance.</p>
           <div class="features">
-            <section>
-              <span class="icon major fa-code"></span>
+            <article class="feature">
+              <svg class="feature-icon" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+                <rect x="26.0508" y="53.0305" width="73.5537" height="21.0153" rx="10.5077" stroke="currentColor" stroke-width="4"/>
+                <path d="M62.8286 59.1562V67.9126" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M67.2061 63.5303H58.4497" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M76.8375 49.9608C67.9352 42.5179 49.6927 25.7056 47.9414 18C50.1305 18 55.8222 18.8756 59.7625 21.0647C62.5646 23.1663 75.8159 35.9506 82.0913 42.0801" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M86.4709 50.4072C85.5953 49.2397 84.3694 46.029 86.4709 42.5265C86.9087 43.694 88.3098 45.9415 90.4113 45.5912C93.9139 45.0074 92.7464 39.6077 92.6004 36.8348H87.3466C87.7844 34.3538 89.7984 28.7789 94.3517 26.3271C97.2705 29.9756 103.108 40.7752 98.7299 54.7854" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M44.0007 50.4067C46.7735 47.7798 52.6695 41.913 54.0705 37.71C52.3193 37.71 48.2913 38.0602 46.1898 39.4612C44.0882 40.8623 37.4334 47.342 34.3687 50.4067" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M22.9864 61.778C19.9218 56.0863 17.2669 43.3896 20.4192 34.6332L26.1109 35.071C26.5487 36.2385 27.2492 39.0114 26.5487 40.7627C25.6731 42.9518 24.7974 47.7678 26.1109 49.519C27.4243 51.2703 28.7378 51.2703 30.9269 51.2703" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M58.0732 77.5392L54.5706 81.4796C54.8625 82.6471 55.2711 85.1572 54.5706 85.8578C53.695 86.7334 51.5059 85.8578 50.6302 86.7334C49.7546 87.609 51.0681 89.7981 49.7546 91.1116C48.4411 92.4251 46.6899 90.6738 45.3764 91.9872C44.0629 93.3007 45.8142 95.4898 44.5008 96.8033C43.1873 98.1167 40.9388 97.387 39.1875 97.2411" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M72.4823 76.6687C73.1962 87.6144 69.4213 98.1994 67.2058 102.5C65.2312 93.7554 64.7332 83.1934 64.8429 76.6687" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
               <h3 data-i18n>Open Source</h3>
               <p data-i18n>Measurement tools are openly licensed and operated, allowing third parties to develop their own client-side measurement software and audit the source.</p>
-            </section>
-            <section>
-              <span class="icon major fa-users"></span>
+            </article>
+            <article class="feature">
+              <svg class="feature-icon" viewBox="0 0 189 189" fill="none" aria-hidden="true">
+                <path d="M9.52246 11.5371H105.593L123.642 30.1768V63.9954H159.622L177.021 81.5074V179.035H160.455" stroke="currentColor" stroke-width="4"/>
+                <path d="M160.455 180.433V89.763L149.411 78.7192H107.076V40.0657L94.192 28.1016H9.52246V46.508" stroke="currentColor" stroke-width="4"/>
+                <path d="M8.60156 46.5078H88.5909V81.48L104.315 97.4794H142.968V180.092" stroke="currentColor" stroke-width="4"/>
+                <g fill="currentColor" stroke="currentColor" stroke-width="4">
+                  <circle cx="116.5" cy="98.5" r="9.5"/><circle cx="51.5" cy="120.5" r="9.5"/>
+                  <circle cx="177.5" cy="23.5" r="9.5"/><circle cx="162.5" cy="177.5" r="9.5"/>
+                  <circle cx="116.5" cy="24.5" r="9.5"/><circle cx="177.5" cy="122.5" r="9.5"/>
+                  <circle cx="11.5" cy="45.5" r="9.5"/><circle cx="57.5" cy="11.5" r="9.5"/>
+                </g>
+              </svg>
               <h3 data-i18n>Public Data</h3>
               <p data-i18n>Data collected is made available to the public, allowing researchers and anyone else to build on a common pool of network measurement information.</p>
-            </section>
-            <section>
-              <span class="icon major fa-globe"></span>
+            </article>
+            <article class="feature">
+              <svg class="feature-icon" viewBox="0 0 204 181" fill="none" aria-hidden="true">
+                <g stroke="currentColor" stroke-width="4">
+                  <path d="M102.781 63.3438V11.7812"/><path d="M130.125 71.1562L157.469 27.4062"/>
+                  <path d="M74.6562 71.1562L47.3125 27.4062"/><path d="M144.969 91.4688L189.5 65.6875"/>
+                  <path d="M139.501 142.25L185.5 169"/><path d="M63.7188 142.25L19.1875 168.031"/>
+                  <path d="M59.0312 91.4688L14.5 65.6875"/><path d="M53.4174 118.734L1.99993 120.72"/>
+                  <path d="M150.438 118.734L201.855 120.72"/>
+                  <path d="M183.25 169.309C195.051 152.895 202 132.759 202 111C202 55.7715 157.228 11 102 11C46.7715 11 2 55.7715 2 111C2 132.646 8.87725 152.685 20.5659 169.052"/>
+                  <path d="M111.5 85L103.838 121.207" stroke-linecap="square"/>
+                </g>
+                <circle cx="101.688" cy="128.75" r="9.5" fill="currentColor" stroke="currentColor" stroke-width="4"/>
+              </svg>
               <h3 data-i18n>Global</h3>
               <p data-i18n>Distributed infrastructure and large user base provides an open, verifiable measurement platform for global network performance.</p>
-            </section>
-            <section>
-              <span class="icon major fa-institution"></span>
+            </article>
+            <article class="feature">
+              <svg class="feature-icon" viewBox="0 0 167 174" fill="none" aria-hidden="true">
+                <g fill="currentColor" stroke="currentColor" stroke-width="4">
+                  <circle cx="11.5" cy="11.5" r="9.5"/><circle cx="83.5" cy="87.5" r="9.5"/>
+                  <circle cx="83.5" cy="162.5" r="9.5"/><circle cx="155.5" cy="11.5" r="9.5"/>
+                  <circle cx="11.5" cy="123.5" r="9.5"/><circle cx="155.5" cy="123.5" r="9.5"/>
+                </g>
+                <path d="M91 81.2266L148.5 18.7831M75 81.2266L18.1523 18.7831M93 160.5L146 129M73.5 160.5L18.5 129M93 92.1179L146 118.983M82.7741 97.4999V153.109M73.5 92.1179L21 118.983" stroke="currentColor" stroke-width="4"/>
+              </svg>
               <h3 data-i18n>Trusted</h3>
               <p data-i18n>Used by public organization, academic researchers, regulators and companies around the world to understand the health of the Internet.</p>
-            </section>
+            </article>
           </div>
-          <ul class="actions">
-            <li><a href="https://measurementlab.net" class="button" data-i18n>Learn more</a></li>
-          </ul>
+          <a href="https://measurementlab.net" class="button button-primary button-lg" data-i18n>Learn more</a>
         </div>
       </section>
 
       <!-- Contact -->
-      <section id="contact" class="wrapper style1">
-        <div class="inner">
+      <section id="contact" class="section">
+        <div class="container">
           <h2 data-i18n>Contact</h2>
-          <ul class="alt">
+          <ul class="contact-prompts">
             <li data-i18n>Questions or comments about M-Lab and its tools?</li>
             <li data-i18n>Want to participate in M-Lab?</li>
             <li data-i18n>Need to report an issue or bug?</li>
             <li data-i18n>Please contact us.</li>
           </ul>
-          <div class="">
-            <section>
-              <ul class="contact">
+          <div class="contact-cards">
+            <div class="contact-card">
+              <h3 data-i18n>Email</h3>
+              <a href="mailto:support@measurementlab.net">support@measurementlab.net</a>
+            </div>
+            <div class="contact-card">
+              <h3 data-i18n>Discussion and Notification Group</h3>
+              <a href="https://groups.google.com/a/measurementlab.net/forum/#!forum/discuss" target="_blank" rel="noopener" class="external-link"><span data-i18n>Join Group</span><svg class="arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M19.7309 0.984972C19.7307 0.440422 19.2767 -0.00055204 18.7168 2.83736e-05L9.59247 0.00948678C9.03255 0.0100671 8.57878 0.451982 8.57893 0.996532C8.57908 1.54108 9.0331 1.98206 9.59301 1.98148L17.7035 1.97307L17.7057 9.86103C17.7058 10.4056 18.1599 10.8465 18.7198 10.846C19.2797 10.8454 19.7335 10.4035 19.7333 9.85892L19.7309 0.984972ZM18.717 0.986023L18 0.289563L-2.24925e-05 17.8191L0.717043 18.5155L1.43411 19.212L19.4341 1.68248L18.717 0.986023Z"/></svg></a>
+            </div>
+            <div class="contact-card">
+              <h3 data-i18n>Social</h3>
+              <ul class="social">
                 <li>
-                  <h3 data-i18n>Email</h3>
-                  <a href="mailto:support@measurementlab.net">support@measurementlab.net</a>
+                  <a href="https://x.com/MeasurementLab" target="_blank" rel="noopener" aria-label="X">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  </a>
                 </li>
                 <li>
-                  <h3 data-i18n>Discussion and Notification Group</h3>
-                  <a href="https://groups.google.com/a/measurementlab.net/forum/#!forum/discuss" target="_blank" data-i18n>Join Group</a>
-                  <i class="fa fa-link" aria-hidden="true"></i>
-                </li>
-                <li>
-                  <h3 data-i18n>Social</h3>
-                  <ul class="icons">
-                    <li>
-                      <a href="https://x.com/MeasurementLab" target="_blank" class="social-icon-link" aria-label="X">
-                        <svg class="social-svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://github.com/m-lab" target="_blank" class="social-icon-link" aria-label="GitHub">
-                        <svg class="social-svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-                      </a>
-                    </li>
-                  </ul>
+                  <a href="https://github.com/m-lab" target="_blank" rel="noopener" aria-label="GitHub">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                  </a>
                 </li>
               </ul>
-            </section>
+            </div>
           </div>
         </div>
       </section>
 
-    </div>
+    </main>
 
     <!-- Footer -->
-    <footer id="footer" class="wrapper style1-alt">
-      <div class="inner">
-        <ul class="menu">
+    <footer id="footer" class="site-footer">
+      <div class="container site-footer-inner">
+        <a class="logo logo-white" href="https://www.measurementlab.net/">
+          <svg viewBox="0 0 94 75" role="img" aria-label="Measurement Lab" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(14.5, 3.5)">
+              <path d="M39.1587 0H1C0.447715 0 0 0.447715 0 1V17.5C0 18.0523 0.447715 18.5 1 18.5H29.5C30.0523 18.5 30.5 18.9477 30.5 19.5V37.0546C30.5 37.3381 30.6203 37.6083 30.831 37.7979L40.2148 46.2433C40.3984 46.4086 40.6367 46.5 40.8837 46.5H58.5C59.0523 46.5 59.5 46.9477 59.5 47.5V70.5C59.5 71.0523 59.9477 71.5 60.5 71.5H78.5C79.0523 71.5 79.5 71.0523 79.5 70.5V36.9599C79.5 36.668 79.3724 36.3907 79.1508 36.2007L69.2809 27.7407C69.0996 27.5854 68.8688 27.5 68.6301 27.5H51.5C50.9477 27.5 50.5 27.0523 50.5 26.5V8.99104C50.5 8.68134 50.3565 8.38912 50.1114 8.19975L39.7701 0.208715C39.595 0.0734046 39.3799 0 39.1587 0Z" />
+            </g>
+            <circle cx="9.5" cy="9.5" r="2.5" /><circle cx="9.5" cy="16.5" r="2.5" />
+            <rect x="7" y="7" width="5" height="12" rx="2.5" />
+            <circle cx="2.5" cy="16.5" r="2.5" /><circle cx="2.5" cy="9.5" r="2.5" />
+            <circle cx="2.5" cy="2.5" r="2.5" /><circle cx="9.5" cy="2.5" r="2.5" />
+          </svg>
+        </a>
+        <ul class="footer-menu">
           <li><a href="https://www.measurementlab.net/">Measurement Lab</a></li>
-          <li>Template: <a href="https://html5up.net">HTML5 UP</a></li>
           <li><a href="https://www.measurementlab.net/privacy/" data-i18n>Privacy Policy</a></li>
         </ul>
       </div>

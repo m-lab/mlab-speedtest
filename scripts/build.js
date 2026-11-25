@@ -46,6 +46,17 @@ function copyFile(src, dest) {
 }
 
 /**
+ * Copy a @fontsource stylesheet and only the font files it references
+ */
+function copyFontCSS(srcCSS, destCSS) {
+  const css = fs.readFileSync(srcCSS, 'utf8');
+  copyFile(srcCSS, destCSS);
+  for (const [, rel] of css.matchAll(/url\((\.\/files\/[^)]+)\)/g)) {
+    copyFile(path.join(path.dirname(srcCSS), rel), path.join(path.dirname(destCSS), rel));
+  }
+}
+
+/**
  * Main build process
  */
 function build() {
@@ -76,9 +87,14 @@ function build() {
   console.log('Copying source files...');
   copyDir(SRC, DIST);
 
-  // Font-awesome CSS uses ../fonts/ from css/ directory, so copy fonts there too
-  console.log('Copying fonts for font-awesome compatibility...');
-  copyDir(path.join(SRC, 'assets', 'fonts'), path.join(DIST, 'fonts'));
+  // Self-host the brand fonts so the page makes no third-party font requests
+  console.log('Copying fonts...');
+  copyFontCSS(path.join(NODE_MODULES, '@fontsource-variable', 'inter', 'index.css'),
+    path.join(DIST, 'fonts', 'inter', 'inter.css'));
+  for (const weight of ['400', '700']) {
+    copyFontCSS(path.join(NODE_MODULES, '@fontsource', 'ibm-plex-mono', `${weight}.css`),
+      path.join(DIST, 'fonts', 'ibm-plex-mono', `${weight}.css`));
+  }
 
   // Convert .po translations to JSON
   console.log('Converting translations...');

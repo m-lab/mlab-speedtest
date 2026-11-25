@@ -5,7 +5,6 @@
  */
 
 const SpeedTest = {
-  TIME_EXPECTED: 10, // Expected duration of a test in seconds
   testRunning: false,
   privacyConsent: false,
   measurementComplete: false,
@@ -30,6 +29,7 @@ const SpeedTest = {
       privacyCheckbox: document.getElementById('privacyConsent'),
       privacyMessage: document.getElementById('privacyMessage'),
       currentSpeed: document.getElementById('currentSpeed'),
+      currentUnit: document.getElementById('currentUnit'),
       currentPhase: document.getElementById('currentPhase'),
       measurementSpace: document.getElementById('measurementSpace'),
       progressSection: document.getElementById('progressSection'),
@@ -51,8 +51,8 @@ const SpeedTest = {
     ProgressGauge.init();
 
     // Scrollspy: update active nav link based on which section is in view
-    const sections = document.querySelectorAll('#wrapper > section[id]');
-    const navLinks = document.querySelectorAll('#sidebar nav a');
+    const sections = document.querySelectorAll('main > section[id]');
+    const navLinks = document.querySelectorAll('.site-nav a');
 
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -79,11 +79,7 @@ const SpeedTest = {
 
   updateUI() {
     // Update button state
-    if (!this.privacyConsent || this.testRunning) {
-      this.els.startButton.classList.add('disabled');
-    } else {
-      this.els.startButton.classList.remove('disabled');
-    }
+    this.els.startButton.disabled = !this.privacyConsent || this.testRunning;
     this.els.privacyCheckbox.disabled = this.testRunning;
 
     // Update button text
@@ -91,26 +87,39 @@ const SpeedTest = {
     const againSpan = this.els.startButton.querySelector('.btn-again');
     const testingSpan = this.els.startButton.querySelector('.btn-testing');
 
-    if (this.testRunning) {
-      beginSpan.style.display = 'none';
-      againSpan.style.display = 'none';
-      testingSpan.style.display = 'inline';
-    } else if (this.measurementComplete) {
-      beginSpan.style.display = 'none';
-      againSpan.style.display = 'inline';
-      testingSpan.style.display = 'none';
-    } else {
-      beginSpan.style.display = 'inline';
-      againSpan.style.display = 'none';
-      testingSpan.style.display = 'none';
-    }
+    testingSpan.hidden = !this.testRunning;
+    againSpan.hidden = this.testRunning || !this.measurementComplete;
+    beginSpan.hidden = this.testRunning || this.measurementComplete;
 
     // Show/hide privacy message
-    this.els.privacyMessage.style.display = this.privacyConsent ? 'none' : 'block';
+    this.els.privacyMessage.hidden = this.privacyConsent;
 
     // Show/hide progress vs results
-    this.els.progressSection.style.display = this.measurementComplete ? 'none' : 'block';
-    this.els.resultsSection.style.display = this.measurementComplete ? 'block' : 'none';
+    this.els.progressSection.hidden = this.measurementComplete;
+    this.els.resultsSection.hidden = !this.measurementComplete;
+  },
+
+  /**
+   * Clear the displayed result fields so a re-run can't show stale
+   * values from a previous test if the current one fails partway.
+   */
+  clearResults() {
+    this.els.location.textContent = '';
+    this.els.s2cRate.textContent = '';
+    this.els.c2sRate.textContent = '';
+    this.els.latency.textContent = '';
+    this.els.loss.textContent = '';
+  },
+
+  /**
+   * Show a status word, or a live rate in Mb/s, in the middle of the gauge.
+   */
+  setReadout(text, mbps) {
+    const isRate = typeof mbps === 'number';
+    this.els.currentSpeed.textContent = isRate ? mbps.toFixed(2) : text;
+    this.els.currentUnit.hidden = !isRate;
+    this.els.currentSpeed.parentElement.classList.toggle('is-rate', isRate);
+    ProgressGauge.setSpeed(isRate ? mbps : 0);
   },
 
   async startTest() {
@@ -122,14 +131,15 @@ const SpeedTest = {
     this.testRunning = true;
     this.measurementComplete = false;
     this.measurementResult = {};
+    this.clearResults();
     this.updateUI();
 
     // Scroll to measurement area on mobile
-    if (window.innerWidth < 981) {
+    if (window.matchMedia('(max-width: 899px)').matches) {
       this.els.measurementSpace.scrollIntoView({ behavior: 'smooth' });
     }
 
-    this.els.currentSpeed.textContent = i18n.t('Starting');
+    this.setReadout(i18n.t('Starting'));
     this.els.currentPhase.textContent = '';
 
     // Execute ndt7
@@ -137,16 +147,17 @@ const SpeedTest = {
       const sessionID = this.generateSessionID();
       await this.runNdt7(sessionID);
       this.els.currentPhase.textContent = i18n.t('Complete');
-      this.els.currentSpeed.textContent = '';
+      this.setReadout('');
       this.measurementComplete = true;
     } catch (err) {
       console.error('Test failed:', err);
       if (window.Sentry) Sentry.captureException(err);
       this.els.currentPhase.textContent = i18n.t('Error');
-      this.els.currentSpeed.textContent = '';
+      this.setReadout('');
       this.measurementComplete = true;
     } finally {
       this.testRunning = false;
+      ProgressGauge.setInactive();
       this.updateUI();
     }
   },
@@ -297,29 +308,27 @@ const SpeedTest = {
         downloadStart: () => {
           this.ndt7Phase = 'download';
           this.els.currentPhase.textContent = i18n.t('Download');
-          this.els.currentSpeed.textContent = i18n.t('Initializing');
+          ProgressGauge.setPhase('download');
+          this.setReadout(i18n.t('Initializing'));
         },
         downloadMeasurement: (data) => {
           if (data.Source === 'client') {
-            this.els.currentSpeed.textContent = data.Data.MeanClientMbps.toFixed(2) + ' Mb/s';
-            const progress = (data.Data.ElapsedTime > this.TIME_EXPECTED) ? 0.5 :
-              data.Data.ElapsedTime / (this.TIME_EXPECTED * 2);
-            ProgressGauge.progress(progress);
+            this.setReadout(null, data.Data.MeanClientMbps);
           }
         },
         downloadComplete: (data) => {
           this.ndt7Phase = 'upload-connect';
           if (data.LastClientMeasurement) {
             this.measurementResult.s2cRate =
-              data.LastClientMeasurement.MeanClientMbps.toFixed(2) + ' Mb/s';
+              data.LastClientMeasurement.MeanClientMbps.toFixed(2);
             this.els.s2cRate.textContent = this.measurementResult.s2cRate;
           }
           if (data.LastServerMeasurement?.TCPInfo) {
             this.measurementResult.latency =
-              (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0) + ' ms';
+              (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0);
             this.measurementResult.loss =
               (data.LastServerMeasurement.TCPInfo.BytesRetrans /
-                data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2) + '%';
+                data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2);
             this.els.latency.textContent = this.measurementResult.latency;
             this.els.loss.textContent = this.measurementResult.loss;
           }
@@ -328,24 +337,20 @@ const SpeedTest = {
         uploadStart: () => {
           this.ndt7Phase = 'upload';
           this.els.currentPhase.textContent = i18n.t('Upload');
-          this.els.currentSpeed.textContent = i18n.t('Initializing');
+          ProgressGauge.setPhase('upload');
+          this.setReadout(i18n.t('Initializing'));
         },
         uploadMeasurement: (data) => {
           if (data.Source === 'server') {
-            this.els.currentSpeed.textContent = (data.Data.TCPInfo.BytesReceived /
-              data.Data.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
-          }
-          if (data.Source === 'client') {
-            const progress = (data.Data.ElapsedTime > this.TIME_EXPECTED) ? 1.0 :
-              data.Data.ElapsedTime / (this.TIME_EXPECTED * 2) + 0.5;
-            ProgressGauge.progress(progress);
+            this.setReadout(null, data.Data.TCPInfo.BytesReceived /
+              data.Data.TCPInfo.ElapsedTime * 8);
           }
         },
         uploadComplete: (data) => {
           if (data.LastServerMeasurement?.TCPInfo) {
             this.measurementResult.c2sRate =
               (data.LastServerMeasurement.TCPInfo.BytesReceived /
-                data.LastServerMeasurement.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
+                data.LastServerMeasurement.TCPInfo.ElapsedTime * 8).toFixed(2);
             this.els.c2sRate.textContent = this.measurementResult.c2sRate;
           }
         },
