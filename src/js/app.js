@@ -54,6 +54,7 @@ const SpeedTest = {
     ProgressGauge.init();
     Sparkline.init();
     Advanced.init();
+    Iqb.init();
 
     // Scrollspy: update active nav link based on which section is in view
     const sections = document.querySelectorAll('main > section[id]');
@@ -157,6 +158,7 @@ const SpeedTest = {
     ProgressGauge.reset();
     Sparkline.reset();
     Advanced.reset();
+    Iqb.reset();
     this.testRunning = true;
     this.measurementComplete = false;
     this.measurementResult = {};
@@ -185,6 +187,7 @@ const SpeedTest = {
       this.setReadout('');
       this.els.currentPhase.textContent = i18n.t('Complete');
       this.announceResults();
+      Iqb.update(Advanced.result.Download, Advanced.result.Upload);
       this.measurementComplete = true;
     } catch (err) {
       console.error('Test failed:', err);

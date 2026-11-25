@@ -21,6 +21,10 @@
   --color-primary-700: #0069a8;
   --color-primary-800: #00598a;
   --color-primary-900: #024a70;
+  --color-secondary-100: #fef9c2;
+  --color-secondary-800: #894b00;
+  --color-supporting1-100: #d0fae5;
+  --color-supporting1-800: #006045;
   --color-speed-600: #9810fa;
   --color-speed-700: #8200da;
   --color-speed-800: #6d11b0;
@@ -674,6 +678,128 @@ main {
   text-decoration: none;
 }
 
+/* ---------- IQB: one badge per use case, with its score ---------- */
+
+.iqb {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.iqb h3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  color: var(--color-neutral-500);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.iqb-score {
+  color: var(--text-heading);
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.iqb-score:empty::before,
+.iqb-value:empty::before {
+  content: "\2013";
+  color: var(--color-neutral-300);
+}
+
+.iqb-badges {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+
+/* Tag recipe: a 100 tint with 800 text. Green when every requirement is
+   met, yellow otherwise; the score itself is always shown. */
+.iqb-badge {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: start;
+}
+
+.iqb-badge.is-full {
+  background: var(--color-supporting1-100);
+  color: var(--color-supporting1-800);
+}
+
+.iqb-badge.is-partial {
+  background: var(--color-secondary-100);
+  color: var(--color-secondary-800);
+}
+
+/* Reserves the width of a score, so a badge wraps the same with or without one */
+.iqb-value {
+  flex: none;
+  min-width: 4ch;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-align: end;
+}
+
+.iqb .fine-print {
+  margin: 0;
+}
+
+.iqb-checks {
+  margin-bottom: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+  overflow-x: auto;
+}
+
+.iqb-checks table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.iqb-checks th,
+.iqb-checks td {
+  padding: 2px var(--space-2) 2px 0;
+  color: var(--text-heading);
+  font-weight: 400;
+  text-align: left;
+}
+
+.iqb-checks tr:first-child th,
+.iqb-checks th:first-child {
+  color: var(--color-neutral-500);
+}
+
+.iqb-checks .is-pass {
+  color: var(--color-supporting1-800);
+}
+
+.iqb-checks .is-fail {
+  color: var(--color-secondary-800);
+  font-weight: 700;
+}
+
 /* ---------- Details: labelled charts and raw figures, collapsed by default ---------- */
 
 .advanced {
@@ -1100,6 +1226,10 @@ main {
 
   .details {
     grid-template-columns: 1fr;
+  }
+
+  .iqb-badges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
