@@ -825,7 +825,7 @@ main {
 /* ---------- Details: labelled charts and raw figures, collapsed by default ---------- */
 
 .advanced {
-  margin-top: var(--space-4);
+  margin-top: var(--space-6);
 }
 
 .advanced summary {
@@ -856,9 +856,22 @@ main {
   transform: translateY(25%) rotate(-135deg);
 }
 
+/* A tinted panel sets the technical figures apart from the results above */
 .advanced-body {
-  margin-top: var(--space-3);
+  margin-top: var(--space-4);
+  padding: var(--space-6);
+  background: var(--color-neutral-50);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
   text-align: left;
+}
+
+.advanced-body > :first-child {
+  margin-top: 0;
+}
+
+.advanced-body > :last-child {
+  margin-bottom: 0;
 }
 
 .charts {
@@ -944,7 +957,7 @@ main {
 }
 
 .chart-grid {
-  stroke: var(--color-neutral-100);
+  stroke: var(--color-neutral-200);
 }
 
 .chart-axis {
@@ -1211,10 +1224,10 @@ main {
     grid-row: 1 / span 5;
   }
 
+  /* Centred in the column, like the results that replace it */
   .hero-intro {
     align-self: center;
-    justify-self: start;
-    text-align: start;
+    justify-self: center;
   }
 
   .hero .hero-intro h1 {
@@ -1226,8 +1239,12 @@ main {
     font-size: 1.125rem;
   }
 
+  /* A fixed offset centres the results on the left column's height. A fixed
+     value, not align-self: center, so opening the details only extends the
+     panel downwards instead of shifting it. */
   .results {
     max-width: none;
+    margin-top: var(--space-12);
     margin-bottom: 0;
   }
 }
@@ -1307,6 +1324,43 @@ main {
 
   .iqb-badges {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .advanced-body {
+    padding: var(--space-3);
+  }
+
+  /* Two figures to a row still fit inside the padded panel */
+  .stat-group {
+    gap: var(--space-3);
+  }
+
+  .stat-group h3 {
+    width: 4.5rem;
+  }
+
+  .stat-cells {
+    grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+  }
+
+  /* Hostname and UUIDs stay on one line each */
+  .stat-rows {
+    font-size: 0.625rem;
+  }
+
+  .stat-rows dt {
+    min-width: 3rem;
+    font-size: 0.625rem;
+  }
+
+  /* Keeps the four columns of checks inside the panel on a phone */
+  .iqb-checks table {
+    font-size: 0.625rem;
+  }
+
+  .iqb-checks th,
+  .iqb-checks td {
+    padding-right: var(--space-1);
   }
 }
 
