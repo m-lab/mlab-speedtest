@@ -4,8 +4,9 @@
  * This is the scoring of https://github.com/m-lab/iqb, ported from
  * library/src/iqb/calculator/ at commit 25133ba (Apache-2.0): every use case
  * has four network requirements, each one passes or fails against a
- * threshold, a use case scores the weighted share of its requirements that
- * pass, and the IQB score is the mean of the use case scores.
+ * threshold, and a use case scores the weighted share of its requirements
+ * that pass. (Upstream then averages the use cases into one IQB score; this
+ * page shows the use cases only.)
  *
  * IQB publishes scores computed on a percentile of many tests for a region
  * or network. Here the same arithmetic runs on one test, so the result
@@ -57,7 +58,7 @@ const Iqb = {
           <circle class="iqb-ring-track" cx="24" cy="24" r="21" />
           <circle class="iqb-ring-value" cx="24" cy="24" r="21" pathLength="100" transform="rotate(-90 24 24)" />
         </svg>
-        <span class="iqb-icon icon-${useCase.icon}"></span>
+        <span class="iqb-icon icon icon-${useCase.icon}"></span>
       </span>
       <span class="iqb-name"></span>
       <span class="iqb-value" dir="ltr"></span>
@@ -90,17 +91,17 @@ const Iqb = {
 
   /**
    * The four IQB inputs from the final measurements of a test, taken the
-   * way IQB's M-Lab pipeline takes them, or null if any is missing.
-   * TCPInfo times are in microseconds, so bytes * 8 / time is in Mb/s.
+   * way IQB's M-Lab pipeline takes them (all from the server's side), or
+   * null if any is missing.
    */
   inputs(download, upload) {
     const d = download && download.LastServerMeasurement && download.LastServerMeasurement.TCPInfo || {};
     const u = upload && upload.LastServerMeasurement && upload.LastServerMeasurement.TCPInfo || {};
     const inputs = {
-      download: d.BytesAcked * 8 / d.ElapsedTime,
-      upload: u.BytesReceived * 8 / u.ElapsedTime,
+      download: Measurement.downloadMbps(d),
+      upload: Measurement.uploadMbps(u),
       latency: d.MinRTT / 1000,
-      loss: d.BytesRetrans / d.BytesSent,
+      loss: Measurement.retransmission(d),
     };
     return Object.values(inputs).every(v => isFinite(v) && v >= 0) ? inputs : null;
   },
@@ -114,11 +115,11 @@ const Iqb = {
   },
 
   /**
-   * Score the inputs: per use case, which requirements pass and the weighted
-   * share that do; overall, the mean of the use case scores. All in [0, 1].
+   * Score the inputs: for each use case, which requirements pass and the
+   * weighted share that do, in [0, 1].
    */
   score(inputs) {
-    const useCases = this.USE_CASES.map(useCase => {
+    return this.USE_CASES.map(useCase => {
       let passed = 0;
       let total = 0;
       const checks = {};
@@ -130,31 +131,29 @@ const Iqb = {
       }
       return { name: useCase.name, score: passed / total, checks };
     });
-    return {
-      score: useCases.reduce((sum, u) => sum + u.score, 0) / useCases.length,
-      useCases,
-    };
   },
 
   /**
-   * Show the indicators for a finished test, given what downloadComplete
-   * and uploadComplete received. Leaves them blank if an input is missing.
+   * Show the indicators for a finished test, given what ndt7 reported when
+   * each direction completed. Returns false, leaving them blank, if the
+   * server measurements lack an input.
    */
   update(download, upload) {
     const inputs = this.inputs(download, upload);
-    if (!inputs) return;
-    const result = this.score(inputs);
-    result.useCases.forEach((useCase, i) => {
+    if (!inputs) return false;
+    const useCases = this.score(inputs);
+    useCases.forEach((useCase, i) => {
       this.setRing(this.els.badges.children[i], useCase.score);
     });
-    this.renderChecks(inputs, result);
+    this.renderChecks(inputs, useCases);
+    return true;
   },
 
   /**
    * The table behind the scores, for the details section: this test's
    * values, then each use case's thresholds with a pass or fail mark.
    */
-  renderChecks(inputs, result) {
+  renderChecks(inputs, useCases) {
     const row = (tag, cells) => {
       const tr = document.createElement('tr');
       cells.forEach(([text, className], i) => {
@@ -169,7 +168,7 @@ const Iqb = {
     table.append(
       row('th', [['IQB'], ...this.REQUIREMENTS.map(r => [r.label])]),
       row('td', [['This test'], ...this.REQUIREMENTS.map(r => [r.show(inputs[r.key])])]),
-      ...result.useCases.map((useCase, i) => row('td', [
+      ...useCases.map((useCase, i) => row('td', [
         [useCase.name],
         ...this.REQUIREMENTS.map(r => {
           const pass = useCase.checks[r.key];

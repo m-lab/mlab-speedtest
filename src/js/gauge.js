@@ -16,10 +16,14 @@ const ProgressGauge = {
   SWEEP_DEG: 270,
 
   root: null,
+  container: null,
   arcs: {},
 
   init() {
     this.root = document.getElementById('gauge');
+    // The phase is marked on the gauge's container, so the readout that
+    // sits beside the dial in the markup can follow it too
+    this.container = this.root.parentElement;
     this.root.innerHTML = this.render();
     this.arcs = {
       download: this.root.querySelector('.gauge-download'),
@@ -84,7 +88,7 @@ const ProgressGauge = {
    */
   setPhase(phase) {
     for (const p of ['download', 'upload', 'done']) {
-      this.root.classList.toggle(`is-${p}`, phase === p);
+      this.container.classList.toggle(`is-${p}`, phase === p);
     }
   },
 

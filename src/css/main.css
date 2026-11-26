@@ -11,7 +11,6 @@
   --color-neutral-100: #f1f5f9;
   --color-neutral-200: #e2e8f0;
   --color-neutral-300: #cad5e2;
-  --color-neutral-400: #90a1b9;
   --color-neutral-500: #62748e;
   --color-neutral-600: #45556c;
   --color-neutral-700: #314158;
@@ -19,7 +18,6 @@
   --color-primary-100: #dff2fe;
   --color-primary-600: #0084d1;
   --color-primary-700: #0069a8;
-  --color-primary-800: #00598a;
   --color-primary-900: #024a70;
   --color-secondary-600: #d08700;
   --color-secondary-800: #894b00;
@@ -69,6 +67,7 @@
 
 html {
   scroll-behavior: smooth;
+  /* Clears the sticky header (4.5rem) when jumping to a section */
   scroll-padding-top: 5rem;
 }
 
@@ -91,10 +90,9 @@ h1, h2, h3 {
   font-family: var(--font-sans);
 }
 
+/* Every h1 is in a hero, which sets its size */
 h1 {
-  font-size: 3.5rem;
   font-weight: 800;
-  line-height: 1.05;
 }
 
 h2 {
@@ -150,6 +148,69 @@ main {
   font-size: 0.8125rem;
   line-height: 1.5;
 }
+
+/* ---------- Shared pieces ---------- */
+
+/* Present for assistive tech, not on screen. Also used for the test page's
+   title once the results have taken its place. */
+.visually-hidden,
+.hero.has-results h1 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* The small uppercase label that names a figure or a group of them */
+.gauge-phase,
+.headline dt,
+.metrics dt,
+.iqb h3 {
+  color: var(--color-neutral-500);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The unit after a number */
+.unit {
+  margin-inline-start: 0.375em;
+  color: var(--color-neutral-500);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+/* A figure that has no value yet shows a dash */
+.headline-value:empty::before,
+.metric-value:empty::before,
+.iqb-value:empty::before,
+.chart-now b:empty::before {
+  content: "\2013";
+  color: var(--color-neutral-300);
+}
+
+/* Line icons (assets/icons), tinted with the current text colour through a
+   mask. Add .icon and one .icon-<name>. */
+.icon {
+  background-color: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
+}
+
+.icon-code-xml { --icon: url("../assets/icons/code-xml.svg"); }
+.icon-database { --icon: url("../assets/icons/database.svg"); }
+.icon-globe { --icon: url("../assets/icons/globe.svg"); }
+.icon-landmark { --icon: url("../assets/icons/landmark.svg"); }
+.icon-tv { --icon: url("../assets/icons/tv.svg"); }
+.icon-headphones { --icon: url("../assets/icons/headphones.svg"); }
+.icon-video { --icon: url("../assets/icons/video.svg"); }
+.icon-cloud-upload { --icon: url("../assets/icons/cloud-upload.svg"); }
+.icon-gamepad-2 { --icon: url("../assets/icons/gamepad-2.svg"); }
 
 /* ---------- Buttons: flat fill, square corners, 2px bottom ledge ---------- */
 
@@ -404,8 +465,9 @@ main {
   stroke: var(--color-primary-700);
 }
 
-/* While upload runs, the finished download arc steps back */
-.gauge.is-upload .gauge-download {
+/* The test phase is marked on .measurement (see gauge.js).
+   While upload runs, the finished download arc steps back. */
+.measurement.is-upload .gauge-download {
   opacity: 0.35;
 }
 
@@ -446,21 +508,12 @@ main {
   line-height: 1;
 }
 
-.measurement:has(.is-upload) .gauge-speed.is-rate {
+.measurement.is-upload .gauge-speed.is-rate {
   color: var(--color-primary-700);
 }
 
 .gauge-speed.is-rate .unit {
   margin: var(--space-2) 0 0;
-  color: var(--color-neutral-500);
-}
-
-.unit {
-  margin-inline-start: 0.375em;
-  color: var(--color-neutral-500);
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  font-weight: 400;
 }
 
 /* Shown in place of the live rate once the test is complete */
@@ -471,20 +524,16 @@ main {
   color: var(--color-speed-600);
 }
 
-.gauge.is-done ~ .gauge-readout .gauge-check {
+.measurement.is-done .gauge-check {
   display: block;
 }
 
 .gauge-phase {
   margin-top: var(--space-2);
   color: var(--color-neutral-600);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
-/* ---------- Results: two headline rates, then one line of supporting figures ---------- */
+/* ---------- Results: two headline rates, then the supporting metrics ---------- */
 
 .results {
   width: 100%;
@@ -497,31 +546,11 @@ main {
   display: none;
 }
 
-.visually-hidden,
-.hero.has-results h1 {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
 .headline {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-6);
   margin: 0 0 var(--space-6);
-}
-
-.headline dt,
-.details dt {
-  color: var(--color-neutral-500);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .headline dt {
@@ -567,12 +596,6 @@ main {
   line-height: 1;
 }
 
-.headline-value:empty::before,
-.detail-value:empty::before {
-  content: "\2013";
-  color: var(--color-neutral-300);
-}
-
 .headline-value:empty + .unit {
   visibility: hidden;
 }
@@ -611,14 +634,9 @@ main {
   color: var(--color-primary-700);
 }
 
-.detail-value:empty + .unit,
-.detail-value:empty + .server-test {
-  display: none;
-}
-
-/* Fixed rows, so filling in the values never changes the height:
-   latency and retransmission share a line, the server has its own */
-.details {
+/* The supporting metrics. Fixed rows, so filling in the values never changes
+   the height: latency and retransmission share a line, the server has its own. */
+.metrics {
   display: grid;
   grid-template-columns: repeat(2, auto);
   justify-content: center;
@@ -628,42 +646,47 @@ main {
   border-top: 1px solid var(--border-subtle);
 }
 
-.detail {
+.metric {
   display: flex;
   align-items: baseline;
   justify-content: center;
   gap: var(--space-2);
 }
 
-.detail:last-child {
+.metric:last-child {
   grid-column: 1 / -1;
 }
 
-.details dd {
+.metrics dd {
   margin: 0;
 }
 
-.detail-value {
+.metric-value {
   color: var(--text-heading);
   font-weight: 600;
 }
 
+.metric-value:empty + .unit,
+.metric-value:empty + .server-test {
+  display: none;
+}
+
 /* One figure per direction, marked with an arrow in the ring's colour */
-.detail-pair {
+.metric-pair {
   display: flex;
   gap: var(--space-3);
 }
 
-.detail-arrow {
+.metric-arrow {
   margin-inline-end: 0.25em;
   font-weight: 600;
 }
 
-.detail-arrow-download {
+.metric-arrow-download {
   color: var(--color-speed-600);
 }
 
-.detail-arrow-upload {
+.metric-arrow-upload {
   color: var(--color-primary-700);
 }
 
@@ -678,22 +701,16 @@ main {
   text-decoration: none;
 }
 
-/* ---------- Failed test: a message in place of what could not be measured ---------- */
+/* ---------- Messages: text in place of what could not be shown ---------- */
 
-.results-main,
-.iqb {
-  position: relative;
-}
-
-/* By default laid over the block it stands in for */
-.results-error {
-  position: absolute;
-  inset: 0;
+/* Two slots, each inside the block it stands in for. While a slot has a
+   message, app.js marks that block .has-message. */
+.results-message {
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0;
-  padding: var(--space-6);
+  padding: var(--space-10) var(--space-6);
   color: var(--text-heading);
   font-size: 1.125rem;
   font-weight: 500;
@@ -701,21 +718,26 @@ main {
   text-align: center;
 }
 
-/* One direction failed: the message takes the place of the IQB ratings,
-   which keep their space */
-.iqb.is-unavailable > :not(.results-error) {
-  visibility: hidden;
-}
-
 /* Nothing was measured: the message replaces the figures outright, so the
-   details follow straight after it */
-.results-main.is-failed > :not(.results-error) {
+   details section follows straight after it */
+.results-main.has-message > :not(.results-message) {
   display: none;
 }
 
-.results-main.is-failed > .results-error {
-  position: static;
-  padding-block: var(--space-10);
+/* The IQB ratings can't be computed: the message is laid over them and they
+   keep their space, so the rest of the results stays where it is */
+.iqb {
+  position: relative;
+}
+
+.iqb > .results-message {
+  position: absolute;
+  inset: 0;
+  padding-block: var(--space-6);
+}
+
+.iqb.has-message > :not(.results-message) {
+  visibility: hidden;
 }
 
 /* ---------- IQB: one badge per use case, with its score ---------- */
@@ -728,16 +750,6 @@ main {
 
 .iqb h3 {
   margin-bottom: var(--space-4);
-  color: var(--color-neutral-500);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.iqb-value:empty::before {
-  content: "\2013";
-  color: var(--color-neutral-300);
 }
 
 .iqb-badges {
@@ -805,9 +817,7 @@ main {
   width: 1.5rem;
   height: 1.5rem;
   margin: auto;
-  background-color: var(--color-neutral-600);
-  -webkit-mask: var(--icon) center / contain no-repeat;
-  mask: var(--icon) center / contain no-repeat;
+  color: var(--color-neutral-600);
 }
 
 .iqb-value {
@@ -815,6 +825,7 @@ main {
   font-weight: 700;
 }
 
+/* The table behind the ratings. It is rendered into the details section. */
 .iqb-checks {
   margin-bottom: var(--space-4);
   padding-top: var(--space-3);
@@ -1062,16 +1073,6 @@ main {
   gap: var(--space-3) var(--space-4);
 }
 
-/* After a failure: what helps to trace it, with room for longer labels */
-.stat-rows.diagnostic-rows {
-  padding-top: 0;
-  border-top: none;
-}
-
-.stat-rows.diagnostic-rows dt {
-  min-width: 6.5rem;
-}
-
 /* Long values: label and value on one line */
 .stat-rows {
   padding-top: var(--space-3);
@@ -1087,6 +1088,17 @@ main {
   flex: none;
   min-width: 3.5rem;
   font-size: 0.75rem;
+}
+
+/* The diagnostics after a failed test: the same rows, first in the panel
+   and with room for longer labels */
+.diagnostic-rows {
+  padding-top: 0;
+  border-top: none;
+}
+
+.diagnostic-rows dt {
+  min-width: 6.5rem;
 }
 
 /* ---------- Content sections ---------- */
@@ -1110,26 +1122,13 @@ main {
   margin-block: var(--space-10);
 }
 
-/* Lucide line icons (assets/icons), tinted through a mask */
 .feature-icon {
   display: block;
   width: 2.5rem;
   height: 2.5rem;
   margin-bottom: var(--space-4);
-  background-color: var(--color-primary-700);
-  -webkit-mask: var(--icon) center / contain no-repeat;
-  mask: var(--icon) center / contain no-repeat;
+  color: var(--color-primary-700);
 }
-
-.icon-code-xml { --icon: url("../assets/icons/code-xml.svg"); }
-.icon-database { --icon: url("../assets/icons/database.svg"); }
-.icon-globe { --icon: url("../assets/icons/globe.svg"); }
-.icon-landmark { --icon: url("../assets/icons/landmark.svg"); }
-.icon-tv { --icon: url("../assets/icons/tv.svg"); }
-.icon-headphones { --icon: url("../assets/icons/headphones.svg"); }
-.icon-video { --icon: url("../assets/icons/video.svg"); }
-.icon-cloud-upload { --icon: url("../assets/icons/cloud-upload.svg"); }
-.icon-gamepad-2 { --icon: url("../assets/icons/gamepad-2.svg"); }
 
 .feature p {
   font-size: 0.9375rem;
@@ -1236,6 +1235,16 @@ main {
   text-decoration: underline;
 }
 
+/* ---------- 404 ---------- */
+
+.not-found-code {
+  margin: 0;
+  color: var(--color-speed-600);
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
 /* ---------- Wide screens: gauge and controls on the left, results on the right ---------- */
 
 @media (min-width: 1100px) {
@@ -1291,23 +1300,9 @@ main {
   }
 }
 
-/* ---------- 404 ---------- */
-
-.not-found-code {
-  margin: 0;
-  color: var(--color-speed-600);
-  font-family: var(--font-mono);
-  font-size: 1.125rem;
-  font-weight: 700;
-}
-
 /* ---------- Small screens ---------- */
 
 @media (max-width: 899px) {
-  h1 {
-    font-size: 2.25rem;
-  }
-
   h2 {
     font-size: 1.75rem;
   }
@@ -1330,7 +1325,7 @@ main {
     padding-inline: var(--space-4);
   }
 
-  /* Long translations need room: let the nav wrap under the logo */
+  /* Header: long translations need room, so the nav wraps under the logo */
   .site-header {
     position: static;
   }
@@ -1356,11 +1351,12 @@ main {
     white-space: nowrap;
   }
 
+  /* Test: full-width button, one metric per line, three ratings per row */
   .button-xl {
     width: 100%;
   }
 
-  .details {
+  .metrics {
     grid-template-columns: 1fr;
   }
 
@@ -1368,11 +1364,11 @@ main {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  /* Details: a tighter panel. Two figures to a row still fit inside it. */
   .advanced-body {
     padding: var(--space-3);
   }
 
-  /* Two figures to a row still fit inside the padded panel */
   .stat-group {
     gap: var(--space-3);
   }

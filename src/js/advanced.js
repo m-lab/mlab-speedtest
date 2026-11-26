@@ -1,27 +1,31 @@
 /**
- * The collapsed "Details" section of the results: charts of the server's
- * TCPInfo over the download, the final figures of both directions, and a
- * copy of the raw result.
+ * The collapsed "Details" section of the results.
+ *
+ * After a test it shows charts of the server's TCPInfo over the download,
+ * the final figures of both directions, and a button to copy the raw result.
+ * After a failed test it shows diagnostics for an error report instead.
  *
  * The charts cover the download only: they describe the sending side, and
  * the server only sends during download.
- * Labels here are protocol field names and are deliberately not translated.
+ * This section is for technical readers: it is in English, and most labels
+ * are the protocol's own field names.
  */
 const Advanced = {
-  DURATION: 10, // Nominal length of one ndt7 direction, in seconds
-
-  // value() maps a TCPInfo snapshot to the plotted number; times are in microseconds
+  // value() maps a TCPInfo snapshot to the plotted number
   CHARTS: [
     { key: 'rtt', title: 'Round-trip time', field: 'RTT', unit: 'ms', digits: 1,
       value: t => t.RTT / 1000 },
     { key: 'retrans', title: 'Retransmission rate', field: 'BytesRetrans / BytesSent', unit: '%', digits: 2,
-      value: t => Advanced.percent(t.BytesRetrans, t.BytesSent) },
+      value: t => Measurement.retransmission(t) * 100 },
   ],
 
   charts: {},
   samples: [],
+  // { Server, Download, Upload } as given to setResult()
   result: {},
+  // What showDiagnostics() built after a failed test, or null
   diagnostics: null,
+  copyTimer: null,
   els: {},
 
   init() {
@@ -64,10 +68,6 @@ const Advanced = {
     this.reset();
   },
 
-  percent(part, whole) {
-    return whole > 0 ? part / whole * 100 : 0;
-  },
-
   /**
    * Round a maximum up to 1, 2 or 5 times a power of ten, so the axis
    * labels are round numbers.
@@ -92,12 +92,7 @@ const Advanced = {
     this.els.diagnostics.hidden = true;
     this.els.diagnostics.replaceChildren();
     this.els.charts.hidden = false;
-    this.els.copy.querySelector('span').textContent = 'Copy raw result (JSON)';
-    this.els.copy.disabled = true;
-  },
-
-  setServer(machine) {
-    this.result.Server = machine;
+    this.refreshCopyButton();
   },
 
   /**
@@ -106,22 +101,23 @@ const Advanced = {
   addDownloadSample(measurement) {
     const t = measurement && measurement.TCPInfo;
     if (!t || !(t.ElapsedTime > 0)) return;
-    this.samples.push({ seconds: t.ElapsedTime / 1e6, tcp: t });
+    this.samples.push({ seconds: Measurement.seconds(t), tcp: t });
     this.draw();
   },
 
   /**
-   * Keep the final measurements of 'Download' or 'Upload'.
+   * Show the raw result so far: { Server, Download, Upload }, where each
+   * direction is what ndt7 reported when it completed.
    */
-  setFinal(direction, data) {
-    this.result[direction] = data;
+  setResult(result) {
+    this.result = result;
     this.renderStats();
-    this.els.copy.disabled = false;
+    this.refreshCopyButton();
   },
 
   draw() {
     const last = this.samples[this.samples.length - 1];
-    const span = Math.max(this.DURATION, last ? last.seconds : 0);
+    const span = Math.max(Measurement.TEST_SECONDS, last ? last.seconds : 0);
     const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => this.label(span * f));
     ticks[ticks.length - 1] += ' s';
 
@@ -129,12 +125,12 @@ const Advanced = {
       const chart = this.charts[c.key];
       const values = this.samples.map(s => c.value(s.tcp));
       // A little headroom keeps a line at its peak off the top edge
-      const max = c.max || this.niceMax(Math.max(0, ...values) * 1.1);
+      const max = this.niceMax(Math.max(0, ...values) * 1.1);
       chart.yMax.textContent = this.label(max);
       chart.yMid.textContent = this.label(max / 2);
       chart.x.innerHTML = ticks.map(t => `<span>${t}</span>`).join('');
       if (!values.length) {
-        chart.now.textContent = '–';
+        chart.now.textContent = '';
         chart.range.textContent = '';
         chart.line.setAttribute('d', '');
         chart.area.setAttribute('d', '');
@@ -169,6 +165,7 @@ const Advanced = {
     const ms = v => (v / 1000).toFixed(1);
     const mb = v => has(v) && `${(v / 1e6).toFixed(2)} MB`;
     const secs = v => has(v) && `${(v / 1e6).toFixed(2)} s`;
+    const share = (part, whole) => has(part) && whole > 0 && `${(part / whole * 100).toFixed(2)} %`;
     const present = pairs => pairs.filter(([, value]) => value);
     return {
       groups: [
@@ -179,8 +176,7 @@ const Advanced = {
           ['BytesRetrans', mb(t.BytesRetrans)],
           ['MinRTT', has(t.MinRTT) && `${ms(t.MinRTT)} ms`],
           ['RTT \u00b1 RTTVar', has(t.RTT) && has(t.RTTVar) && `${ms(t.RTT)} \u00b1 ${ms(t.RTTVar)} ms`],
-          ['SndBufLimited', has(t.SndBufLimited) && t.ElapsedTime > 0 &&
-            `${this.percent(t.SndBufLimited, t.ElapsedTime).toFixed(2)} %`],
+          ['SndBufLimited', share(t.SndBufLimited, t.ElapsedTime)],
           ['BBRInfo.BW', dl.BBRInfo && has(dl.BBRInfo.BW) && `${(dl.BBRInfo.BW / 1e6).toFixed(2)} Mb/s`],
         ])],
         ['\u2191 Upload', present([
@@ -263,19 +259,38 @@ const Advanced = {
     this.els.diagnostics.hidden = false;
     // Without samples the charts are empty frames
     this.els.charts.hidden = !this.samples.length;
-    this.els.copy.querySelector('span').textContent = 'Copy diagnostics (JSON)';
-    this.els.copy.disabled = false;
+    this.refreshCopyButton();
+  },
+
+  /**
+   * What the copy button copies: the diagnostics after a failed test,
+   * otherwise the raw result, or null when there is nothing yet.
+   */
+  copyable() {
+    if (this.diagnostics) return this.diagnostics;
+    return this.result.Download || this.result.Upload ? this.result : null;
+  },
+
+  /**
+   * Set the copy button's label and state from what there is to copy,
+   * dropping any "Copied" feedback still showing.
+   */
+  refreshCopyButton() {
+    clearTimeout(this.copyTimer);
+    this.els.copy.querySelector('span').textContent =
+      this.diagnostics ? 'Copy diagnostics (JSON)' : 'Copy raw result (JSON)';
+    this.els.copy.disabled = !this.copyable();
   },
 
   async copy() {
-    const label = this.els.copy.querySelector('span');
-    const original = label.textContent;
+    let feedback = 'Copied';
     try {
-      await navigator.clipboard.writeText(JSON.stringify(this.diagnostics || this.result, null, 2));
-      label.textContent = 'Copied';
+      await navigator.clipboard.writeText(JSON.stringify(this.copyable(), null, 2));
     } catch (err) {
-      label.textContent = 'Copy failed';
+      feedback = 'Copy failed';
     }
-    setTimeout(() => { label.textContent = original; }, 1500);
+    clearTimeout(this.copyTimer);
+    this.els.copy.querySelector('span').textContent = feedback;
+    this.copyTimer = setTimeout(() => this.refreshCopyButton(), 1500);
   },
 };

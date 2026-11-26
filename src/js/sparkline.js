@@ -4,12 +4,12 @@
  * Each graph plots the rate over each reporting interval (not the running
  * mean shown as the headline number), so dips and ramp-up stay visible. The
  * rates are averaged over a few neighbouring samples and drawn as a curve, so
- * sample-to-sample jitter doesn't read as spikes. The
- * x axis spans the nominal test duration, which makes the growing line double
- * as a progress indicator; the y axis scales to the graph's own peak.
+ * sample-to-sample jitter doesn't read as spikes.
+ *
+ * The x axis spans the nominal test duration, which makes the growing line
+ * double as a progress indicator; the y axis scales to the graph's own peak.
  */
 const Sparkline = {
-  DURATION: 10, // Nominal length of one ndt7 direction, in seconds
   WIDTH: 200,
   HEIGHT: 40,
   PAD: 2,
@@ -53,7 +53,7 @@ const Sparkline = {
       s.line.setAttribute('d', '');
       return;
     }
-    const span = Math.max(this.DURATION, s.points[s.points.length - 1].seconds);
+    const span = Math.max(Measurement.TEST_SECONDS, s.points[s.points.length - 1].seconds);
     const rates = this.smooth(s.points.map(p => p.mbps));
     const peak = Math.max(...rates) || 1;
     const xy = [[0, h - pad], ...s.points.map((p, i) =>

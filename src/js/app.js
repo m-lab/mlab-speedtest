@@ -9,11 +9,24 @@ const SpeedTest = {
   privacyConsent: false,
   measurementComplete: false,
   resultsVisible: false,
-  locateFailed: false,
+
+  // State of the current run, cleared by resetRun()
   sessionID: null,
   hasToken: false,
-  failures: [],
+  // Where the run is: null before it starts, then 'discovery',
+  // 'download-connect', 'download', 'upload-connect' and 'upload'. Tags
+  // errors in Sentry and in the diagnostics, so connection failures can be
+  // told apart from mid-test drops.
+  ndt7Phase: null,
+  ndt7Machine: null,
+  ndt7Site: null,
+  // Formatted figures, as displayed
   measurementResult: {},
+  // What ndt7 reported when each direction completed
+  download: null,
+  upload: null,
+  failures: [],
+  locateFailed: false,
 
   // DOM elements (cached on init)
   els: {},
@@ -41,8 +54,7 @@ const SpeedTest = {
       resultsSection: document.getElementById('resultsSection'),
       resultsStatus: document.getElementById('resultsStatus'),
       resultsError: document.getElementById('resultsError'),
-      resultsMain: document.querySelector('.results-main'),
-      iqb: document.querySelector('.iqb'),
+      iqbError: document.getElementById('iqbError'),
 
       // Results
       location: document.getElementById('ndtLocation'),
@@ -57,7 +69,7 @@ const SpeedTest = {
     this.els.privacyCheckbox.addEventListener('change', () => this.onPrivacyChange());
     this.els.startButton.addEventListener('click', () => this.startTest());
 
-    // Initialize gauge
+    // Initialize the parts of the results
     ProgressGauge.init();
     Sparkline.init();
     Advanced.init();
@@ -162,27 +174,19 @@ const SpeedTest = {
       return;
     }
 
-    ProgressGauge.reset();
-    Sparkline.reset();
-    Advanced.reset();
-    Iqb.reset();
+    this.resetRun();
     this.testRunning = true;
     this.measurementComplete = false;
-    this.measurementResult = {};
-    this.clearResults();
-    this.clearFailure();
     // The results panel is on screen for the whole run and fills in as it goes
     this.resultsVisible = true;
     this.updateUI();
 
-    // Scroll to measurement area on mobile
-    if (window.matchMedia('(max-width: 899px)').matches) {
+    // In the single-column layout (see main.css), bring the gauge into view
+    if (window.matchMedia('(max-width: 1099px)').matches) {
       this.els.measurementSpace.scrollIntoView({ behavior: 'smooth' });
     }
 
-    this.els.resultsStatus.textContent = '';
     this.setReadout(i18n.t('Starting'));
-    this.els.currentPhase.textContent = '';
 
     // Execute ndt7
     try {
@@ -207,7 +211,9 @@ const SpeedTest = {
       ProgressGauge.setPhase('done');
       this.els.currentPhase.textContent = i18n.t('Complete');
       this.announceResults();
-      Iqb.update(Advanced.result.Download, Advanced.result.Upload);
+      if (!Iqb.update(this.download, this.upload)) {
+        this.showMessage(this.els.iqbError, 'Ratings are not available for this test.');
+      }
     } else {
       this.els.currentPhase.textContent = i18n.t('Error');
       this.showFailure(hasDownload, hasUpload);
@@ -234,21 +240,43 @@ const SpeedTest = {
       message = 'The test could not be completed. Please try again.';
     }
     const partial = hasDownload || hasUpload;
-    (partial ? this.els.iqb : this.els.resultsMain).append(this.els.resultsError);
-    this.els.resultsMain.classList.toggle('is-failed', !partial);
-    this.els.iqb.classList.toggle('is-unavailable', partial);
-    this.els.resultsError.textContent = i18n.t(message);
-    this.els.resultsError.hidden = false;
+    this.showMessage(partial ? this.els.iqbError : this.els.resultsError, message);
 
     Advanced.showDiagnostics({
       SessionID: this.sessionID,
       Time: new Date().toISOString(),
-      Environment: typeof mlabEnvName === 'undefined' ? undefined : mlabEnvName,
+      Environment: mlabEnvName,
       PriorityToken: this.hasToken,
-      Library: typeof mlabNdt7Version === 'undefined' ? undefined : `ndt7-js ${mlabNdt7Version}`,
+      Library: `ndt7-js ${mlabNdt7Version}`,
       Server: this.ndt7Machine,
       Errors: this.failures,
     });
+  },
+
+  /**
+   * Show a message in one of the two message slots of the results panel.
+   * Each slot sits inside the block it stands in for, and the stylesheet
+   * hides the rest of that block while it has a message.
+   */
+  showMessage(slot, message) {
+    slot.textContent = i18n.t(message);
+    slot.hidden = false;
+    slot.parentElement.classList.add('has-message');
+  },
+
+  clearMessages() {
+    for (const slot of [this.els.resultsError, this.els.iqbError]) {
+      slot.hidden = true;
+      slot.textContent = '';
+      slot.parentElement.classList.remove('has-message');
+    }
+  },
+
+  /**
+   * The raw result so far, for the details section.
+   */
+  rawResult() {
+    return { Server: this.ndt7Machine, Download: this.download, Upload: this.upload };
   },
 
   /**
@@ -256,6 +284,7 @@ const SpeedTest = {
    */
   recordFailure(err, sentryEventId) {
     this.failures.push({
+      // No phase yet means it failed before the test proper began
       Phase: this.ndt7Phase || 'start',
       Message: String(err && err.message || err),
       // Without a DSN the SDK still hands out ids, for events it never sends
@@ -263,15 +292,29 @@ const SpeedTest = {
     });
   },
 
-  clearFailure() {
-    this.failures = [];
+  /**
+   * Forget the previous run, in the state and on screen.
+   */
+  resetRun() {
     this.sessionID = null;
+    this.hasToken = false;
     this.ndt7Phase = null;
+    this.ndt7Machine = null;
+    this.ndt7Site = null;
+    this.measurementResult = {};
+    this.download = null;
+    this.upload = null;
+    this.failures = [];
     this.locateFailed = false;
-    this.els.resultsMain.classList.remove('is-failed');
-    this.els.iqb.classList.remove('is-unavailable');
-    this.els.resultsError.hidden = true;
-    this.els.resultsError.textContent = '';
+
+    this.clearResults();
+    this.clearMessages();
+    this.els.resultsStatus.textContent = '';
+    this.els.currentPhase.textContent = '';
+    ProgressGauge.reset();
+    Sparkline.reset();
+    Advanced.reset();
+    Iqb.reset();
   },
 
   /**
@@ -316,12 +359,7 @@ const SpeedTest = {
   },
 
   async runNdt7(sid) {
-    // Current phase and server, used to tag ndt7 errors in Sentry. The phase
-    // moves through discovery, download-connect, download, upload-connect and
-    // upload, so connection failures can be told apart from mid-test drops.
     this.ndt7Phase = 'discovery';
-    this.ndt7Machine = null;
-    this.ndt7Site = null;
 
     const project = this.mlabProject();
     console.log(`[ndt7] mlabProject: ${project}`);
@@ -410,7 +448,6 @@ const SpeedTest = {
         serverChosen: (server) => {
           this.ndt7Phase = 'download-connect';
           this.ndt7Machine = server.machine;
-          Advanced.setServer(server.machine);
           // Site is the second dash-separated part of the hostname, for both
           // mlab3-bog02.mlab-oti... and ndt-sin15830-931cb329.equinix.autojoin...
           this.ndt7Site = (server.machine || '').split('.')[0].split('-')[1] || null;
@@ -439,7 +476,8 @@ const SpeedTest = {
         },
         downloadComplete: (data) => {
           this.ndt7Phase = 'upload-connect';
-          Advanced.setFinal('Download', data);
+          this.download = data;
+          Advanced.setResult(this.rawResult());
           if (data.LastClientMeasurement) {
             this.measurementResult.s2cRate =
               data.LastClientMeasurement.MeanClientMbps.toFixed(2);
@@ -448,8 +486,7 @@ const SpeedTest = {
           }
           if (data.LastServerMeasurement?.TCPInfo) {
             this.measurementResult.loss =
-              (data.LastServerMeasurement.TCPInfo.BytesRetrans /
-                data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2);
+              (Measurement.retransmission(data.LastServerMeasurement.TCPInfo) * 100).toFixed(2);
             this.setLatency(this.els.latency, data.LastServerMeasurement);
             this.els.loss.textContent = this.measurementResult.loss;
           }
@@ -464,22 +501,21 @@ const SpeedTest = {
         uploadMeasurement: (data) => {
           if (data.Source === 'server') {
             this.setLatency(this.els.latencyUpload, data.Data);
-            const mbps = data.Data.TCPInfo.BytesReceived / data.Data.TCPInfo.ElapsedTime * 8;
+            const mbps = Measurement.uploadMbps(data.Data.TCPInfo);
             this.setReadout(null, mbps);
             ProgressGauge.setSpeed('upload', mbps);
-            // TCPInfo.ElapsedTime is in microseconds
-            Sparkline.add('upload', data.Data.TCPInfo.ElapsedTime / 1e6, data.Data.TCPInfo.BytesReceived);
+            Sparkline.add('upload', Measurement.seconds(data.Data.TCPInfo), data.Data.TCPInfo.BytesReceived);
           }
         },
         uploadComplete: (data) => {
-          Advanced.setFinal('Upload', data);
+          this.upload = data;
+          Advanced.setResult(this.rawResult());
           this.setLatency(this.els.latencyUpload, data.LastServerMeasurement);
           if (data.LastServerMeasurement?.TCPInfo) {
-            this.measurementResult.c2sRate =
-              (data.LastServerMeasurement.TCPInfo.BytesReceived /
-                data.LastServerMeasurement.TCPInfo.ElapsedTime * 8).toFixed(2);
+            const mbps = Measurement.uploadMbps(data.LastServerMeasurement.TCPInfo);
+            this.measurementResult.c2sRate = mbps.toFixed(2);
             this.els.c2sRate.textContent = this.measurementResult.c2sRate;
-            ProgressGauge.setSpeed('upload', parseFloat(this.measurementResult.c2sRate));
+            ProgressGauge.setSpeed('upload', mbps);
           }
         },
       },

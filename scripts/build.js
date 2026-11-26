@@ -59,7 +59,9 @@ function copyFontCSS(srcCSS, destCSS) {
 
 /**
  * Append a content hash to the local stylesheet and script URLs of an HTML
- * file, so a new deploy is never paired with a browser-cached older asset.
+ * file, so a page from a new deploy never loads a browser-cached older copy
+ * of them. Files that are not referenced from the HTML (the ndt7 workers,
+ * the translations, the icons and fonts) keep their plain URLs.
  */
 function versionAssets(htmlPath) {
   const html = fs.readFileSync(htmlPath, 'utf8');
