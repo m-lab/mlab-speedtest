@@ -1,60 +1,100 @@
 /**
- * Canvas progress gauge for speed test visualization.
+ * SVG speed gauge: two concentric 270-degree arcs, the outer one for the
+ * download rate and the inner one for the upload rate, in Mb/s.
+ *
+ * The scale is logarithmic, so the first 100 Mb/s take two thirds of the dial
+ * while it still reaches 1 Gb/s. Faster rates keep the arc full.
  */
 const ProgressGauge = {
-  canvas: null,
-  ctx: null,
+  TICKS: [0, 5, 10, 25, 50, 100, 250, 500, 1000],
+  SIZE: 300,
+  RINGS: {
+    download: { radius: 110, stroke: 16 },
+    upload: { radius: 88, stroke: 10 },
+  },
+  START_DEG: 135,
+  SWEEP_DEG: 270,
+
+  root: null,
+  container: null,
+  arcs: {},
 
   init() {
-    this.canvas = document.getElementById('activeProgress');
-    this.ctx = this.canvas.getContext('2d');
-    this.create();
+    this.root = document.getElementById('gauge');
+    // The phase is marked on the gauge's container, so the readout that
+    // sits beside the dial in the markup can follow it too
+    this.container = this.root.parentElement;
+    this.root.innerHTML = this.render();
+    this.arcs = {
+      download: this.root.querySelector('.gauge-download'),
+      upload: this.root.querySelector('.gauge-upload'),
+    };
+    this.reset();
   },
 
-  setInactive() {
-    this.draw(1);
-    this.canvas.classList.remove('activeGauge');
-    this.canvas.classList.add('inactiveGauge');
+  /**
+   * Map a rate in Mb/s to the filled fraction of the arc, in [0, 1].
+   */
+  fraction(mbps) {
+    const max = this.TICKS[this.TICKS.length - 1];
+    if (!(mbps > 0)) return 0;
+    if (mbps >= max) return 1;
+    // log(1 + x) keeps zero on the scale
+    return Math.log1p(mbps) / Math.log1p(max);
+  },
+
+  point(deg, r) {
+    const rad = deg * Math.PI / 180;
+    const c = this.SIZE / 2;
+    return [(c + r * Math.cos(rad)).toFixed(2), (c + r * Math.sin(rad)).toFixed(2)];
+  },
+
+  arcPath(r) {
+    const [x0, y0] = this.point(this.START_DEG, r);
+    const [x1, y1] = this.point(this.START_DEG + this.SWEEP_DEG, r);
+    return `M ${x0} ${y0} A ${r} ${r} 0 1 1 ${x1} ${y1}`;
+  },
+
+  render() {
+    const rings = Object.entries(this.RINGS).map(([name, { radius, stroke }]) => {
+      const d = this.arcPath(radius);
+      return `<path class="gauge-track" d="${d}" stroke-width="${stroke}" />
+      <path class="gauge-value gauge-${name}" d="${d}" stroke-width="${stroke}" pathLength="100" stroke-dasharray="0 100" />`;
+    }).join('');
+    const labelRadius = this.RINGS.download.radius + 26;
+    const labels = this.TICKS.map(tick => {
+      const [x, y] = this.point(this.START_DEG + this.fraction(tick) * this.SWEEP_DEG, labelRadius);
+      return `<text x="${x}" y="${y}">${tick}</text>`;
+    }).join('');
+    return `<svg viewBox="0 0 ${this.SIZE} ${this.SIZE}" aria-hidden="true" focusable="false">
+      ${rings}
+      <g class="gauge-ticks">${labels}</g>
+    </svg>`;
+  },
+
+  /**
+   * Fill the 'download' or 'upload' arc to the given rate in Mb/s.
+   */
+  setSpeed(direction, mbps) {
+    const arc = this.arcs[direction];
+    const f = this.fraction(mbps);
+    arc.setAttribute('stroke-dasharray', `${(f * 100).toFixed(2)} 100`);
+    // A zero-length dash with round caps would still draw a dot.
+    arc.style.visibility = f > 0 ? 'visible' : 'hidden';
+  },
+
+  /**
+   * Mark the test stage: 'download', 'upload', 'done' or null.
+   */
+  setPhase(phase) {
+    for (const p of ['download', 'upload', 'done']) {
+      this.container.classList.toggle(`is-${p}`, phase === p);
+    }
   },
 
   reset() {
-    this.draw(0);
-    this.canvas.classList.remove('inactiveGauge');
-    this.canvas.classList.add('activeGauge');
+    this.setSpeed('download', 0);
+    this.setSpeed('upload', 0);
+    this.setPhase(null);
   },
-
-  draw(percentage) {
-    const quarterTurn = Math.PI / 2;
-    const endingAngle = (2 * percentage * Math.PI) - quarterTurn;
-    const startingAngle = 0 - quarterTurn;
-
-    // Clear canvas
-    this.canvas.width = this.canvas.width;
-    this.ctx.lineCap = 'square';
-
-    this.ctx.beginPath();
-    this.ctx.lineWidth = 20;
-    this.ctx.strokeStyle = '#FFFFFF';
-    this.ctx.arc(137.5, 137.5, 111, startingAngle, endingAngle);
-    this.ctx.stroke();
-  },
-
-  create() {
-    const quarterTurn = Math.PI / 2;
-    const endingAngle = (2 * Math.PI) - quarterTurn;
-    const startingAngle = 0 - quarterTurn;
-
-    this.ctx.beginPath();
-    this.ctx.lineCap = 'square';
-    this.ctx.lineWidth = 20;
-    this.ctx.strokeStyle = '#FFFFFF';
-    this.ctx.arc(137.5, 137.5, 111, startingAngle, endingAngle);
-    this.ctx.stroke();
-
-    this.setInactive();
-  },
-
-  progress(value) {
-    this.draw(value);
-  }
 };

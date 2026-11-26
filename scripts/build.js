@@ -6,6 +6,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const ROOT = path.join(__dirname, '..');
 const SRC = path.join(ROOT, 'src');
@@ -46,6 +47,36 @@ function copyFile(src, dest) {
 }
 
 /**
+ * Copy a @fontsource stylesheet and only the font files it references
+ */
+function copyFontCSS(srcCSS, destCSS) {
+  const css = fs.readFileSync(srcCSS, 'utf8');
+  copyFile(srcCSS, destCSS);
+  for (const [, rel] of css.matchAll(/url\((\.\/files\/[^)]+)\)/g)) {
+    copyFile(path.join(path.dirname(srcCSS), rel), path.join(path.dirname(destCSS), rel));
+  }
+}
+
+/**
+ * Append a content hash to the local stylesheet and script URLs of an HTML
+ * file, so a page from a new deploy never loads a browser-cached older copy
+ * of them. Files that are not referenced from the HTML (the ndt7 workers,
+ * the translations, the icons and fonts) keep their plain URLs.
+ */
+function versionAssets(htmlPath) {
+  const html = fs.readFileSync(htmlPath, 'utf8');
+  const versioned = html.replace(
+    /(<(?:link|script)\b[^>]*?\b(?:href|src)=")([^"?#:]+\.(?:css|js))(")/g,
+    (match, before, url, after) => {
+      const file = path.join(path.dirname(htmlPath), url);
+      if (!fs.existsSync(file)) return match;
+      const hash = crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex').slice(0, 10);
+      return `${before}${url}?v=${hash}${after}`;
+    });
+  fs.writeFileSync(htmlPath, versioned);
+}
+
+/**
  * Main build process
  */
 function build() {
@@ -76,9 +107,14 @@ function build() {
   console.log('Copying source files...');
   copyDir(SRC, DIST);
 
-  // Font-awesome CSS uses ../fonts/ from css/ directory, so copy fonts there too
-  console.log('Copying fonts for font-awesome compatibility...');
-  copyDir(path.join(SRC, 'assets', 'fonts'), path.join(DIST, 'fonts'));
+  // Self-host the brand fonts so the page makes no third-party font requests
+  console.log('Copying fonts...');
+  copyFontCSS(path.join(NODE_MODULES, '@fontsource-variable', 'inter', 'index.css'),
+    path.join(DIST, 'fonts', 'inter', 'inter.css'));
+  for (const weight of ['400', '700']) {
+    copyFontCSS(path.join(NODE_MODULES, '@fontsource', 'ibm-plex-mono', `${weight}.css`),
+      path.join(DIST, 'fonts', 'ibm-plex-mono', `${weight}.css`));
+  }
 
   // Convert .po translations to JSON
   console.log('Converting translations...');
@@ -113,10 +149,18 @@ function build() {
   const sentryDsn = process.env.SENTRY_DSN || '';
   const envJsPath = path.join(DIST, 'js', 'env.js');
   console.log(`Writing ${envJsPath}...`)
+  const ndt7Version = require(path.join(NODE_MODULES, '@m-lab', 'ndt7', 'package.json')).version;
   fs.writeFileSync(envJsPath,
     `const mlabEnvName = "${mlabEnvName}";\n` +
-    `const mlabSentryDsn = "${sentryDsn}";\n`
+    `const mlabSentryDsn = "${sentryDsn}";\n` +
+    `const mlabNdt7Version = "${ndt7Version}";\n`
   );
+
+  // Must come last: the hashes cover the final contents of every asset
+  console.log('Versioning asset URLs...');
+  for (const name of fs.readdirSync(DIST).filter(f => f.endsWith('.html'))) {
+    versionAssets(path.join(DIST, name));
+  }
 
   console.log('\nBuild complete! Output in dist/');
 }

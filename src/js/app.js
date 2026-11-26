@@ -5,11 +5,28 @@
  */
 
 const SpeedTest = {
-  TIME_EXPECTED: 10, // Expected duration of a test in seconds
   testRunning: false,
   privacyConsent: false,
   measurementComplete: false,
+  resultsVisible: false,
+
+  // State of the current run, cleared by resetRun()
+  sessionID: null,
+  hasToken: false,
+  // Where the run is: null before it starts, then 'discovery',
+  // 'download-connect', 'download', 'upload-connect' and 'upload'. Tags
+  // errors in Sentry and in the diagnostics, so connection failures can be
+  // told apart from mid-test drops.
+  ndt7Phase: null,
+  ndt7Machine: null,
+  ndt7Site: null,
+  // Formatted figures, as displayed
   measurementResult: {},
+  // What ndt7 reported when each direction completed
+  download: null,
+  upload: null,
+  failures: [],
+  locateFailed: false,
 
   // DOM elements (cached on init)
   els: {},
@@ -27,19 +44,24 @@ const SpeedTest = {
     // Cache DOM elements
     this.els = {
       startButton: document.getElementById('startButton'),
-      privacyCheckbox: document.getElementById('privacyConsent'),
+      privacyCheckbox: document.getElementById('dataPolicyAgreement'),
       privacyMessage: document.getElementById('privacyMessage'),
       currentSpeed: document.getElementById('currentSpeed'),
+      currentUnit: document.getElementById('currentUnit'),
       currentPhase: document.getElementById('currentPhase'),
+      hero: document.getElementById('intro'),
       measurementSpace: document.getElementById('measurementSpace'),
-      progressSection: document.getElementById('progressSection'),
       resultsSection: document.getElementById('resultsSection'),
+      resultsStatus: document.getElementById('resultsStatus'),
+      resultsError: document.getElementById('resultsError'),
+      iqbError: document.getElementById('iqbError'),
 
       // Results
       location: document.getElementById('ndtLocation'),
       s2cRate: document.getElementById('s2cRate'),
       c2sRate: document.getElementById('c2sRate'),
       latency: document.getElementById('latency'),
+      latencyUpload: document.getElementById('latencyUpload'),
       loss: document.getElementById('loss'),
     };
 
@@ -47,12 +69,15 @@ const SpeedTest = {
     this.els.privacyCheckbox.addEventListener('change', () => this.onPrivacyChange());
     this.els.startButton.addEventListener('click', () => this.startTest());
 
-    // Initialize gauge
+    // Initialize the parts of the results
     ProgressGauge.init();
+    Sparkline.init();
+    Advanced.init();
+    Iqb.init();
 
     // Scrollspy: update active nav link based on which section is in view
-    const sections = document.querySelectorAll('#wrapper > section[id]');
-    const navLinks = document.querySelectorAll('#sidebar nav a');
+    const sections = document.querySelectorAll('main > section[id]');
+    const navLinks = document.querySelectorAll('.site-nav a');
 
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -79,11 +104,7 @@ const SpeedTest = {
 
   updateUI() {
     // Update button state
-    if (!this.privacyConsent || this.testRunning) {
-      this.els.startButton.classList.add('disabled');
-    } else {
-      this.els.startButton.classList.remove('disabled');
-    }
+    this.els.startButton.disabled = !this.privacyConsent || this.testRunning;
     this.els.privacyCheckbox.disabled = this.testRunning;
 
     // Update button text
@@ -91,26 +112,61 @@ const SpeedTest = {
     const againSpan = this.els.startButton.querySelector('.btn-again');
     const testingSpan = this.els.startButton.querySelector('.btn-testing');
 
-    if (this.testRunning) {
-      beginSpan.style.display = 'none';
-      againSpan.style.display = 'none';
-      testingSpan.style.display = 'inline';
-    } else if (this.measurementComplete) {
-      beginSpan.style.display = 'none';
-      againSpan.style.display = 'inline';
-      testingSpan.style.display = 'none';
-    } else {
-      beginSpan.style.display = 'inline';
-      againSpan.style.display = 'none';
-      testingSpan.style.display = 'none';
-    }
+    testingSpan.hidden = !this.testRunning;
+    againSpan.hidden = this.testRunning || !this.measurementComplete;
+    beginSpan.hidden = this.testRunning || this.measurementComplete;
 
-    // Show/hide privacy message
-    this.els.privacyMessage.style.display = this.privacyConsent ? 'none' : 'block';
+    // Hide the privacy message once agreed, keeping its space so nothing below moves
+    this.els.privacyMessage.classList.toggle('is-met', this.privacyConsent);
 
-    // Show/hide progress vs results
-    this.els.progressSection.style.display = this.measurementComplete ? 'none' : 'block';
-    this.els.resultsSection.style.display = this.measurementComplete ? 'block' : 'none';
+    this.els.resultsSection.hidden = !this.resultsVisible;
+    // From the first run on, the results panel takes the place of the intro copy
+    if (this.resultsVisible) this.els.hero.classList.add('has-results');
+  },
+
+  /**
+   * Clear the displayed result fields so a re-run can't show stale
+   * values from a previous test if the current one fails partway.
+   */
+  clearResults() {
+    this.els.location.textContent = '';
+    this.els.s2cRate.textContent = '';
+    this.els.c2sRate.textContent = '';
+    this.els.latency.textContent = '';
+    this.els.latencyUpload.textContent = '';
+    this.els.loss.textContent = '';
+  },
+
+  /**
+   * Show a status word, or a live rate in Mb/s, in the middle of the gauge.
+   */
+  setReadout(text, mbps) {
+    const isRate = typeof mbps === 'number';
+    this.els.currentSpeed.textContent = isRate ? mbps.toFixed(2) : text;
+    this.els.currentUnit.hidden = !isRate;
+    this.els.currentSpeed.parentElement.classList.toggle('is-rate', isRate);
+    // Lets CSS shrink multi-gigabit rates so they stay inside the rings
+    this.els.currentSpeed.parentElement.style.setProperty('--chars', this.els.currentSpeed.textContent.length);
+  },
+
+  /**
+   * Show the latency of one direction: the minimum round-trip time the
+   * server has seen so far, from any of its measurements, final or not.
+   */
+  setLatency(el, measurement) {
+    const minRTT = measurement && measurement.TCPInfo && measurement.TCPInfo.MinRTT;
+    if (minRTT > 0) el.textContent = (minRTT / 1000).toFixed(0);
+  },
+
+  /**
+   * Announce the final rates once to assistive tech.
+   */
+  announceResults() {
+    const r = this.measurementResult;
+    const parts = [];
+    if (r.s2cRate) parts.push(`${i18n.t('Download')} ${r.s2cRate} Mb/s`);
+    if (r.c2sRate) parts.push(`${i18n.t('Upload')} ${r.c2sRate} Mb/s`);
+    this.els.resultsStatus.textContent = parts.join(', ');
   },
 
   async startTest() {
@@ -118,37 +174,147 @@ const SpeedTest = {
       return;
     }
 
-    ProgressGauge.reset();
+    this.resetRun();
     this.testRunning = true;
     this.measurementComplete = false;
-    this.measurementResult = {};
+    // The results panel is on screen for the whole run and fills in as it goes
+    this.resultsVisible = true;
     this.updateUI();
 
-    // Scroll to measurement area on mobile
-    if (window.innerWidth < 981) {
+    // In the single-column layout (see main.css), bring the gauge into view
+    if (window.matchMedia('(max-width: 1099px)').matches) {
       this.els.measurementSpace.scrollIntoView({ behavior: 'smooth' });
     }
 
-    this.els.currentSpeed.textContent = i18n.t('Starting');
-    this.els.currentPhase.textContent = '';
+    this.setReadout(i18n.t('Starting'));
 
     // Execute ndt7
     try {
-      const sessionID = this.generateSessionID();
-      await this.runNdt7(sessionID);
-      this.els.currentPhase.textContent = i18n.t('Complete');
-      this.els.currentSpeed.textContent = '';
-      this.measurementComplete = true;
+      this.sessionID = this.generateSessionID();
+      await this.runNdt7(this.sessionID);
     } catch (err) {
       console.error('Test failed:', err);
-      if (window.Sentry) Sentry.captureException(err);
-      this.els.currentPhase.textContent = i18n.t('Error');
-      this.els.currentSpeed.textContent = '';
-      this.measurementComplete = true;
-    } finally {
-      this.testRunning = false;
-      this.updateUI();
+      const eventId = window.Sentry ? Sentry.captureException(err) : undefined;
+      this.recordFailure(err, eventId);
     }
+
+    // ndt7 reports most failures through its error callback and then returns
+    // normally, so success is judged by what the test produced: a rate for
+    // each direction.
+    const hasDownload = Boolean(this.measurementResult.s2cRate);
+    const hasUpload = Boolean(this.measurementResult.c2sRate);
+    ProgressGauge.reset();
+    this.setReadout('');
+    if (hasDownload && hasUpload) {
+      // The gauge is a live instrument: once the rates are in the results
+      // panel it empties and only marks the test as complete
+      ProgressGauge.setPhase('done');
+      this.els.currentPhase.textContent = i18n.t('Complete');
+      this.announceResults();
+      if (!Iqb.update(this.download, this.upload)) {
+        this.showMessage(this.els.iqbError, 'Ratings are not available for this test.');
+      }
+    } else {
+      this.els.currentPhase.textContent = i18n.t('Error');
+      this.showFailure(hasDownload, hasUpload);
+    }
+    this.measurementComplete = true;
+    this.testRunning = false;
+    this.updateUI();
+  },
+
+  /**
+   * Explain a failed test in the results panel. With nothing measured the
+   * message replaces the figures; with one direction measured it stands in
+   * for the IQB ratings, which need both, and the figures stay.
+   */
+  showFailure(hasDownload, hasUpload) {
+    let message;
+    if (hasDownload) {
+      message = 'The upload test could not be completed. Please try again.';
+    } else if (hasUpload) {
+      message = 'The download test could not be completed. Please try again.';
+    } else if (this.locateFailed) {
+      message = 'Could not find a test server. Please try again in a few minutes.';
+    } else {
+      message = 'The test could not be completed. Please try again.';
+    }
+    const partial = hasDownload || hasUpload;
+    this.showMessage(partial ? this.els.iqbError : this.els.resultsError, message);
+
+    Advanced.showDiagnostics({
+      SessionID: this.sessionID,
+      Time: new Date().toISOString(),
+      Environment: mlabEnvName,
+      PriorityToken: this.hasToken,
+      Library: `ndt7-js ${mlabNdt7Version}`,
+      Server: this.ndt7Machine,
+      Errors: this.failures,
+    });
+  },
+
+  /**
+   * Show a message in one of the two message slots of the results panel.
+   * Each slot sits inside the block it stands in for, and the stylesheet
+   * hides the rest of that block while it has a message.
+   */
+  showMessage(slot, message) {
+    slot.textContent = i18n.t(message);
+    slot.hidden = false;
+    slot.parentElement.classList.add('has-message');
+  },
+
+  clearMessages() {
+    for (const slot of [this.els.resultsError, this.els.iqbError]) {
+      slot.hidden = true;
+      slot.textContent = '';
+      slot.parentElement.classList.remove('has-message');
+    }
+  },
+
+  /**
+   * The raw result so far, for the details section.
+   */
+  rawResult() {
+    return { Server: this.ndt7Machine, Download: this.download, Upload: this.upload };
+  },
+
+  /**
+   * Remember an error and the phase it happened in, for the diagnostics.
+   */
+  recordFailure(err, sentryEventId) {
+    this.failures.push({
+      // No phase yet means it failed before the test proper began
+      Phase: this.ndt7Phase || 'start',
+      Message: String(err && err.message || err),
+      // Without a DSN the SDK still hands out ids, for events it never sends
+      ...(sentryEventId && mlabSentryDsn && { SentryEventID: sentryEventId }),
+    });
+  },
+
+  /**
+   * Forget the previous run, in the state and on screen.
+   */
+  resetRun() {
+    this.sessionID = null;
+    this.hasToken = false;
+    this.ndt7Phase = null;
+    this.ndt7Machine = null;
+    this.ndt7Site = null;
+    this.measurementResult = {};
+    this.download = null;
+    this.upload = null;
+    this.failures = [];
+    this.locateFailed = false;
+
+    this.clearResults();
+    this.clearMessages();
+    this.els.resultsStatus.textContent = '';
+    this.els.currentPhase.textContent = '';
+    ProgressGauge.reset();
+    Sparkline.reset();
+    Advanced.reset();
+    Iqb.reset();
   },
 
   /**
@@ -193,12 +359,7 @@ const SpeedTest = {
   },
 
   async runNdt7(sid) {
-    // Current phase and server, used to tag ndt7 errors in Sentry. The phase
-    // moves through discovery, download-connect, download, upload-connect and
-    // upload, so connection failures can be told apart from mid-test drops.
     this.ndt7Phase = 'discovery';
-    this.ndt7Machine = null;
-    this.ndt7Site = null;
 
     const project = this.mlabProject();
     console.log(`[ndt7] mlabProject: ${project}`);
@@ -241,6 +402,7 @@ const SpeedTest = {
       }
     }
 
+    this.hasToken = Boolean(token);
     const loadbalancer = token ? locatePriorityURL : null;
     console.log(`[ndt7] loadbalancer: ${loadbalancer}`);
 
@@ -270,12 +432,14 @@ const SpeedTest = {
             fingerprint = ['ndt7-websocket-error', this.ndt7Phase];
           } else if (typeof err === 'string' &&
               err.startsWith('Could not understand response from')) {
+            this.locateFailed = true;
             fingerprint = ['ndt7-locate-error'];
           }
-          if (window.Sentry) Sentry.captureException(
+          const eventId = window.Sentry ? Sentry.captureException(
             err instanceof Error ? err : new Error(String(err)),
             fingerprint ? { tags, fingerprint } : { tags },
-          );
+          ) : undefined;
+          this.recordFailure(err, eventId);
           // ndt7 still runs the upload after a failed download.
           if (this.ndt7Phase === 'download-connect' || this.ndt7Phase === 'download') {
             this.ndt7Phase = 'upload-connect';
@@ -297,30 +461,33 @@ const SpeedTest = {
         downloadStart: () => {
           this.ndt7Phase = 'download';
           this.els.currentPhase.textContent = i18n.t('Download');
-          this.els.currentSpeed.textContent = i18n.t('Initializing');
+          ProgressGauge.setPhase('download');
+          this.setReadout(i18n.t('Initializing'));
         },
         downloadMeasurement: (data) => {
           if (data.Source === 'client') {
-            this.els.currentSpeed.textContent = data.Data.MeanClientMbps.toFixed(2) + ' Mb/s';
-            const progress = (data.Data.ElapsedTime > this.TIME_EXPECTED) ? 0.5 :
-              data.Data.ElapsedTime / (this.TIME_EXPECTED * 2);
-            ProgressGauge.progress(progress);
+            this.setReadout(null, data.Data.MeanClientMbps);
+            ProgressGauge.setSpeed('download', data.Data.MeanClientMbps);
+            Sparkline.add('download', data.Data.ElapsedTime, data.Data.NumBytes);
+          } else if (data.Source === 'server') {
+            Advanced.addDownloadSample(data.Data);
+            this.setLatency(this.els.latency, data.Data);
           }
         },
         downloadComplete: (data) => {
           this.ndt7Phase = 'upload-connect';
+          this.download = data;
+          Advanced.setResult(this.rawResult());
           if (data.LastClientMeasurement) {
             this.measurementResult.s2cRate =
-              data.LastClientMeasurement.MeanClientMbps.toFixed(2) + ' Mb/s';
+              data.LastClientMeasurement.MeanClientMbps.toFixed(2);
             this.els.s2cRate.textContent = this.measurementResult.s2cRate;
+            ProgressGauge.setSpeed('download', data.LastClientMeasurement.MeanClientMbps);
           }
           if (data.LastServerMeasurement?.TCPInfo) {
-            this.measurementResult.latency =
-              (data.LastServerMeasurement.TCPInfo.MinRTT / 1000).toFixed(0) + ' ms';
             this.measurementResult.loss =
-              (data.LastServerMeasurement.TCPInfo.BytesRetrans /
-                data.LastServerMeasurement.TCPInfo.BytesSent * 100).toFixed(2) + '%';
-            this.els.latency.textContent = this.measurementResult.latency;
+              (Measurement.retransmission(data.LastServerMeasurement.TCPInfo) * 100).toFixed(2);
+            this.setLatency(this.els.latency, data.LastServerMeasurement);
             this.els.loss.textContent = this.measurementResult.loss;
           }
           console.log(data);
@@ -328,25 +495,27 @@ const SpeedTest = {
         uploadStart: () => {
           this.ndt7Phase = 'upload';
           this.els.currentPhase.textContent = i18n.t('Upload');
-          this.els.currentSpeed.textContent = i18n.t('Initializing');
+          ProgressGauge.setPhase('upload');
+          this.setReadout(i18n.t('Initializing'));
         },
         uploadMeasurement: (data) => {
           if (data.Source === 'server') {
-            this.els.currentSpeed.textContent = (data.Data.TCPInfo.BytesReceived /
-              data.Data.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
-          }
-          if (data.Source === 'client') {
-            const progress = (data.Data.ElapsedTime > this.TIME_EXPECTED) ? 1.0 :
-              data.Data.ElapsedTime / (this.TIME_EXPECTED * 2) + 0.5;
-            ProgressGauge.progress(progress);
+            this.setLatency(this.els.latencyUpload, data.Data);
+            const mbps = Measurement.uploadMbps(data.Data.TCPInfo);
+            this.setReadout(null, mbps);
+            ProgressGauge.setSpeed('upload', mbps);
+            Sparkline.add('upload', Measurement.seconds(data.Data.TCPInfo), data.Data.TCPInfo.BytesReceived);
           }
         },
         uploadComplete: (data) => {
+          this.upload = data;
+          Advanced.setResult(this.rawResult());
+          this.setLatency(this.els.latencyUpload, data.LastServerMeasurement);
           if (data.LastServerMeasurement?.TCPInfo) {
-            this.measurementResult.c2sRate =
-              (data.LastServerMeasurement.TCPInfo.BytesReceived /
-                data.LastServerMeasurement.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';
+            const mbps = Measurement.uploadMbps(data.LastServerMeasurement.TCPInfo);
+            this.measurementResult.c2sRate = mbps.toFixed(2);
             this.els.c2sRate.textContent = this.measurementResult.c2sRate;
+            ProgressGauge.setSpeed('upload', mbps);
           }
         },
       },
