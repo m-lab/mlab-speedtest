@@ -55,44 +55,48 @@
           <!-- Results: the headline rates, then the supporting figures -->
           <div id="resultsSection" class="results" hidden>
             <h2 class="visually-hidden" data-i18n>Results</h2>
-            <dl class="headline">
-              <div class="headline-item headline-download">
-                <dt><svg class="headline-arrow" viewBox="0 0 18 20" fill="currentColor" aria-hidden="true"><path d="M8.10895 18.7319C8.49183 19.1191 9.12463 19.1135 9.52236 18.7194L16.0037 12.2973C16.4015 11.9032 16.4135 11.2698 16.0306 10.8826C15.6477 10.4954 15.0149 10.5009 14.6172 10.895L8.85599 16.6036L3.30993 10.9945C2.92705 10.6073 2.29424 10.6129 1.89652 11.007C1.49879 11.4011 1.48675 12.0345 1.86962 12.4217L8.10895 18.7319ZM8.8291 18.0183L9.82853 18.0095L10.1709 -1.68478e-05L9.17145 0.00878098L8.17202 0.0175769L7.82967 18.0271L8.8291 18.0183Z"/></svg><span data-i18n>Download</span></dt>
-                <dd dir="ltr"><span id="s2cRate" class="headline-value"></span><span class="unit">Mb/s</span></dd>
-                <dd id="downloadGraph" class="headline-graph" aria-hidden="true"></dd>
-              </div>
-              <div class="headline-item headline-upload">
-                <dt><svg class="headline-arrow" viewBox="0 0 18 20" fill="currentColor" aria-hidden="true"><path d="M8.10895 18.7319C8.49183 19.1191 9.12463 19.1135 9.52236 18.7194L16.0037 12.2973C16.4015 11.9032 16.4135 11.2698 16.0306 10.8826C15.6477 10.4954 15.0149 10.5009 14.6172 10.895L8.85599 16.6036L3.30993 10.9945C2.92705 10.6073 2.29424 10.6129 1.89652 11.007C1.49879 11.4011 1.48675 12.0345 1.86962 12.4217L8.10895 18.7319ZM8.8291 18.0183L9.82853 18.0095L10.1709 -1.68478e-05L9.17145 0.00878098L8.17202 0.0175769L7.82967 18.0271L8.8291 18.0183Z"/></svg><span data-i18n>Upload</span></dt>
-                <dd dir="ltr"><span id="c2sRate" class="headline-value"></span><span class="unit">Mb/s</span></dd>
-                <dd id="uploadGraph" class="headline-graph" aria-hidden="true"></dd>
-              </div>
-            </dl>
-            <dl class="details">
-              <div class="detail">
-                <dt data-i18n>Latency</dt>
-                <dd dir="ltr" class="detail-pair">
-                  <span><span class="detail-arrow detail-arrow-download" aria-hidden="true">&darr;</span><span class="visually-hidden" data-i18n>Download</span><span id="latency" class="detail-value"></span><span class="unit">ms</span></span>
-                  <span><span class="detail-arrow detail-arrow-upload" aria-hidden="true">&uarr;</span><span class="visually-hidden" data-i18n>Upload</span><span id="latencyUpload" class="detail-value"></span><span class="unit">ms</span></span>
-                </dd>
-              </div>
-              <div class="detail">
-                <dt data-i18n>Retransmission</dt>
-                <dd dir="ltr"><span id="loss" class="detail-value"></span><span class="unit">%</span></dd>
-              </div>
-              <div class="detail">
-                <dt data-i18n>Test Server</dt>
-                <dd><span id="ndtLocation" class="detail-value"></span><a class="server-test" href="https://www.measurementlab.net/tests/ndt/" target="_blank" rel="noopener">NDT</a></dd>
-              </div>
-            </dl>
-            <!-- IQB indicators for this test; the badges are rendered by iqb.js -->
-            <section class="iqb">
-              <h3><span data-i18n>Internet Quality Barometer</span><span id="iqbScore" class="iqb-score" dir="ltr"></span></h3>
-              <ul id="iqbBadges" class="iqb-badges"></ul>
-            </section>
+            <!-- Everything a failure message can stand in for; the details stay available -->
+            <div class="results-main">
+              <dl class="headline">
+                <div class="headline-item headline-download">
+                  <dt><svg class="headline-arrow" viewBox="0 0 18 20" fill="currentColor" aria-hidden="true"><path d="M8.10895 18.7319C8.49183 19.1191 9.12463 19.1135 9.52236 18.7194L16.0037 12.2973C16.4015 11.9032 16.4135 11.2698 16.0306 10.8826C15.6477 10.4954 15.0149 10.5009 14.6172 10.895L8.85599 16.6036L3.30993 10.9945C2.92705 10.6073 2.29424 10.6129 1.89652 11.007C1.49879 11.4011 1.48675 12.0345 1.86962 12.4217L8.10895 18.7319ZM8.8291 18.0183L9.82853 18.0095L10.1709 -1.68478e-05L9.17145 0.00878098L8.17202 0.0175769L7.82967 18.0271L8.8291 18.0183Z"/></svg><span data-i18n>Download</span></dt>
+                  <dd dir="ltr"><span id="s2cRate" class="headline-value"></span><span class="unit">Mb/s</span></dd>
+                  <dd id="downloadGraph" class="headline-graph" aria-hidden="true"></dd>
+                </div>
+                <div class="headline-item headline-upload">
+                  <dt><svg class="headline-arrow" viewBox="0 0 18 20" fill="currentColor" aria-hidden="true"><path d="M8.10895 18.7319C8.49183 19.1191 9.12463 19.1135 9.52236 18.7194L16.0037 12.2973C16.4015 11.9032 16.4135 11.2698 16.0306 10.8826C15.6477 10.4954 15.0149 10.5009 14.6172 10.895L8.85599 16.6036L3.30993 10.9945C2.92705 10.6073 2.29424 10.6129 1.89652 11.007C1.49879 11.4011 1.48675 12.0345 1.86962 12.4217L8.10895 18.7319ZM8.8291 18.0183L9.82853 18.0095L10.1709 -1.68478e-05L9.17145 0.00878098L8.17202 0.0175769L7.82967 18.0271L8.8291 18.0183Z"/></svg><span data-i18n>Upload</span></dt>
+                  <dd dir="ltr"><span id="c2sRate" class="headline-value"></span><span class="unit">Mb/s</span></dd>
+                  <dd id="uploadGraph" class="headline-graph" aria-hidden="true"></dd>
+                </div>
+              </dl>
+              <dl class="details">
+                <div class="detail">
+                  <dt data-i18n>Latency</dt>
+                  <dd dir="ltr" class="detail-pair">
+                    <span><span class="detail-arrow detail-arrow-download" aria-hidden="true">&darr;</span><span class="visually-hidden" data-i18n>Download</span><span id="latency" class="detail-value"></span><span class="unit">ms</span></span>
+                    <span><span class="detail-arrow detail-arrow-upload" aria-hidden="true">&uarr;</span><span class="visually-hidden" data-i18n>Upload</span><span id="latencyUpload" class="detail-value"></span><span class="unit">ms</span></span>
+                  </dd>
+                </div>
+                <div class="detail">
+                  <dt data-i18n>Retransmission</dt>
+                  <dd dir="ltr"><span id="loss" class="detail-value"></span><span class="unit">%</span></dd>
+                </div>
+                <div class="detail">
+                  <dt data-i18n>Test Server</dt>
+                  <dd><span id="ndtLocation" class="detail-value"></span><a class="server-test" href="https://www.measurementlab.net/tests/ndt/" target="_blank" rel="noopener">NDT</a></dd>
+                </div>
+              </dl>
+              <!-- IQB indicators for this test; the badges are rendered by iqb.js -->
+              <section class="iqb">
+                <h3 data-i18n>Internet Quality Barometer</h3>
+                <ul id="iqbBadges" class="iqb-badges"></ul>
+              </section>
+            </div>
             <!-- Collapsed by default; labels inside are protocol field names, not translated -->
             <details class="advanced">
               <summary><span data-i18n>Details</span></summary>
               <div class="advanced-body" dir="ltr" lang="en">
+                <div id="advancedDiagnostics" class="stats" hidden></div>
                 <div id="advancedCharts" class="charts"></div>
                 <div id="advancedStats" class="stats"></div>
                 <div id="iqbChecks" class="iqb-checks" hidden></div>
@@ -100,6 +104,7 @@
               </div>
             </details>
           </div>
+          <p id="resultsError" class="results-error" role="alert" hidden></p>
           <p id="resultsStatus" class="visually-hidden" role="status"></p>
 
           <div class="hero-intro">

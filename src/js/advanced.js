@@ -21,6 +21,7 @@ const Advanced = {
   charts: {},
   samples: [],
   result: {},
+  diagnostics: null,
   els: {},
 
   init() {
@@ -28,6 +29,7 @@ const Advanced = {
       charts: document.getElementById('advancedCharts'),
       stats: document.getElementById('advancedStats'),
       copy: document.getElementById('copyResult'),
+      diagnostics: document.getElementById('advancedDiagnostics'),
     };
     this.els.charts.innerHTML = this.CHARTS.map(c => `<figure class="chart">
       <figcaption>
@@ -84,8 +86,13 @@ const Advanced = {
   reset() {
     this.samples = [];
     this.result = {};
+    this.diagnostics = null;
     this.draw();
     this.renderStats();
+    this.els.diagnostics.hidden = true;
+    this.els.diagnostics.replaceChildren();
+    this.els.charts.hidden = false;
+    this.els.copy.querySelector('span').textContent = 'Copy raw result (JSON)';
     this.els.copy.disabled = true;
   },
 
@@ -148,7 +155,8 @@ const Advanced = {
   /**
    * The final figures that the charts don't already show, as [label, value]
    * pairs: one group of short figures per direction, with the bytes
-   * transferred first in each so they line up, and long values as rows.
+   * transferred and the elapsed time first in each so they line up, and
+   * long values as rows.
    * Entries whose source field is missing are left out.
    */
   stats() {
@@ -160,12 +168,14 @@ const Advanced = {
     const has = v => typeof v === 'number' && isFinite(v);
     const ms = v => (v / 1000).toFixed(1);
     const mb = v => has(v) && `${(v / 1e6).toFixed(2)} MB`;
+    const secs = v => has(v) && `${(v / 1e6).toFixed(2)} s`;
     const present = pairs => pairs.filter(([, value]) => value);
     return {
       groups: [
         // BytesAcked is what the client received; BytesSent also counts retransmissions
         ['\u2193 Download', present([
           ['BytesAcked', mb(t.BytesAcked)],
+          ['ElapsedTime', secs(t.ElapsedTime)],
           ['BytesRetrans', mb(t.BytesRetrans)],
           ['MinRTT', has(t.MinRTT) && `${ms(t.MinRTT)} ms`],
           ['RTT \u00b1 RTTVar', has(t.RTT) && has(t.RTTVar) && `${ms(t.RTT)} \u00b1 ${ms(t.RTTVar)} ms`],
@@ -175,6 +185,7 @@ const Advanced = {
         ])],
         ['\u2191 Upload', present([
           ['BytesReceived', mb(u.BytesReceived)],
+          ['ElapsedTime', secs(u.ElapsedTime)],
         ])],
       ].filter(([, cells]) => cells.length),
       rows: present([
@@ -185,22 +196,26 @@ const Advanced = {
     };
   },
 
+  /**
+   * A definition list of [label, value] pairs. Values can come from the
+   * server, so they are set as text, never as HTML.
+   */
+  list(className, pairs) {
+    const dl = document.createElement('dl');
+    dl.className = className;
+    for (const [label, value] of pairs) {
+      const item = document.createElement('div');
+      const dt = document.createElement('dt');
+      const dd = document.createElement('dd');
+      dt.textContent = label;
+      dd.textContent = value;
+      item.append(dt, dd);
+      dl.append(item);
+    }
+    return dl;
+  },
+
   renderStats() {
-    // Values come from the server, so they are set as text, never as HTML
-    const list = (className, pairs) => {
-      const dl = document.createElement('dl');
-      dl.className = className;
-      for (const [label, value] of pairs) {
-        const item = document.createElement('div');
-        const dt = document.createElement('dt');
-        const dd = document.createElement('dd');
-        dt.textContent = label;
-        dd.textContent = value;
-        item.append(dt, dd);
-        dl.append(item);
-      }
-      return dl;
-    };
     const { groups, rows } = this.stats();
     this.els.stats.replaceChildren(
       ...groups.map(([title, cells]) => {
@@ -208,17 +223,55 @@ const Advanced = {
         const heading = document.createElement('h3');
         group.className = 'stat-group';
         heading.textContent = title;
-        group.append(heading, list('stat-cells', cells));
+        group.append(heading, this.list('stat-cells', cells));
         return group;
       }),
-      ...(rows.length ? [list('stat-rows', rows)] : []));
+      ...(rows.length ? [this.list('stat-rows', rows)] : []));
+  },
+
+  /**
+   * After a failed test, show what helps to trace it: the session id sent to
+   * the locate service and the server, where and how it failed, and the ids
+   * of any connection that did get established. This is for error reports,
+   * so unlike the raw result it never includes the client's address.
+   */
+  showDiagnostics(info) {
+    const uuid = direction => {
+      const m = this.result[direction] && this.result[direction].LastServerMeasurement;
+      return m && m.ConnectionInfo && m.ConnectionInfo.UUID;
+    };
+    const entries = Object.entries({
+      ...info,
+      DownloadUUID: uuid('Download'),
+      UploadUUID: uuid('Upload'),
+    }).filter(([, value]) => value !== undefined && value !== null && value !== '');
+    this.diagnostics = Object.fromEntries(entries);
+
+    const d = this.diagnostics;
+    const rows = [
+      ['Session', d.SessionID],
+      ['Time', d.Time],
+      ['Environment', d.Environment && `${d.Environment}, ${d.PriorityToken ? 'with' : 'without'} priority token`],
+      ['Library', d.Library],
+      ['Server', d.Server],
+      ['\u2193 UUID', d.DownloadUUID],
+      ['\u2191 UUID', d.UploadUUID],
+      ...(d.Errors || []).map((e, i) => [`Error ${i + 1}`,
+        `${e.Phase}: ${e.Message}${e.SentryEventID ? ` (Sentry ${e.SentryEventID})` : ''}`]),
+    ].filter(([, value]) => value);
+    this.els.diagnostics.replaceChildren(this.list('stat-rows diagnostic-rows', rows));
+    this.els.diagnostics.hidden = false;
+    // Without samples the charts are empty frames
+    this.els.charts.hidden = !this.samples.length;
+    this.els.copy.querySelector('span').textContent = 'Copy diagnostics (JSON)';
+    this.els.copy.disabled = false;
   },
 
   async copy() {
     const label = this.els.copy.querySelector('span');
     const original = label.textContent;
     try {
-      await navigator.clipboard.writeText(JSON.stringify(this.result, null, 2));
+      await navigator.clipboard.writeText(JSON.stringify(this.diagnostics || this.result, null, 2));
       label.textContent = 'Copied';
     } catch (err) {
       label.textContent = 'Copy failed';

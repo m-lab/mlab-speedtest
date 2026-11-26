@@ -147,9 +147,11 @@ function build() {
   const sentryDsn = process.env.SENTRY_DSN || '';
   const envJsPath = path.join(DIST, 'js', 'env.js');
   console.log(`Writing ${envJsPath}...`)
+  const ndt7Version = require(path.join(NODE_MODULES, '@m-lab', 'ndt7', 'package.json')).version;
   fs.writeFileSync(envJsPath,
     `const mlabEnvName = "${mlabEnvName}";\n` +
-    `const mlabSentryDsn = "${sentryDsn}";\n`
+    `const mlabSentryDsn = "${sentryDsn}";\n` +
+    `const mlabNdt7Version = "${ndt7Version}";\n`
   );
 
   // Must come last: the hashes cover the final contents of every asset

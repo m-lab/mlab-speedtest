@@ -678,6 +678,46 @@ main {
   text-decoration: none;
 }
 
+/* ---------- Failed test: a message in place of what could not be measured ---------- */
+
+.results-main,
+.iqb {
+  position: relative;
+}
+
+/* By default laid over the block it stands in for */
+.results-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: var(--space-6);
+  color: var(--text-heading);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* One direction failed: the message takes the place of the IQB ratings,
+   which keep their space */
+.iqb.is-unavailable > :not(.results-error) {
+  visibility: hidden;
+}
+
+/* Nothing was measured: the message replaces the figures outright, so the
+   details follow straight after it */
+.results-main.is-failed > :not(.results-error) {
+  display: none;
+}
+
+.results-main.is-failed > .results-error {
+  position: static;
+  padding-block: var(--space-10);
+}
+
 /* ---------- IQB: one badge per use case, with its score ---------- */
 
 .iqb {
@@ -687,11 +727,7 @@ main {
 }
 
 .iqb h3 {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
   color: var(--color-neutral-500);
   font-size: 0.75rem;
   font-weight: 600;
@@ -699,15 +735,6 @@ main {
   text-transform: uppercase;
 }
 
-.iqb-score {
-  color: var(--text-heading);
-  font-family: var(--font-mono);
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: 0;
-}
-
-.iqb-score:empty::before,
 .iqb-value:empty::before {
   content: "\2013";
   color: var(--color-neutral-300);
@@ -733,7 +760,7 @@ main {
 }
 
 /* A circle around the use case's icon, filled clockwise to its score:
-   green when every requirement is met, amber otherwise */
+   green for good and very good, amber for average, brown for poor */
 .iqb-ring {
   position: relative;
   width: 3.5rem;
@@ -763,8 +790,13 @@ main {
   transition: stroke-dasharray 0.4s var(--ease-standard);
 }
 
-.is-full .iqb-ring-value {
+.is-very-good .iqb-ring-value,
+.is-good .iqb-ring-value {
   stroke: var(--color-supporting1-600);
+}
+
+.is-poor .iqb-ring-value {
+  stroke: var(--color-secondary-800);
 }
 
 .iqb-icon {
@@ -780,7 +812,6 @@ main {
 
 .iqb-value {
   color: var(--text-heading);
-  font-family: var(--font-mono);
   font-weight: 700;
 }
 
@@ -1031,6 +1062,16 @@ main {
   gap: var(--space-3) var(--space-4);
 }
 
+/* After a failure: what helps to trace it, with room for longer labels */
+.stat-rows.diagnostic-rows {
+  padding-top: 0;
+  border-top: none;
+}
+
+.stat-rows.diagnostic-rows dt {
+  min-width: 6.5rem;
+}
+
 /* Long values: label and value on one line */
 .stat-rows {
   padding-top: var(--space-3);
@@ -1211,7 +1252,8 @@ main {
   }
 
   .measurement { grid-area: 1 / 1; }
-  .agreement { grid-area: 2 / 1; }
+  /* About as wide as the gauge, so the checkbox and its text sit centred under it */
+  .agreement { grid-area: 2 / 1; max-width: 21rem; }
   #startButton { grid-area: 3 / 1; }
   .agreement-hint { grid-area: 4 / 1; }
   .hero .fine-print { grid-area: 5 / 1; }

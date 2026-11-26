@@ -30,11 +30,23 @@ const Iqb = {
     { name: 'Gaming', icon: 'gamepad-2', download: [25, 4], upload: [25, 4], latency: [10, 5], loss: [0.005, 4] },
   ],
 
+  // A use case's score is shown as the first rating whose minimum it reaches.
+  // "Very good" means every requirement is met.
+  RATINGS: [
+    { key: 'very-good', label: 'Very good', min: 1 },
+    { key: 'good', label: 'Good', min: 0.75 },
+    { key: 'average', label: 'Average', min: 0.5 },
+    { key: 'poor', label: 'Poor', min: 0 },
+  ],
+
   els: {},
+
+  rating(score) {
+    return this.RATINGS.find(r => score >= r.min);
+  },
 
   init() {
     this.els = {
-      score: document.getElementById('iqbScore'),
       badges: document.getElementById('iqbBadges'),
       checks: document.getElementById('iqbChecks'),
     };
@@ -57,7 +69,8 @@ const Iqb = {
   },
 
   /**
-   * Fill a use case's ring to a score in [0, 1], or empty it with null.
+   * Fill a use case's ring to a score in [0, 1] and label it with the
+   * matching rating, or empty it with null.
    */
   setRing(item, score) {
     const arc = item.querySelector('.iqb-ring-value');
@@ -65,13 +78,12 @@ const Iqb = {
     arc.setAttribute('stroke-dasharray', `${filled ? (score * 100).toFixed(1) : 0} 100`);
     // A zero-length dash with round caps would still draw a dot
     arc.style.visibility = filled ? 'visible' : 'hidden';
-    item.classList.toggle('is-full', score === 1);
-    item.classList.toggle('is-partial', score !== null && score < 1);
-    item.querySelector('.iqb-value').textContent = score === null ? '' : score.toFixed(2);
+    const rating = score === null ? null : this.rating(score);
+    for (const r of this.RATINGS) item.classList.toggle(`is-${r.key}`, r === rating);
+    item.querySelector('.iqb-value').textContent = rating ? i18n.t(rating.label) : '';
   },
 
   reset() {
-    this.els.score.textContent = '';
     for (const item of this.els.badges.children) this.setRing(item, null);
     this.els.checks.hidden = true;
   },
@@ -132,7 +144,6 @@ const Iqb = {
     const inputs = this.inputs(download, upload);
     if (!inputs) return;
     const result = this.score(inputs);
-    this.els.score.textContent = result.score.toFixed(2);
     result.useCases.forEach((useCase, i) => {
       this.setRing(this.els.badges.children[i], useCase.score);
     });

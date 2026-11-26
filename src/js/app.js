@@ -9,6 +9,10 @@ const SpeedTest = {
   privacyConsent: false,
   measurementComplete: false,
   resultsVisible: false,
+  locateFailed: false,
+  sessionID: null,
+  hasToken: false,
+  failures: [],
   measurementResult: {},
 
   // DOM elements (cached on init)
@@ -36,6 +40,9 @@ const SpeedTest = {
       measurementSpace: document.getElementById('measurementSpace'),
       resultsSection: document.getElementById('resultsSection'),
       resultsStatus: document.getElementById('resultsStatus'),
+      resultsError: document.getElementById('resultsError'),
+      resultsMain: document.querySelector('.results-main'),
+      iqb: document.querySelector('.iqb'),
 
       // Results
       location: document.getElementById('ndtLocation'),
@@ -163,6 +170,7 @@ const SpeedTest = {
     this.measurementComplete = false;
     this.measurementResult = {};
     this.clearResults();
+    this.clearFailure();
     // The results panel is on screen for the whole run and fills in as it goes
     this.resultsVisible = true;
     this.updateUI();
@@ -178,28 +186,92 @@ const SpeedTest = {
 
     // Execute ndt7
     try {
-      const sessionID = this.generateSessionID();
-      await this.runNdt7(sessionID);
+      this.sessionID = this.generateSessionID();
+      await this.runNdt7(this.sessionID);
+    } catch (err) {
+      console.error('Test failed:', err);
+      const eventId = window.Sentry ? Sentry.captureException(err) : undefined;
+      this.recordFailure(err, eventId);
+    }
+
+    // ndt7 reports most failures through its error callback and then returns
+    // normally, so success is judged by what the test produced: a rate for
+    // each direction.
+    const hasDownload = Boolean(this.measurementResult.s2cRate);
+    const hasUpload = Boolean(this.measurementResult.c2sRate);
+    ProgressGauge.reset();
+    this.setReadout('');
+    if (hasDownload && hasUpload) {
       // The gauge is a live instrument: once the rates are in the results
       // panel it empties and only marks the test as complete
-      ProgressGauge.reset();
       ProgressGauge.setPhase('done');
-      this.setReadout('');
       this.els.currentPhase.textContent = i18n.t('Complete');
       this.announceResults();
       Iqb.update(Advanced.result.Download, Advanced.result.Upload);
-      this.measurementComplete = true;
-    } catch (err) {
-      console.error('Test failed:', err);
-      if (window.Sentry) Sentry.captureException(err);
-      ProgressGauge.reset();
+    } else {
       this.els.currentPhase.textContent = i18n.t('Error');
-      this.setReadout('');
-      this.measurementComplete = true;
-    } finally {
-      this.testRunning = false;
-      this.updateUI();
+      this.showFailure(hasDownload, hasUpload);
     }
+    this.measurementComplete = true;
+    this.testRunning = false;
+    this.updateUI();
+  },
+
+  /**
+   * Explain a failed test in the results panel. With nothing measured the
+   * message replaces the figures; with one direction measured it stands in
+   * for the IQB ratings, which need both, and the figures stay.
+   */
+  showFailure(hasDownload, hasUpload) {
+    let message;
+    if (hasDownload) {
+      message = 'The upload test could not be completed. Please try again.';
+    } else if (hasUpload) {
+      message = 'The download test could not be completed. Please try again.';
+    } else if (this.locateFailed) {
+      message = 'Could not find a test server. Please try again in a few minutes.';
+    } else {
+      message = 'The test could not be completed. Please try again.';
+    }
+    const partial = hasDownload || hasUpload;
+    (partial ? this.els.iqb : this.els.resultsMain).append(this.els.resultsError);
+    this.els.resultsMain.classList.toggle('is-failed', !partial);
+    this.els.iqb.classList.toggle('is-unavailable', partial);
+    this.els.resultsError.textContent = i18n.t(message);
+    this.els.resultsError.hidden = false;
+
+    Advanced.showDiagnostics({
+      SessionID: this.sessionID,
+      Time: new Date().toISOString(),
+      Environment: typeof mlabEnvName === 'undefined' ? undefined : mlabEnvName,
+      PriorityToken: this.hasToken,
+      Library: typeof mlabNdt7Version === 'undefined' ? undefined : `ndt7-js ${mlabNdt7Version}`,
+      Server: this.ndt7Machine,
+      Errors: this.failures,
+    });
+  },
+
+  /**
+   * Remember an error and the phase it happened in, for the diagnostics.
+   */
+  recordFailure(err, sentryEventId) {
+    this.failures.push({
+      Phase: this.ndt7Phase || 'start',
+      Message: String(err && err.message || err),
+      // Without a DSN the SDK still hands out ids, for events it never sends
+      ...(sentryEventId && mlabSentryDsn && { SentryEventID: sentryEventId }),
+    });
+  },
+
+  clearFailure() {
+    this.failures = [];
+    this.sessionID = null;
+    this.ndt7Phase = null;
+    this.locateFailed = false;
+    this.els.resultsMain.classList.remove('is-failed');
+    this.els.iqb.classList.remove('is-unavailable');
+    this.els.resultsError.hidden = true;
+    this.els.resultsError.textContent = '';
   },
 
   /**
@@ -292,6 +364,7 @@ const SpeedTest = {
       }
     }
 
+    this.hasToken = Boolean(token);
     const loadbalancer = token ? locatePriorityURL : null;
     console.log(`[ndt7] loadbalancer: ${loadbalancer}`);
 
@@ -321,12 +394,14 @@ const SpeedTest = {
             fingerprint = ['ndt7-websocket-error', this.ndt7Phase];
           } else if (typeof err === 'string' &&
               err.startsWith('Could not understand response from')) {
+            this.locateFailed = true;
             fingerprint = ['ndt7-locate-error'];
           }
-          if (window.Sentry) Sentry.captureException(
+          const eventId = window.Sentry ? Sentry.captureException(
             err instanceof Error ? err : new Error(String(err)),
             fingerprint ? { tags, fingerprint } : { tags },
-          );
+          ) : undefined;
+          this.recordFailure(err, eventId);
           // ndt7 still runs the upload after a failed download.
           if (this.ndt7Phase === 'download-connect' || this.ndt7Phase === 'download') {
             this.ndt7Phase = 'upload-connect';
